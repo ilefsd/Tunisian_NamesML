@@ -1,0 +1,36 @@
+<!-- src/app/components/family-tree/family-tree.component.html -->
+<form (ngSubmit)="search()" #f="ngForm" class="search-form">
+  <div class="input-group">
+    <label for="childName">اسم الطفل</label>
+    <input
+      id="childName"
+      name="child"
+      [(ngModel)]="childName"
+      placeholder="اسم الطفل"
+      required
+    />
+  </div>
+  <div class="input-group">
+    <label for="fatherName">اسم الأب</label>
+    <input
+      id="fatherName"
+      name="father"
+      [(ngModel)]="fatherName"
+      placeholder="اسم الأب"
+      required
+    />
+  </div>
+  <div class="input-group">
+    <label for="motherName">اسم الأم</label>
+    <input
+      id="motherName"
+      name="mother"
+      [(ngModel)]="motherName"
+      placeholder="اسم الأم"
+      required
+    />
+  </div>
+  <button type="submit" [disabled]="f.invalid">ابحث</button>
+</form>
+
+<div #network class="network-container"></div>

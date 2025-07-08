@@ -1,0 +1,10 @@
+C:\Users\ilefs\my_project\target\debug\deps\libpostgres_types-78aeb3c7a968ddd1.rmeta: C:\Users\ilefs\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\postgres-types-0.2.9\src\lib.rs C:\Users\ilefs\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\postgres-types-0.2.9\src\uuid_08.rs C:\Users\ilefs\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\postgres-types-0.2.9\src\pg_lsn.rs C:\Users\ilefs\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\postgres-types-0.2.9\src\private.rs C:\Users\ilefs\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\postgres-types-0.2.9\src\special.rs C:\Users\ilefs\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\postgres-types-0.2.9\src\type_gen.rs
+
+C:\Users\ilefs\my_project\target\debug\deps\postgres_types-78aeb3c7a968ddd1.d: C:\Users\ilefs\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\postgres-types-0.2.9\src\lib.rs C:\Users\ilefs\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\postgres-types-0.2.9\src\uuid_08.rs C:\Users\ilefs\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\postgres-types-0.2.9\src\pg_lsn.rs C:\Users\ilefs\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\postgres-types-0.2.9\src\private.rs C:\Users\ilefs\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\postgres-types-0.2.9\src\special.rs C:\Users\ilefs\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\postgres-types-0.2.9\src\type_gen.rs
+
+C:\Users\ilefs\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\postgres-types-0.2.9\src\lib.rs:
+C:\Users\ilefs\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\postgres-types-0.2.9\src\uuid_08.rs:
+C:\Users\ilefs\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\postgres-types-0.2.9\src\pg_lsn.rs:
+C:\Users\ilefs\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\postgres-types-0.2.9\src\private.rs:
+C:\Users\ilefs\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\postgres-types-0.2.9\src\special.rs:
+C:\Users\ilefs\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\postgres-types-0.2.9\src\type_gen.rs:
