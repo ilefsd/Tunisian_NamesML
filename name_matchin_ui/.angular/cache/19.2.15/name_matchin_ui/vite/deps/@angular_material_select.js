@@ -15,11 +15,6 @@ import {
   ViewportRuler
 } from "./chunk-H6OY7Z4C.js";
 import {
-  MatRipple,
-  MatRippleModule,
-  _StructuralStylesLoader
-} from "./chunk-XSULJPNR.js";
-import {
   MAT_FORM_FIELD,
   MatError,
   MatFormField,
@@ -29,11 +24,16 @@ import {
   MatLabel,
   MatPrefix,
   MatSuffix
-} from "./chunk-DFKK5LEO.js";
+} from "./chunk-T3TCX74Y.js";
+import {
+  MatRipple,
+  MatRippleModule,
+  _StructuralStylesLoader
+} from "./chunk-XSULJPNR.js";
 import {
   _isTestEnvironment,
   coerceCssPixelValue
-} from "./chunk-MI2SZNWI.js";
+} from "./chunk-CWROUUPQ.js";
 import {
   supportsScrollBehavior
 } from "./chunk-2O4WY5GE.js";
