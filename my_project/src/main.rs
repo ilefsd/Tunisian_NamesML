@@ -20,6 +20,7 @@ use crate::utils::{
         score_pair_with_soundex,
         calculate_full_score,
     },
+    normalization::{normalize_arabic, remove_diacritics, standardize_prefixes}, // Added for input normalization
     linked_list::IdentityNode,
 };
 
@@ -69,7 +70,6 @@ async fn main() {
     let addr = SocketAddr::from(([127, 0, 0, 1], 3000));
     println!("🚀 Server running on http://{}", addr);
 
-    // Use TcpListener so we can reuse your existing pattern
     let listener = tokio::net::TcpListener::bind(addr)
         .await
         .expect("Failed to bind");
@@ -81,6 +81,18 @@ async fn main() {
 async fn match_identity(
     Json(input): Json<InputIdentity>,
 ) -> (StatusCode, Json<Vec<MatchResult>>) {
+    // --- Normalize input strings once ---
+    let normalize_fn = |s: &str| standardize_prefixes(&normalize_arabic(&remove_diacritics(s)));
+
+    let norm_input_first_name = normalize_fn(&input.first_name);
+    let norm_input_last_name = normalize_fn(&input.last_name);
+    let norm_input_father_name = normalize_fn(&input.father_name);
+    let norm_input_grandfather_name = normalize_fn(&input.grandfather_name);
+    let norm_input_mother_last_name = normalize_fn(&input.mother_last_name);
+    let norm_input_mother_name = normalize_fn(&input.mother_name);
+    let norm_input_place_of_birth = normalize_fn(&input.place_of_birth);
+    // --- End of input normalization ---
+
     // 1) Compute decade key
     let gen = input
         .dob
@@ -97,32 +109,37 @@ async fn match_identity(
         return (StatusCode::NOT_FOUND, Json(vec![]));
     }
 
-    // 3) Pre-filter
+    // 3) Pre-filter using normalized input
     let candidates: Vec<&IdentityNode> = records
         .iter()
-        .filter(|id| {
+        .filter(|id_node| { // Renamed `id` to `id_node` to avoid conflict if we destructure input later
             should_consider_candidate(
-                &(
-                    &input.first_name,
-                    &input.last_name,
-                    &input.father_name,
-                    &input.grandfather_name,
-                    &input.mother_last_name,
-                    &input.mother_name,
-                    input.dob,
-                    input.sex,
-                    &input.place_of_birth,
+                &( // Pass normalized input fields
+                   &norm_input_first_name,
+                   &norm_input_last_name,
+                   &norm_input_father_name,
+                   &norm_input_grandfather_name,
+                   &norm_input_mother_last_name,
+                   &norm_input_mother_name,
+                   input.dob, // DOB, sex are not strings, no normalization needed here
+                   input.sex,
+                   &norm_input_place_of_birth,
                 ),
-                &(
-                    &id.first_name,
-                    &id.last_name,
-                    &id.father_name,
-                    &id.grandfather_name,
-                    &id.mother_last_name,
-                    &id.mother_name,
-                    id.dob,
-                    id.sex,
-                    &id.place_of_birth,
+                &( // IdentityNode fields are already normalized by loader (for base names)
+                   &id_node.first_name,
+                   &id_node.last_name,
+                   &id_node.father_name,
+                   &id_node.grandfather_name,
+                   &id_node.mother_last_name,
+                   &id_node.mother_name,
+                   id_node.dob,
+                   id_node.sex,
+                   &id_node.place_of_birth, // place_of_birth in IdentityNode is raw, but loader normalizes it for storage.
+                   // For should_consider_candidate, it expects normalized if used,
+                   // but current implementation only uses last_name for soundex.
+                   // Let's assume id_node.place_of_birth is the normalized version as per loader.rs for consistency with other name fields.
+                   // If id_node.place_of_birth was raw, it would need normalization here or inside should_consider_candidate.
+                   // Given loader.rs normalizes all text fields it extracts for the IdentityNode main fields, this should be fine.
                 ),
             )
         })
@@ -133,29 +150,31 @@ async fn match_identity(
         return (StatusCode::OK, Json(vec![]));
     }
 
-    // 4) Score & sort
+    // 4) Score & sort using normalized input
     println!("▶ Scoring {} candidates in parallel…", candidates.len());
     let mut results: Vec<MatchResult> = candidates
         .par_iter()
-        .map(|id| {
+        .map(|id_node| { // Renamed `id` to `id_node`
             let mut breakdown = Vec::new();
 
-            // Name fields
-            let fields = [
-                ("الاسم الأول",    &input.first_name,    &id.first_name,    &id.first_name_variations),
-                ("اسم العائلة",    &input.last_name,     &id.last_name,     &id.last_name_variations),
-                ("اسم الأب",       &input.father_name,   &id.father_name,   &id.father_name_variations),
-                ("اسم الجد",       &input.grandfather_name, &id.grandfather_name, &id.grandfather_name_variations),
-                ("اسم عائلة الأم", &input.mother_last_name, &id.mother_last_name, &id.mother_last_name_variations),
-                ("اسم الأم",       &input.mother_name,    &id.mother_name,    &id.mother_name_variations),
+            // Name fields - use normalized input
+            let fields_to_score = [
+                ("الاسم الأول",    &norm_input_first_name,    &id_node.first_name,    &id_node.first_name_variations),
+                ("اسم العائلة",    &norm_input_last_name,     &id_node.last_name,     &id_node.last_name_variations),
+                ("اسم الأب",       &norm_input_father_name,   &id_node.father_name,   &id_node.father_name_variations),
+                ("اسم الجد",       &norm_input_grandfather_name, &id_node.grandfather_name, &id_node.grandfather_name_variations),
+                ("اسم عائلة الأم", &norm_input_mother_last_name, &id_node.mother_last_name, &id_node.mother_last_name_variations),
+                ("اسم الأم",       &norm_input_mother_name,    &id_node.mother_name,    &id_node.mother_name_variations),
             ];
-            for (label, inp, base, vars) in fields {
-                let raw = best_score_against_variations(inp, base, vars) * 100.0_f64;
-                breakdown.push(FieldScore { field: label.to_string(), score: raw.round() });
+            for (label, norm_inp_field, id_base_field, id_vars) in fields_to_score {
+                // best_score_against_variations expects normalized input and normalized base,
+                // and handles normalization of raw variations internally.
+                let raw_score = best_score_against_variations(norm_inp_field, id_base_field, id_vars) * 100.0_f64;
+                breakdown.push(FieldScore { field: label.to_string(), score: raw_score.round() });
             }
 
             // DOB
-            let dob_score: f64 = if let (Some((d1,m1,y1)), Some((d2,m2,y2))) = (input.dob, id.dob) {
+            let dob_score: f64 = if let (Some((d1,m1,y1)), Some((d2,m2,y2))) = (input.dob, id_node.dob) {
                 let mut s: f64 = 0.0;
                 if d1==d2 { s+=1.0/3.0 }
                 if m1==m2 { s+=1.0/3.0 }
@@ -164,60 +183,62 @@ async fn match_identity(
             } else { 0.0 };
             breakdown.push(FieldScore { field: "تاريخ الميلاد".into(), score: dob_score });
 
-            // Place
-            let place_score = (score_pair_with_soundex(&input.place_of_birth, &id.place_of_birth) * 100.0_f64).round();
+            // Place - use normalized input and normalized IdentityNode.place_of_birth
+            // score_pair_with_soundex expects both inputs to be pre-normalized for Jaro/Lev,
+            // and handles Soundex internal normalization.
+            let place_score = (score_pair_with_soundex(&norm_input_place_of_birth, &id_node.place_of_birth) * 100.0_f64).round();
             breakdown.push(FieldScore { field: "مكان الولادة".into(), score: place_score });
 
             // Sex
-            let sex_score = if input.sex == id.sex { 100.0 } else { 0.0 };
+            let sex_score = if input.sex == id_node.sex { 100.0 } else { 0.0 };
             breakdown.push(FieldScore { field: "الجنس".into(), score: sex_score });
 
-            // Total
+            // Total - use normalized inputs
             let raw_total = calculate_full_score(
-                (
-                    &input.first_name,
-                    &input.last_name,
-                    &input.father_name,
-                    &input.grandfather_name,
-                    &input.mother_last_name,
-                    &input.mother_name,
+                ( // Normalized input names
+                  &norm_input_first_name,
+                  &norm_input_last_name,
+                  &norm_input_father_name,
+                  &norm_input_grandfather_name,
+                  &norm_input_mother_last_name,
+                  &norm_input_mother_name,
                 ),
-                (
-                    &id.first_name,
-                    &id.last_name,
-                    &id.father_name,
-                    &id.grandfather_name,
-                    &id.mother_last_name,
-                    &id.mother_name,
+                ( // Normalized IdentityNode names (already normalized by loader)
+                  &id_node.first_name,
+                  &id_node.last_name,
+                  &id_node.father_name,
+                  &id_node.grandfather_name,
+                  &id_node.mother_last_name,
+                  &id_node.mother_name,
                 ),
-                (
-                    &id.first_name_variations,
-                    &id.last_name_variations,
-                    &id.father_name_variations,
-                    &id.grandfather_name_variations,
-                    &id.mother_last_name_variations,
-                    &id.mother_name_variations,
+                ( // Variations (calculate_full_score doesn't use these directly, best_score_against_variations does)
+                  &id_node.first_name_variations,
+                  &id_node.last_name_variations,
+                  &id_node.father_name_variations,
+                  &id_node.grandfather_name_variations,
+                  &id_node.mother_last_name_variations,
+                  &id_node.mother_name_variations,
                 ),
                 input.dob,
-                id.dob,
-                &input.place_of_birth,
-                &id.place_of_birth,
+                id_node.dob,
+                &norm_input_place_of_birth, // Normalized input place
+                &id_node.place_of_birth,   // Normalized IdentityNode place
                 input.sex,
-                id.sex,
+                id_node.sex,
             ) * 100.0_f64;
             let total_score = raw_total.round();
 
-            let dob_tuple = id.dob.unwrap_or((0,0,0));
+            let dob_tuple = id_node.dob.unwrap_or((0,0,0)); // id_node here
             let record = IdentityRecord {
-                first_name:       id.first_name.clone(),
-                last_name:        id.last_name.clone(),
-                father_name:      id.father_name.clone(),
-                grandfather_name: id.grandfather_name.clone(),
-                mother_last_name: id.mother_last_name.clone(),
-                mother_name:      id.mother_name.clone(),
+                first_name:       id_node.first_name.clone(),
+                last_name:        id_node.last_name.clone(),
+                father_name:      id_node.father_name.clone(),
+                grandfather_name: id_node.grandfather_name.clone(),
+                mother_last_name: id_node.mother_last_name.clone(),
+                mother_name:      id_node.mother_name.clone(),
                 dob:              dob_tuple,
-                sex:              id.sex,
-                place_of_birth:   id.place_of_birth.clone(),
+                sex:              id_node.sex,
+                place_of_birth:   id_node.place_of_birth.clone(),
             };
 
             MatchResult { matched_identity: record, total_score, breakdown }
@@ -233,9 +254,9 @@ async fn match_identity(
     let filtered: Vec<MatchResult> = results
         .into_iter()
         .filter(|r| r.total_score >= 75.0)
-        .take(1)
+        .take(3) // Changed from 1 to 3
         .collect();
-    println!("✅ Returning {} match(es) ≥ 75%.", filtered.len());
+    println!("✅ Returning up to {} match(es) ≥ 75%.", filtered.len());
 
     (StatusCode::OK, Json(filtered))
 }

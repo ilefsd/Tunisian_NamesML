@@ -5,6 +5,19 @@ import {
   ɵɵdefineNgModule
 } from "./chunk-453A27SB.js";
 
+// node_modules/@angular/cdk/fesm2022/boolean-property-DaaVhX5A.mjs
+function coerceBooleanProperty(value) {
+  return value != null && `${value}` !== "false";
+}
+
+// node_modules/@angular/cdk/fesm2022/css-pixel-value-C_HEqLhI.mjs
+function coerceCssPixelValue(value) {
+  if (value == null) {
+    return "";
+  }
+  return typeof value === "string" ? value : `${value}px`;
+}
+
 // node_modules/@angular/cdk/fesm2022/test-environment-CT0XxPyp.mjs
 function _isTestEnvironment() {
   return (
@@ -77,23 +90,10 @@ function getSupportedInputTypes() {
   return supportedInputTypes;
 }
 
-// node_modules/@angular/cdk/fesm2022/boolean-property-DaaVhX5A.mjs
-function coerceBooleanProperty(value) {
-  return value != null && `${value}` !== "false";
-}
-
-// node_modules/@angular/cdk/fesm2022/css-pixel-value-C_HEqLhI.mjs
-function coerceCssPixelValue(value) {
-  if (value == null) {
-    return "";
-  }
-  return typeof value === "string" ? value : `${value}px`;
-}
-
 export {
-  _isTestEnvironment,
-  getSupportedInputTypes,
   coerceBooleanProperty,
-  coerceCssPixelValue
+  coerceCssPixelValue,
+  _isTestEnvironment,
+  getSupportedInputTypes
 };
-//# sourceMappingURL=chunk-MI2SZNWI.js.map
+//# sourceMappingURL=chunk-CWROUUPQ.js.map
