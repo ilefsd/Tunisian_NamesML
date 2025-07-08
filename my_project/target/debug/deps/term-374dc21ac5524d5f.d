@@ -1,0 +1,11 @@
+C:\Users\ilefs\my_project\target\debug\deps\libterm-374dc21ac5524d5f.rmeta: C:\Users\ilefs\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\term-0.7.0\src\lib.rs C:\Users\ilefs\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\term-0.7.0\src\terminfo\mod.rs C:\Users\ilefs\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\term-0.7.0\src\terminfo\searcher.rs C:\Users\ilefs\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\term-0.7.0\src\terminfo\parser\compiled.rs C:\Users\ilefs\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\term-0.7.0\src\terminfo\parser\names.rs C:\Users\ilefs\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\term-0.7.0\src\terminfo\parm.rs C:\Users\ilefs\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\term-0.7.0\src\win.rs
+
+C:\Users\ilefs\my_project\target\debug\deps\term-374dc21ac5524d5f.d: C:\Users\ilefs\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\term-0.7.0\src\lib.rs C:\Users\ilefs\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\term-0.7.0\src\terminfo\mod.rs C:\Users\ilefs\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\term-0.7.0\src\terminfo\searcher.rs C:\Users\ilefs\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\term-0.7.0\src\terminfo\parser\compiled.rs C:\Users\ilefs\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\term-0.7.0\src\terminfo\parser\names.rs C:\Users\ilefs\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\term-0.7.0\src\terminfo\parm.rs C:\Users\ilefs\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\term-0.7.0\src\win.rs
+
+C:\Users\ilefs\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\term-0.7.0\src\lib.rs:
+C:\Users\ilefs\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\term-0.7.0\src\terminfo\mod.rs:
+C:\Users\ilefs\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\term-0.7.0\src\terminfo\searcher.rs:
+C:\Users\ilefs\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\term-0.7.0\src\terminfo\parser\compiled.rs:
+C:\Users\ilefs\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\term-0.7.0\src\terminfo\parser\names.rs:
+C:\Users\ilefs\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\term-0.7.0\src\terminfo\parm.rs:
+C:\Users\ilefs\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\term-0.7.0\src\win.rs:

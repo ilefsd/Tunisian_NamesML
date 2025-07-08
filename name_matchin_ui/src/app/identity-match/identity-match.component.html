@@ -1,0 +1,251 @@
+<div class="app-container">
+  <!-- Modern Government Header -->
+  <header class="gov-header">
+    <div class="header-content">
+      <div class="header-left">
+        <img src="assets/tunisia-flag.png" alt="علم تونس" class="flag" />
+      </div>
+
+      <div class="header-center">
+        <h1 class="republic-title">الجمهورية التونسية</h1>
+        <h2 class="ministry-title">وزارة الداخلية – مطابق الهوية</h2>
+      </div>
+
+      <div class="header-right">
+        <img src="assets/coat-of-arms.png" alt="شعار الجمهورية" class="coat" />
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="main-content">
+    <div class="content-wrapper">
+
+      <!-- Form Card -->
+      <div class="form-card">
+        <div class="card-header">
+          <h3 class="card-title">استمارة مطابقة الهوية</h3>
+          <p class="card-subtitle">يرجى ملء جميع البيانات المطلوبة بدقة</p>
+        </div>
+
+        <form [formGroup]="form" (ngSubmit)="onSubmit()" class="identity-form">
+
+          <!-- Global Error Message -->
+          <div *ngIf="error && error !== 'لا يوجد تطابق بسبب اختلاف الجنس'"
+               class="alert alert-error">
+            <div class="alert-icon">
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
+              </svg>
+            </div>
+            <span>{{ error }}</span>
+          </div>
+
+          <!-- Form Grid -->
+          <div class="form-grid">
+
+            <!-- Personal Names Section -->
+            <div class="form-section">
+              <h4 class="section-title">البيانات الشخصية</h4>
+
+              <div class="form-row">
+                <mat-form-field appearance="outline" class="form-field">
+                  <mat-label>الاسم الأول</mat-label>
+                  <input matInput formControlName="first_name" required>
+                  <mat-icon matSuffix>person</mat-icon>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" class="form-field">
+                  <mat-label>اسم العائلة</mat-label>
+                  <input matInput formControlName="last_name" required>
+                  <mat-icon matSuffix>family_restroom</mat-icon>
+                </mat-form-field>
+              </div>
+
+              <div class="form-row">
+                <mat-form-field appearance="outline" class="form-field">
+                  <mat-label>اسم الأب</mat-label>
+                  <input matInput formControlName="father_name">
+                  <mat-icon matSuffix>man</mat-icon>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" class="form-field">
+                  <mat-label>اسم الجد</mat-label>
+                  <input matInput formControlName="grandfather_name">
+                  <mat-icon matSuffix>elderly</mat-icon>
+                </mat-form-field>
+              </div>
+
+              <div class="form-row">
+                <mat-form-field appearance="outline" class="form-field">
+                  <mat-label>اسم الأم</mat-label>
+                  <input matInput formControlName="mother_name">
+                  <mat-icon matSuffix>woman</mat-icon>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" class="form-field">
+                  <mat-label>اسم عائلة الأم</mat-label>
+                  <input matInput formControlName="mother_last_name">
+                  <mat-icon matSuffix>family_restroom</mat-icon>
+                </mat-form-field>
+              </div>
+            </div>
+
+            <!-- Birth Information Section -->
+            <div class="form-section">
+              <h4 class="section-title">بيانات الميلاد</h4>
+
+              <div class="birth-date-group">
+                <label class="group-label">تاريخ الميلاد</label>
+                <div class="date-inputs">
+                  <mat-form-field appearance="outline" class="date-field">
+                    <mat-label>يوم</mat-label>
+                    <input matInput type="number" formControlName="dob_day" min="1" max="31">
+                  </mat-form-field>
+
+                  <mat-form-field appearance="outline" class="date-field">
+                    <mat-label>شهر</mat-label>
+                    <input matInput type="number" formControlName="dob_month" min="1" max="12">
+                  </mat-form-field>
+
+                  <mat-form-field appearance="outline" class="date-field">
+                    <mat-label>سنة</mat-label>
+                    <input matInput type="number" formControlName="dob_year">
+                  </mat-form-field>
+                </div>
+              </div>
+
+              <div class="form-row">
+                <mat-form-field appearance="outline" class="form-field">
+                  <mat-label>الجنس</mat-label>
+                  <mat-select formControlName="sex">
+                    <mat-option [value]="1">ذكر</mat-option>
+                    <mat-option [value]="2">أنثى</mat-option>
+                  </mat-select>
+                  <mat-icon matSuffix>wc</mat-icon>
+                  <mat-error *ngIf="error === 'لا يوجد تطابق بسبب اختلاف الجنس'">
+                    {{ error }}
+                  </mat-error>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" class="form-field">
+                  <mat-label>مكان الولادة</mat-label>
+                  <input matInput formControlName="place_of_birth">
+                  <mat-icon matSuffix>location_on</mat-icon>
+                </mat-form-field>
+              </div>
+            </div>
+          </div>
+
+          <!-- Submit Button -->
+          <div class="form-actions">
+            <button
+              mat-raised-button
+              type="submit"
+              class="submit-btn"
+              [disabled]="loading || form.invalid">
+              <mat-icon *ngIf="loading">hourglass_empty</mat-icon>
+              <mat-icon *ngIf="!loading">search</mat-icon>
+              <span>{{ loading ? 'جارٍ المطابقة…' : 'مطابقة الهوية' }}</span>
+            </button>
+          </div>
+
+        </form>
+
+        <!-- Loading State -->
+        <div *ngIf="loading" class="loading-overlay">
+          <div class="loading-content">
+            <mat-spinner diameter="40"></mat-spinner>
+            <p>جارٍ التحميل…</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Results Section -->
+      <div *ngIf="results.length" class="results-section">
+
+        <!-- Matched Identity Card -->
+        <div class="result-card matched-identity-card">
+          <div class="card-header">
+            <div class="header-with-icon">
+              <mat-icon class="success-icon">check_circle</mat-icon>
+              <h4>الهوية المطابقة</h4>
+            </div>
+            <div class="match-score">
+              <span class="score-label">درجة التطابق</span>
+              <span class="score-value">{{ results[0].total_score }}%</span>
+            </div>
+          </div>
+
+          <div class="identity-details">
+            <div class="detail-grid">
+              <div class="detail-item">
+                <span class="detail-label">الاسم الأول:</span>
+                <span class="detail-value">{{ results[0].matched_identity.first_name }}</span>
+              </div>
+              <div class="detail-item">
+                <span class="detail-label">اسم العائلة:</span>
+                <span class="detail-value">{{ results[0].matched_identity.last_name }}</span>
+              </div>
+              <div class="detail-item">
+                <span class="detail-label">اسم الأب:</span>
+                <span class="detail-value">{{ results[0].matched_identity.father_name }}</span>
+              </div>
+              <div class="detail-item">
+                <span class="detail-label">اسم الجد:</span>
+                <span class="detail-value">{{ results[0].matched_identity.grandfather_name }}</span>
+              </div>
+              <div class="detail-item">
+                <span class="detail-label">اسم الأم:</span>
+                <span class="detail-value">{{ results[0].matched_identity.mother_name }}</span>
+              </div>
+              <div class="detail-item">
+                <span class="detail-label">اسم عائلة الأم:</span>
+                <span class="detail-value">{{ results[0].matched_identity.mother_last_name }}</span>
+              </div>
+              <div class="detail-item">
+                <span class="detail-label">تاريخ الميلاد:</span>
+                <span class="detail-value">{{ results[0].matched_identity.dob[0] }}/{{ results[0].matched_identity.dob[1] }}/{{ results[0].matched_identity.dob[2] }}</span>
+              </div>
+              <div class="detail-item">
+                <span class="detail-label">مكان الولادة:</span>
+                <span class="detail-value">{{ results[0].matched_identity.place_of_birth }}</span>
+              </div>
+              <div class="detail-item">
+                <span class="detail-label">الجنس:</span>
+                <span class="detail-value">{{ results[0].matched_identity.sex === 1 ? 'ذكر' : 'أنثى' }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Score Breakdown Card -->
+        <div class="result-card score-breakdown-card">
+          <div class="card-header">
+            <h4>تفصيل درجات التطابق</h4>
+          </div>
+
+          <div class="score-list">
+            <div *ngFor="let f of results[0].breakdown" class="score-item">
+              <div class="score-info">
+                <span class="field-name">{{ f.field }}</span>
+                <span class="score-percentage">{{ f.score }}%</span>
+              </div>
+              <div class="score-bar">
+                <div class="score-fill" [style.width.%]="f.score"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="gov-footer">
+    <div class="footer-content">
+      <p>© 2025 الجمهورية التونسية – جميع الحقوق محفوظة</p>
+    </div>
+  </footer>
+</div>
