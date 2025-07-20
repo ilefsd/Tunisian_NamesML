@@ -3,7 +3,7 @@
   <header class="gov-header">
     <div class="header-content">
       <div class="header-left">
-        <img src="assets/tunisia-flag.png" alt="علم تونس" class="flag" />
+        <img ngSrc="assets/tunisia-flag.png" alt="علم تونس" class="flag" height="800" width="800"/>
       </div>
 
       <div class="header-center">
@@ -12,7 +12,7 @@
       </div>
 
       <div class="header-right">
-        <img src="assets/coat-of-arms.png" alt="شعار الجمهورية" class="coat" />
+        <img ngSrc="assets/coat-of-arms.png" alt="شعار الجمهورية" class="coat" height="183" width="275"/>
       </div>
     </div>
   </header>
@@ -163,81 +163,83 @@
 
       <!-- Results Section -->
       <div *ngIf="results.length" class="results-section">
+        <div *ngFor="let result of results; let i = index" class="result-iteration" (click)="openFamilyTreeModal(result)" style="cursor: pointer;">
 
-        <!-- Matched Identity Card -->
-        <div class="result-card matched-identity-card">
-          <div class="card-header">
-            <div class="header-with-icon">
-              <mat-icon class="success-icon">check_circle</mat-icon>
-              <h4>الهوية المطابقة</h4>
+          <!-- Matched Identity Card -->
+          <div class="result-card matched-identity-card">
+            <div class="card-header">
+              <div class="header-with-icon">
+                <mat-icon class="success-icon">check_circle</mat-icon>
+                <h4>الهوية المطابقة #{{ i + 1 }}</h4>
+              </div>
+              <div class="match-score">
+                <span class="score-label">درجة التطابق</span>
+                <span class="score-value">{{ result.total_score }}%</span>
+              </div>
             </div>
-            <div class="match-score">
-              <span class="score-label">درجة التطابق</span>
-              <span class="score-value">{{ results[0].total_score }}%</span>
+
+            <div class="identity-details">
+              <div class="detail-grid">
+                <div class="detail-item">
+                  <span class="detail-label">الاسم الأول:</span>
+                  <span class="detail-value">{{ result.matched_identity.first_name }}</span>
+                </div>
+                <div class="detail-item">
+                  <span class="detail-label">اسم العائلة:</span>
+                  <span class="detail-value">{{ result.matched_identity.last_name }}</span>
+                </div>
+                <div class="detail-item">
+                  <span class="detail-label">اسم الأب:</span>
+                  <span class="detail-value">{{ result.matched_identity.father_name }}</span>
+                </div>
+                <div class="detail-item">
+                  <span class="detail-label">اسم الجد:</span>
+                  <span class="detail-value">{{ result.matched_identity.grandfather_name }}</span>
+                </div>
+                <div class="detail-item">
+                  <span class="detail-label">اسم الأم:</span>
+                  <span class="detail-value">{{ result.matched_identity.mother_name }}</span>
+                </div>
+                <div class="detail-item">
+                  <span class="detail-label">اسم عائلة الأم:</span>
+                  <span class="detail-value">{{ result.matched_identity.mother_last_name }}</span>
+                </div>
+                <div class="detail-item">
+                  <span class="detail-label">تاريخ الميلاد:</span>
+                  <span class="detail-value">{{ result.matched_identity.dob[0] }}/{{ result.matched_identity.dob[1] }}/{{ result.matched_identity.dob[2] }}</span>
+                </div>
+                <div class="detail-item">
+                  <span class="detail-label">مكان الولادة:</span>
+                  <span class="detail-value">{{ result.matched_identity.place_of_birth }}</span>
+                </div>
+                <div class="detail-item">
+                  <span class="detail-label">الجنس:</span>
+                  <span class="detail-value">{{ result.matched_identity.sex === 1 ? 'ذكر' : 'أنثى' }}</span>
+                </div>
+              </div>
             </div>
           </div>
 
-          <div class="identity-details">
-            <div class="detail-grid">
-              <div class="detail-item">
-                <span class="detail-label">الاسم الأول:</span>
-                <span class="detail-value">{{ results[0].matched_identity.first_name }}</span>
-              </div>
-              <div class="detail-item">
-                <span class="detail-label">اسم العائلة:</span>
-                <span class="detail-value">{{ results[0].matched_identity.last_name }}</span>
-              </div>
-              <div class="detail-item">
-                <span class="detail-label">اسم الأب:</span>
-                <span class="detail-value">{{ results[0].matched_identity.father_name }}</span>
-              </div>
-              <div class="detail-item">
-                <span class="detail-label">اسم الجد:</span>
-                <span class="detail-value">{{ results[0].matched_identity.grandfather_name }}</span>
-              </div>
-              <div class="detail-item">
-                <span class="detail-label">اسم الأم:</span>
-                <span class="detail-value">{{ results[0].matched_identity.mother_name }}</span>
-              </div>
-              <div class="detail-item">
-                <span class="detail-label">اسم عائلة الأم:</span>
-                <span class="detail-value">{{ results[0].matched_identity.mother_last_name }}</span>
-              </div>
-              <div class="detail-item">
-                <span class="detail-label">تاريخ الميلاد:</span>
-                <span class="detail-value">{{ results[0].matched_identity.dob[0] }}/{{ results[0].matched_identity.dob[1] }}/{{ results[0].matched_identity.dob[2] }}</span>
-              </div>
-              <div class="detail-item">
-                <span class="detail-label">مكان الولادة:</span>
-                <span class="detail-value">{{ results[0].matched_identity.place_of_birth }}</span>
-              </div>
-              <div class="detail-item">
-                <span class="detail-label">الجنس:</span>
-                <span class="detail-value">{{ results[0].matched_identity.sex === 1 ? 'ذكر' : 'أنثى' }}</span>
+          <!-- Score Breakdown Card -->
+          <div class="result-card score-breakdown-card">
+            <div class="card-header">
+              <h4>تفصيل درجات التطابق #{{ i + 1 }}</h4>
+            </div>
+
+            <div class="score-list">
+              <div *ngFor="let f of result.breakdown" class="score-item">
+                <div class="score-info">
+                  <span class="field-name">{{ f.field }}</span>
+                  <span class="score-percentage">{{ f.score }}%</span>
+                </div>
+                <div class="score-bar">
+                  <div class="score-fill" [style.width.%]="f.score"></div>
+                </div>
               </div>
             </div>
           </div>
+
         </div>
-
-        <!-- Score Breakdown Card -->
-        <div class="result-card score-breakdown-card">
-          <div class="card-header">
-            <h4>تفصيل درجات التطابق</h4>
-          </div>
-
-          <div class="score-list">
-            <div *ngFor="let f of results[0].breakdown" class="score-item">
-              <div class="score-info">
-                <span class="field-name">{{ f.field }}</span>
-                <span class="score-percentage">{{ f.score }}%</span>
-              </div>
-              <div class="score-bar">
-                <div class="score-fill" [style.width.%]="f.score"></div>
-              </div>
-            </div>
-          </div>
-        </div>
-
       </div>
     </div>
   </main>

@@ -1,36 +1,29 @@
-<!-- src/app/components/family-tree/family-tree.component.html -->
-<form (ngSubmit)="search()" #f="ngForm" class="search-form">
-  <div class="input-group">
-    <label for="childName">اسم الطفل</label>
-    <input
-      id="childName"
-      name="child"
-      [(ngModel)]="childName"
-      placeholder="اسم الطفل"
-      required
-    />
-  </div>
-  <div class="input-group">
-    <label for="fatherName">اسم الأب</label>
-    <input
-      id="fatherName"
-      name="father"
-      [(ngModel)]="fatherName"
-      placeholder="اسم الأب"
-      required
-    />
-  </div>
-  <div class="input-group">
-    <label for="motherName">اسم الأم</label>
-    <input
-      id="motherName"
-      name="mother"
-      [(ngModel)]="motherName"
-      placeholder="اسم الأم"
-      required
-    />
-  </div>
-  <button type="submit" [disabled]="f.invalid">ابحث</button>
-</form>
+<div class="modal-header">
+  <h2 mat-dialog-title>Family Tree for {{ data.identity.first_name }}</h2>
+  <button mat-icon-button (click)="close()" aria-label="Close dialog">
+    <mat-icon>close</mat-icon>
+  </button>
+</div>
 
-<div #network class="network-container"></div>
+<mat-dialog-content class="modal-content">
+  <div *ngIf="isLoading" class="loading-indicator">
+    <mat-spinner diameter="50"></mat-spinner>
+    <p>Loading family tree...</p>
+  </div>
+
+  <div *ngIf="!isLoading && error" class="error-message">
+    <mat-icon color="warn">warning</mat-icon>
+    <p>{{ error }}</p>
+  </div>
+
+  <div *ngIf="!isLoading && !error" #networkModal class="network-container-modal">
+    <!-- Vis Network will render here -->
+  </div>
+  <div *ngIf="!isLoading && !error && !networkModalRef?.nativeElement?.hasChildNodes()" class="empty-state">
+    <!-- This message might be redundant if error handles "no data" -->
+  </div>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-stroked-button (click)="close()">Close</button>
+</mat-dialog-actions>

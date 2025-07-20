@@ -1,24 +1,68 @@
-/* src/app/components/family-tree/family-tree.component.css */
-.search-form {
+.modal-header {
   display: flex;
-  gap: 8px;
-  margin-bottom: 12px;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 24px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.12);
 }
 
-.search-form input {
-  flex: 1;
-  padding: 6px 8px;
-  font-size: 14px;
+.modal-header h2 {
+  margin: 0;
+  font-size: 1.25rem;
 }
 
-.search-form button {
-  padding: 6px 12px;
-  font-size: 14px;
-  cursor: pointer;
+
+.modal-content {
+  padding: 20px;
+  min-height: 300px; /* Ensure a minimum height for the content area */
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Center loading/error messages */
+  justify-content: center; /* Center loading/error messages if they are the only content */
 }
 
-.network-container {
+.network-container-modal {
   width: 100%;
-  height: 600px;
-  border: 1px solid #888;
+  height: 50vh; /* Default height, adjust as needed */
+  min-height: 400px; /* Ensure it's usable even on smaller viewports */
+  border: 1px solid #ccc;
+  background-color: #f9f9f9;
+  display: flex; /* For centering if network is small or empty */
+  align-items: center;
+  justify-content: center;
+}
+
+/* Vis.js network specific styling if needed, usually handled by library or options */
+:host ::ng-deep .vis-network {
+  outline: none; /* Remove outline on focus if not desired */
+}
+
+.loading-indicator, .error-message, .empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 20px;
+  width: 100%;
+}
+
+.loading-indicator p, .error-message p, .empty-state p {
+  margin-top: 10px;
+  font-size: 1rem;
+}
+
+.error-message {
+  color: #f44336; /* Material warn color */
+}
+
+.error-message mat-icon {
+  font-size: 48px;
+  width: 48px;
+  height: 48px;
+}
+
+mat-dialog-actions {
+  padding: 8px 24px 16px 24px; /* Adjust padding for actions */
+  border-top: 1px solid rgba(0,0,0,.12);
 }

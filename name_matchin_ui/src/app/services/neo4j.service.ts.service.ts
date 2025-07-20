@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import neo4j, { Driver, Session } from 'neo4j-driver';
 import { FamilyPath } from '../models/family-path/family-path.module';
+import { environment } from '../../environments/environment';
 
 @Injectable({ providedIn: 'root' })
 export class Neo4jService {
@@ -8,11 +9,8 @@ export class Neo4jService {
 
   constructor() {
     this.driver = neo4j.driver(
-      'bolt://localhost:7687',
-      neo4j.auth.basic('neo4j', '91559155'),
-      {
-        /* optional config */
-      }
+      environment.neo4j.boltUrl,
+      neo4j.auth.basic(environment.neo4j.user, environment.neo4j.pass)
     );
   }
 

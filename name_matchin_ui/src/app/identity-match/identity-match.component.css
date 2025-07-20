@@ -348,6 +348,19 @@
   gap: 2rem;
 }
 
+/* Styles for the iteration wrapper */
+.result-iteration {
+  border-radius: 20px; /* Match border-radius of .result-card */
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  /* The cursor: pointer is already applied inline, but can be moved here */
+  /* cursor: pointer; */
+}
+
+.result-iteration:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-xl); /* Use the same shadow as .result-card:hover */
+}
+
 /* Result Card */
 .result-card {
   background: var(--background-primary);
@@ -355,12 +368,17 @@
   box-shadow: var(--shadow-lg);
   border: 1px solid var(--border-color);
   overflow: hidden;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  /* Removed transition and hover from individual cards as it's now on result-iteration */
 }
+
+/* Remove individual hover effect from cards if the parent .result-iteration handles it */
+/*
 .result-card:hover {
   transform: translateY(-4px);
   box-shadow: var(--shadow-xl);
 }
+*/
+
 .result-card .card-header {
   padding: 2rem 2.5rem 1rem;
   background: linear-gradient(135deg, var(--background-secondary) 0%, var(--background-primary) 100%);

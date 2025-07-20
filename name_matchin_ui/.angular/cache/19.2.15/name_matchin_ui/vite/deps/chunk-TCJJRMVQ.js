@@ -3122,13 +3122,17 @@ export {
   RIGHT_ARROW,
   DOWN_ARROW,
   A,
+  _getFocusedElementPierceShadowDom,
   _getEventTarget,
   normalizePassiveListenerOptions,
   FocusMonitor,
   _VisuallyHiddenLoader,
   coerceArray,
   ObserversModule,
+  InteractivityChecker,
+  FocusTrapFactory,
   LiveAnnouncer,
+  A11yModule,
   _IdGenerator,
   hasModifierKey,
   ActiveDescendantKeyManager,
@@ -3136,4 +3140,4 @@ export {
   removeAriaReferencedId,
   MatCommonModule
 };
-//# sourceMappingURL=chunk-PJODBKBK.js.map
+//# sourceMappingURL=chunk-TCJJRMVQ.js.map

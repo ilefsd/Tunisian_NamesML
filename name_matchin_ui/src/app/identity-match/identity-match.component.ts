@@ -1,6 +1,8 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { IdentityMatchService, InputIdentity, MatchResult } from '../services/identity-match.service';
+import { MatDialog } from '@angular/material/dialog';
+import { FamilyTreeComponent } from '../family-tree/family-tree.component';
 
 @Component({
   selector: 'app-identity-match',
@@ -16,7 +18,8 @@ export class IdentityMatchComponent {
 
   constructor(
     private fb: FormBuilder,
-    private matchSvc: IdentityMatchService
+    private matchSvc: IdentityMatchService,
+    public dialog: MatDialog
   ) {
     this.form = this.fb.group({
       first_name:       ['', Validators.required],
@@ -31,6 +34,22 @@ export class IdentityMatchComponent {
       sex:              [1],
       place_of_birth:   ['']
     });
+  }
+
+  openFamilyTreeModal(matchResult: MatchResult): void {
+    const dialogRef = this.dialog.open(FamilyTreeComponent, {
+      width: '80vw', // Consider making this responsive or using CSS classes
+      maxWidth: '95vw',
+      maxHeight: '90vh',
+      data: { identity: matchResult.matched_identity },
+      panelClass: 'family-tree-dialog-container' // For custom global styling if needed
+    });
+
+    dialogRef.afterClosed().subscribe(dialogResult => {
+      console.log('The dialog was closed', dialogResult);
+      // You can add logic here if needed after the dialog closes
+    });
+    // console.log("Opening modal for:", matchResult.matched_identity); // Placeholder action removed
   }
 
   onSubmit() {

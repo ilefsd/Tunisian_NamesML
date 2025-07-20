@@ -15,6 +15,8 @@ import {MatCard} from '@angular/material/card';
 import {MatIcon} from '@angular/material/icon';
 import {MatProgressSpinner} from '@angular/material/progress-spinner';
 import { FamilyTreeComponent } from './family-tree/family-tree.component';
+import {NgOptimizedImage} from '@angular/common';
+import {MatDialogActions, MatDialogContent, MatDialogTitle} from '@angular/material/dialog';
 
 
 @NgModule({
@@ -22,6 +24,7 @@ import { FamilyTreeComponent } from './family-tree/family-tree.component';
     AppComponent,
     IdentityMatchComponent,
     FamilyTreeComponent
+
   ],
   imports: [
     BrowserModule,
@@ -38,6 +41,10 @@ import { FamilyTreeComponent } from './family-tree/family-tree.component';
     MatCard,
     MatIcon,
     MatProgressSpinner,
+    NgOptimizedImage,
+    MatDialogContent,
+    MatDialogActions,
+    MatDialogTitle,
   ],
   providers: [],
   bootstrap: [AppComponent]
