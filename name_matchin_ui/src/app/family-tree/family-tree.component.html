@@ -16,11 +16,8 @@
     <p>{{ error }}</p>
   </div>
 
-  <div *ngIf="!isLoading && !error" #networkModal class="network-container-modal">
-    <!-- Vis Network will render here -->
-  </div>
-  <div *ngIf="!isLoading && !error && !networkModalRef?.nativeElement?.hasChildNodes()" class="empty-state">
-    <!-- This message might be redundant if error handles "no data" -->
+  <div *ngIf="!isLoading && !error && browserUrl" class="network-container-modal">
+    <iframe [src]="browserUrl" width="100%" height="100%" frameborder="0"></iframe>
   </div>
 </mat-dialog-content>
 

@@ -23,13 +23,10 @@
 
 .network-container-modal {
   width: 100%;
-  height: 50vh; /* Default height, adjust as needed */
-  min-height: 400px; /* Ensure it's usable even on smaller viewports */
+  height: 60vh;
+  min-height: 500px;
   border: 1px solid #ccc;
   background-color: #f9f9f9;
-  display: flex; /* For centering if network is small or empty */
-  align-items: center;
-  justify-content: center;
 }
 
 /* Vis.js network specific styling if needed, usually handled by library or options */

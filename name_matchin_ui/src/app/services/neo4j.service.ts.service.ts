@@ -14,13 +14,16 @@ export class Neo4jService {
     );
   }
 
-  async fetchBestFamilyTrees(
+  getFamilyTreeUrl(
     childName: string,
     fatherName: string,
     motherName: string
-  ): Promise<FamilyPath[]> {
-    const session: Session = this.driver.session();
+  ): string {
     const cypher = `
+      :param childName  => "${childName}";
+      :param fatherName => "${fatherName}";
+      :param motherName => "${motherName}";
+
       WITH
         $childName  AS childName,
         $fatherName AS fatherName,
@@ -38,28 +41,19 @@ export class Neo4jService {
       OPTIONAL MATCH (c)-[:SIBLING_WITH]-(sib:Person)
       OPTIONAL MATCH (childRel:Person)-[:CHILD_OF]->(c)
       OPTIONAL MATCH (c)-[:MARRIED_TO]-(sp:Person)
-      WITH
-        c, score,
+      WITH c, score,
         collect(DISTINCT parent)[0..2]   AS parents,
         collect(DISTINCT sib)[0..3]      AS siblings,
         collect(DISTINCT childRel)[0..3] AS children,
         collect(DISTINCT sp)[0..1]       AS spouses
       UNWIND parents + siblings + children + spouses AS relative
       MATCH path = (c)-[:CHILD_OF|SIBLING_WITH|MARRIED_TO]-(relative)
-      RETURN
-        c.name    AS candidate,
-        score,
-        path
+      RETURN c.name AS candidate, score, path
       ORDER BY candidate, score DESC;
     `;
-    const result = await session.run(cypher, { childName, fatherName, motherName });
-    await session.close();
 
-    return result.records.map(rec => ({
-      candidate: rec.get('candidate'),
-      score: rec.get('score').toNumber(),
-      // rec.get('path') is a Path object with .segments, each has .start, .end, .relationship
-      path: rec.get('path')
-    }));
+    // NOTE: The base URL for the Neo4j Browser will need to be configured correctly.
+    const baseUrl = environment.neo4j.browserUrl || 'http://localhost:7474/browser/';
+    return `${baseUrl}?cmd=edit&arg=${encodeURIComponent(cypher)}`;
   }
 }
