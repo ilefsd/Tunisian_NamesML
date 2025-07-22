@@ -3,6 +3,8 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { IdentityMatchService, InputIdentity, MatchResult } from '../services/identity-match.service';
 import { MatDialog } from '@angular/material/dialog';
 import { FamilyTreeComponent } from '../family-tree/family-tree.component';
+import { AuthService } from '../services/auth.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-identity-match',
@@ -11,6 +13,7 @@ import { FamilyTreeComponent } from '../family-tree/family-tree.component';
   styleUrls: ['./identity-match.component.css']
 })
 export class IdentityMatchComponent {
+
   form: FormGroup;
   results: MatchResult[] = [];
   loading = false;
@@ -19,7 +22,9 @@ export class IdentityMatchComponent {
   constructor(
     private fb: FormBuilder,
     private matchSvc: IdentityMatchService,
-    public dialog: MatDialog
+    public dialog: MatDialog,
+    private authService: AuthService,
+    private router: Router
   ) {
     this.form = this.fb.group({
       first_name:       ['', Validators.required],
@@ -36,6 +41,11 @@ export class IdentityMatchComponent {
     });
   }
 
+  logout(): void {
+    this.authService.logout();
+    this.router.navigate(['/login']);
+  }
+
   openFamilyTreeModal(matchResult: MatchResult): void {
     const dialogRef = this.dialog.open(FamilyTreeComponent, {
       width: '80vw', // Consider making this responsive or using CSS classes
@@ -45,7 +55,7 @@ export class IdentityMatchComponent {
       panelClass: 'family-tree-dialog-container' // For custom global styling if needed
     });
 
-    dialogRef.afterClosed().subscribe(dialogResult => {
+    dialogRef.afterClosed().subscribe((dialogResult: any) => {
       console.log('The dialog was closed', dialogResult);
       // You can add logic here if needed after the dialog closes
     });
@@ -75,11 +85,11 @@ export class IdentityMatchComponent {
     this.loading = true;
     this.error = null;
     this.matchSvc.matchIdentity(input).subscribe({
-      next: rs => {
+      next: (rs: MatchResult[]) => {
         this.results = rs;
         this.loading = false;
       },
-      error: err => {
+      error: (err: any) => {
         this.loading = false;
         // If the backend returns 400 with { message: "لا يوجد تطابق بسبب اختلاف الجنس" }
         if (err.status === 400 && err.error && err.error.message) {

@@ -1,0 +1,18 @@
+/* Import shared styles from identity-match component */
+@import '../identity-match/identity-match.component.css';
+
+/* Additional specific styles for register component can be added here */
+.form-card .card-title::before {
+  background: linear-gradient(135deg, var(--success) 0%, var(--success-light) 100%);
+  box-shadow: 0 0 20px rgba(16, 185, 129, 0.3);
+}
+
+.submit-btn {
+  background: linear-gradient(135deg, var(--success) 0%, var(--success-light) 100%) !important;
+  box-shadow: var(--shadow-lg), 0 0 30px rgba(16, 185, 129, 0.3) !important;
+}
+
+.submit-btn:hover:not([disabled]) {
+  background: linear-gradient(135deg, var(--success-light) 0%, var(--success) 100%) !important;
+  box-shadow: var(--shadow-2xl), 0 0 40px rgba(16, 185, 129, 0.5) !important;
+}

@@ -17,13 +17,17 @@ import {MatProgressSpinner} from '@angular/material/progress-spinner';
 import { FamilyTreeComponent } from './family-tree/family-tree.component';
 import {NgOptimizedImage} from '@angular/common';
 import {MatDialogActions, MatDialogContent, MatDialogTitle} from '@angular/material/dialog';
+import { LoginComponent } from './login/login.component';
+import { RegisterComponent } from './register/register.component';
 
 
 @NgModule({
   declarations: [
     AppComponent,
     IdentityMatchComponent,
-    FamilyTreeComponent
+    FamilyTreeComponent,
+    LoginComponent,
+    RegisterComponent
 
   ],
   imports: [

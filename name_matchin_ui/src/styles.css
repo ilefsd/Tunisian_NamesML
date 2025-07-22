@@ -1,0 +1,142 @@
+/* Global CSS Variables */
+:root {
+  /* Tunisian Government Palette */
+  --deep-navy: #1a2b3c;
+  --warm-gold: #daa520;
+  --off-white: #f8f8f8;
+  --bright-blue: #007bff;
+
+  /* Primary Colors (from previous turn, adjusted for consistency) */
+  --primary-color: #c8102e; /* Tunisian Red */
+  --primary-dark: #a00d26;
+  --primary-light: #e6b3bb;
+
+  /* Secondary Colors (from previous turn, adjusted for consistency) */
+  --secondary-color: var(--deep-navy);
+  --accent-color: var(--bright-blue);
+
+  /* Background Colors */
+  --background-color: var(--off-white);
+  --background-light: #ffffff;
+  --background-gradient: linear-gradient(135deg, var(--off-white) 0%, #e9ecef 100%);
+  --surface-color: #ffffff;
+
+  /* Glass Effect (adjusted for new palette) */
+  --glass-background: rgba(255, 255, 255, 0.8);
+  --glass-border: rgba(255, 255, 255, 0.3);
+  --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+
+  /* Text Colors */
+  --text-primary: var(--deep-navy);
+  --text-secondary: #6c757d;
+  --text-muted: #adb5bd;
+
+  /* Border Colors */
+  --border-color: #dee2e6;
+  --border-light: #e9ecef;
+
+  /* Status Colors */
+  --success-color: #28a745;
+  --success-background: #d4edda;
+  --success-border: #c3e6cb;
+
+  --error-color: #dc3545;
+  --error-background: #f8d7da;
+  --error-border: #f5c6cb;
+
+  --warning-color: #ffc107;
+  --warning-background: #fff3cd;
+  --warning-border: #ffeaa7;
+
+  --info-color: #17a2b8;
+  --info-background: #d1ecf1;
+  --info-border: #bee5eb;
+}
+
+/* Global Styles */
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  font-family: "Cairo", "Roboto", "Helvetica Neue", sans-serif;
+  background: var(--background-gradient);
+  color: var(--text-primary);
+  line-height: 1.6;
+  direction: rtl;
+  overflow-x: hidden; /* Prevent horizontal scroll */
+}
+
+/* Angular Material Customizations */
+.mat-mdc-form-field {
+  width: 100%;
+}
+
+.mat-mdc-card {
+  border-radius: 12px !important;
+  box-shadow: var(--glass-shadow) !important;
+}
+
+.mat-mdc-raised-button.mat-primary {
+  background-color: var(--primary-color) !important;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.mat-mdc-raised-button.mat-primary:hover {
+  background-color: var(--primary-dark) !important;
+  transform: translateY(-2px);
+}
+
+.mat-mdc-button {
+  transition: color 0.3s ease, transform 0.2s ease;
+}
+
+.mat-mdc-button:hover {
+  color: var(--bright-blue) !important;
+  transform: translateY(-2px);
+}
+
+.mat-mdc-progress-bar .mdc-linear-progress__bar-inner {
+  border-color: var(--primary-color) !important;
+}
+
+/* RTL Support */
+[dir="rtl"] .mat-mdc-form-field-subscript-wrapper {
+  text-align: right;
+}
+
+/* Material Icons RTL */
+.material-icons {
+  direction: ltr;
+}
+
+/* Responsive Typography */
+@media (max-width: 768px) {
+  body {
+    font-size: 14px;
+  }
+}
+
+/* Custom scrollbar for RTL */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--primary-color);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--primary-dark);
+}

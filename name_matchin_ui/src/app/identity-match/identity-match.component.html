@@ -3,7 +3,7 @@
   <header class="gov-header">
     <div class="header-content">
       <div class="header-left">
-        <img ngSrc="assets/tunisia-flag.png" alt="علم تونس" class="flag" height="800" width="800"/>
+        <img ngSrc="assets/Tunisia-Coat-Of-Arms-Logo.png" alt="علم تونس" class="flag" height="800" width="800"/>
       </div>
 
       <div class="header-center">
@@ -12,6 +12,9 @@
       </div>
 
       <div class="header-right">
+        <button mat-icon-button (click)="logout()" aria-label="تسجيل الخروج">
+          <mat-icon>logout</mat-icon>
+        </button>
         <img ngSrc="assets/coat-of-arms.png" alt="شعار الجمهورية" class="coat" height="183" width="275"/>
       </div>
     </div>
@@ -25,16 +28,18 @@
       <div class="form-card">
         <div class="card-header">
           <h3 class="card-title">استمارة مطابقة الهوية</h3>
-          <p class="card-subtitle">يرجى ملء جميع البيانات المطلوبة بدقة</p>
+          <p class="card-subtitle">يرجى ملء جميع البيانات المطلوبة بدقة لضمان الحصول على أفضل نتائج المطابقة</p>
         </div>
 
-        <form [formGroup]="form" (ngSubmit)="onSubmit()" class="identity-form">
+        <form [formGroup]="form" (ngSubmit)="onSubmit()" class="identity-form" [attr.aria-label]="'نموذج مطابقة الهوية'">
 
           <!-- Global Error Message -->
           <div *ngIf="error && error !== 'لا يوجد تطابق بسبب اختلاف الجنس'"
-               class="alert alert-error">
+               class="alert alert-error"
+               role="alert"
+               aria-live="polite">
             <div class="alert-icon">
-              <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
                 <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
               </svg>
             </div>
@@ -51,14 +56,20 @@
               <div class="form-row">
                 <mat-form-field appearance="outline" class="form-field">
                   <mat-label>الاسم الأول</mat-label>
-                  <input matInput formControlName="first_name" required>
-                  <mat-icon matSuffix>person</mat-icon>
+                  <input matInput formControlName="first_name" required autocomplete="given-name">
+                  <mat-icon matSuffix aria-hidden="true">person</mat-icon>
+                  <mat-error *ngIf="form.get('first_name')?.errors?.['required']">
+                    الاسم الأول مطلوب
+                  </mat-error>
                 </mat-form-field>
 
                 <mat-form-field appearance="outline" class="form-field">
                   <mat-label>اسم العائلة</mat-label>
-                  <input matInput formControlName="last_name" required>
-                  <mat-icon matSuffix>family_restroom</mat-icon>
+                  <input matInput formControlName="last_name" required autocomplete="family-name">
+                  <mat-icon matSuffix aria-hidden="true">family_restroom</mat-icon>
+                  <mat-error *ngIf="form.get('last_name')?.errors?.['required']">
+                    اسم العائلة مطلوب
+                  </mat-error>
                 </mat-form-field>
               </div>
 
@@ -66,13 +77,13 @@
                 <mat-form-field appearance="outline" class="form-field">
                   <mat-label>اسم الأب</mat-label>
                   <input matInput formControlName="father_name">
-                  <mat-icon matSuffix>man</mat-icon>
+                  <mat-icon matSuffix aria-hidden="true">man</mat-icon>
                 </mat-form-field>
 
                 <mat-form-field appearance="outline" class="form-field">
                   <mat-label>اسم الجد</mat-label>
                   <input matInput formControlName="grandfather_name">
-                  <mat-icon matSuffix>elderly</mat-icon>
+                  <mat-icon matSuffix aria-hidden="true">elderly</mat-icon>
                 </mat-form-field>
               </div>
 
@@ -80,13 +91,13 @@
                 <mat-form-field appearance="outline" class="form-field">
                   <mat-label>اسم الأم</mat-label>
                   <input matInput formControlName="mother_name">
-                  <mat-icon matSuffix>woman</mat-icon>
+                  <mat-icon matSuffix aria-hidden="true">woman</mat-icon>
                 </mat-form-field>
 
                 <mat-form-field appearance="outline" class="form-field">
                   <mat-label>اسم عائلة الأم</mat-label>
                   <input matInput formControlName="mother_last_name">
-                  <mat-icon matSuffix>family_restroom</mat-icon>
+                  <mat-icon matSuffix aria-hidden="true">family_restroom</mat-icon>
                 </mat-form-field>
               </div>
             </div>
@@ -97,20 +108,23 @@
 
               <div class="birth-date-group">
                 <label class="group-label">تاريخ الميلاد</label>
-                <div class="date-inputs">
+                <div class="date-inputs" role="group" aria-label="تاريخ الميلاد">
                   <mat-form-field appearance="outline" class="date-field">
                     <mat-label>يوم</mat-label>
-                    <input matInput type="number" formControlName="dob_day" min="1" max="31">
+                    <input matInput type="number" formControlName="dob_day" min="1" max="31"
+                           placeholder="01" aria-label="يوم الميلاد">
                   </mat-form-field>
 
                   <mat-form-field appearance="outline" class="date-field">
                     <mat-label>شهر</mat-label>
-                    <input matInput type="number" formControlName="dob_month" min="1" max="12">
+                    <input matInput type="number" formControlName="dob_month" min="1" max="12"
+                           placeholder="01" aria-label="شهر الميلاد">
                   </mat-form-field>
 
                   <mat-form-field appearance="outline" class="date-field">
                     <mat-label>سنة</mat-label>
-                    <input matInput type="number" formControlName="dob_year">
+                    <input matInput type="number" formControlName="dob_year"
+                           placeholder="1990" aria-label="سنة الميلاد">
                   </mat-form-field>
                 </div>
               </div>
@@ -118,11 +132,11 @@
               <div class="form-row">
                 <mat-form-field appearance="outline" class="form-field">
                   <mat-label>الجنس</mat-label>
-                  <mat-select formControlName="sex">
+                  <mat-select formControlName="sex" aria-label="اختر الجنس">
                     <mat-option [value]="1">ذكر</mat-option>
                     <mat-option [value]="2">أنثى</mat-option>
                   </mat-select>
-                  <mat-icon matSuffix>wc</mat-icon>
+                  <mat-icon matSuffix aria-hidden="true">wc</mat-icon>
                   <mat-error *ngIf="error === 'لا يوجد تطابق بسبب اختلاف الجنس'">
                     {{ error }}
                   </mat-error>
@@ -130,8 +144,8 @@
 
                 <mat-form-field appearance="outline" class="form-field">
                   <mat-label>مكان الولادة</mat-label>
-                  <input matInput formControlName="place_of_birth">
-                  <mat-icon matSuffix>location_on</mat-icon>
+                  <input matInput formControlName="place_of_birth" autocomplete="address-level2">
+                  <mat-icon matSuffix aria-hidden="true">location_on</mat-icon>
                 </mat-form-field>
               </div>
             </div>
@@ -143,9 +157,10 @@
               mat-raised-button
               type="submit"
               class="submit-btn"
-              [disabled]="loading || form.invalid">
-              <mat-icon *ngIf="loading">hourglass_empty</mat-icon>
-              <mat-icon *ngIf="!loading">search</mat-icon>
+              [disabled]="loading || form.invalid"
+              [attr.aria-label]="loading ? 'جاري المطابقة' : 'بدء مطابقة الهوية'">
+              <mat-icon *ngIf="loading" class="loading">hourglass_empty</mat-icon>
+              <mat-icon *ngIf="!loading" aria-hidden="true">search</mat-icon>
               <span>{{ loading ? 'جارٍ المطابقة…' : 'مطابقة الهوية' }}</span>
             </button>
           </div>
@@ -153,26 +168,33 @@
         </form>
 
         <!-- Loading State -->
-        <div *ngIf="loading" class="loading-overlay">
+        <div *ngIf="loading" class="loading-overlay" role="status" aria-label="جاري التحميل">
           <div class="loading-content">
-            <mat-spinner diameter="40"></mat-spinner>
-            <p>جارٍ التحميل…</p>
+            <mat-spinner diameter="40" aria-label="مؤشر التقدم"></mat-spinner>
+            <p>جارٍ البحث والمطابقة…</p>
           </div>
         </div>
       </div>
 
       <!-- Results Section -->
-      <div *ngIf="results.length" class="results-section">
-        <div *ngFor="let result of results; let i = index" class="result-iteration" (click)="openFamilyTreeModal(result)" style="cursor: pointer;">
+      <div *ngIf="results.length" class="results-section" role="region" aria-label="نتائج المطابقة">
+        <div *ngFor="let result of results; let i = index"
+             class="result-iteration"
+             (click)="openFamilyTreeModal(result)"
+             (keydown.enter)="openFamilyTreeModal(result)"
+             (keydown.space)="openFamilyTreeModal(result)"
+             tabindex="0"
+             role="button"
+             [attr.aria-label]="'عرض تفاصيل المطابقة رقم ' + (i + 1)">
 
           <!-- Matched Identity Card -->
           <div class="result-card matched-identity-card">
             <div class="card-header">
               <div class="header-with-icon">
-                <mat-icon class="success-icon">check_circle</mat-icon>
+                <mat-icon class="success-icon" aria-hidden="true">check_circle</mat-icon>
                 <h4>الهوية المطابقة #{{ i + 1 }}</h4>
               </div>
-              <div class="match-score">
+              <div class="match-score" attr.aria-label="درجة التطابق {{ result.total_score }}%">
                 <span class="score-label">درجة التطابق</span>
                 <span class="score-value">{{ result.total_score }}%</span>
               </div>
@@ -181,39 +203,39 @@
             <div class="identity-details">
               <div class="detail-grid">
                 <div class="detail-item">
-                  <span class="detail-label">الاسم الأول:</span>
+                  <span class="detail-label">الاسم الأول</span>
                   <span class="detail-value">{{ result.matched_identity.first_name }}</span>
                 </div>
                 <div class="detail-item">
-                  <span class="detail-label">اسم العائلة:</span>
+                  <span class="detail-label">اسم العائلة</span>
                   <span class="detail-value">{{ result.matched_identity.last_name }}</span>
                 </div>
                 <div class="detail-item">
-                  <span class="detail-label">اسم الأب:</span>
+                  <span class="detail-label">اسم الأب</span>
                   <span class="detail-value">{{ result.matched_identity.father_name }}</span>
                 </div>
                 <div class="detail-item">
-                  <span class="detail-label">اسم الجد:</span>
+                  <span class="detail-label">اسم الجد</span>
                   <span class="detail-value">{{ result.matched_identity.grandfather_name }}</span>
                 </div>
                 <div class="detail-item">
-                  <span class="detail-label">اسم الأم:</span>
+                  <span class="detail-label">اسم الأم</span>
                   <span class="detail-value">{{ result.matched_identity.mother_name }}</span>
                 </div>
                 <div class="detail-item">
-                  <span class="detail-label">اسم عائلة الأم:</span>
+                  <span class="detail-label">اسم عائلة الأم</span>
                   <span class="detail-value">{{ result.matched_identity.mother_last_name }}</span>
                 </div>
                 <div class="detail-item">
-                  <span class="detail-label">تاريخ الميلاد:</span>
+                  <span class="detail-label">تاريخ الميلاد</span>
                   <span class="detail-value">{{ result.matched_identity.dob[0] }}/{{ result.matched_identity.dob[1] }}/{{ result.matched_identity.dob[2] }}</span>
                 </div>
                 <div class="detail-item">
-                  <span class="detail-label">مكان الولادة:</span>
+                  <span class="detail-label">مكان الولادة</span>
                   <span class="detail-value">{{ result.matched_identity.place_of_birth }}</span>
                 </div>
                 <div class="detail-item">
-                  <span class="detail-label">الجنس:</span>
+                  <span class="detail-label">الجنس</span>
                   <span class="detail-value">{{ result.matched_identity.sex === 1 ? 'ذكر' : 'أنثى' }}</span>
                 </div>
               </div>
@@ -232,7 +254,11 @@
                   <span class="field-name">{{ f.field }}</span>
                   <span class="score-percentage">{{ f.score }}%</span>
                 </div>
-                <div class="score-bar">
+                <div class="score-bar" role="progressbar"
+                     [attr.aria-valuenow]="f.score"
+                     [attr.aria-valuetext]="f.score + '%'"
+                     aria-valuemin="0"
+                     aria-valuemax="100">
                   <div class="score-fill" [style.width.%]="f.score"></div>
                 </div>
               </div>

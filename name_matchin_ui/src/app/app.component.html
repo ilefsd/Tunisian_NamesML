@@ -1,3 +1,50 @@
-<app-identity-match></app-identity-match>
+<div class="app-container">
+  <!-- Government Header Banner -->
+  <header class="gov-header">
+    <div class="header-content">
+      <!-- Left: Tunisian Flag Motif -->
+      <div class="flag-container">
+        <div class="flag-motif"></div>
+      </div>
 
+      <!-- Center: Government Title -->
+      <div class="title-container">
+        <h1 class="republic-title">الجمهورية التونسية</h1>
+        <h2 class="ministry-title">وزارة الشؤون الخارجية والهجرة والتونسيين بالخارج</h2>
+      </div>
 
+      <!-- Right: State Emblem -->
+      <div class="emblem-container">
+        <div class="state-emblem"></div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Navigation Bar -->
+  <nav class="main-nav">
+    <div class="nav-container">
+      <ul class="nav-list">
+        <li class="nav-item"><a href="#" class="nav-link">الرئيسية</a></li>
+        <li class="nav-item"><a href="#" class="nav-link">الوزارة</a></li>
+        <li class="nav-item"><a href="#" class="nav-link">الأخبار</a></li>
+        <li class="nav-item"><a href="#" class="nav-link">بلاغات</a></li>
+        <li class="nav-item"><a href="#" class="nav-link">السياسة الخارجية</a></li>
+        <li class="nav-item"><a href="#" class="nav-link">زيارة تونس</a></li>
+        <li class="nav-item"><a href="#" class="nav-link">الخدمات القنصلية</a></li>
+        <li class="nav-item"><a href="#" class="nav-link">اتصل بنا</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- Main Content Area -->
+  <main class="main-content">
+    <router-outlet></router-outlet>
+  </main>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <div class="footer-content">
+      <p>© 2024 الجمهورية التونسية - جميع الحقوق محفوظة</p>
+    </div>
+  </footer>
+</div>

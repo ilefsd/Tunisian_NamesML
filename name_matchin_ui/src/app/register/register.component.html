@@ -1,0 +1,60 @@
+<div class="app-container">
+  <header class="gov-header">
+    <div class="header-content">
+      <div class="header-left">
+        <img ngSrc="assets/Tunisia-Coat-Of-Arms-Logo.png" alt="علم تونس" class="flag" height="800" width="800"/>
+      </div>
+
+      <div class="header-center">
+        <h1 class="republic-title">الجمهورية التونسية</h1>
+        <h2 class="ministry-title">وزارة الداخلية – مطابق الهوية</h2>
+      </div>
+
+      <div class="header-right">
+        <img ngSrc="assets/coat-of-arms.png" alt="شعار الجمهورية" class="coat" height="183" width="275"/>
+      </div>
+    </div>
+  </header>
+
+  <main class="main-content">
+    <div class="content-wrapper">
+      <div class="form-card">
+        <div class="card-header">
+          <h3 class="card-title">إنشاء حساب جديد</h3>
+        </div>
+
+        <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="identity-form">
+          <div class="form-section">
+            <div class="form-row">
+              <mat-form-field appearance="outline" class="form-field">
+                <mat-label>البريد الإلكتروني</mat-label>
+                <input matInput formControlName="email" type="email" required>
+                <mat-icon matSuffix>email</mat-icon>
+              </mat-form-field>
+            </div>
+
+            <div class="form-row">
+              <mat-form-field appearance="outline" class="form-field">
+                <mat-label>كلمة المرور</mat-label>
+                <input matInput formControlName="password" type="password" required>
+                <mat-icon matSuffix>lock</mat-icon>
+              </mat-form-field>
+            </div>
+          </div>
+
+          <div class="form-actions">
+            <button mat-raised-button type="submit" class="submit-btn" [disabled]="registerForm.invalid">
+              <span>إنشاء حساب</span>
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </main>
+
+  <footer class="gov-footer">
+    <div class="footer-content">
+      <p>© 2025 الجمهورية التونسية – جميع الحقوق محفوظة</p>
+    </div>
+  </footer>
+</div>
