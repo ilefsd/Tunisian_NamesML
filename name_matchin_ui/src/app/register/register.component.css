@@ -1,18 +1,86 @@
-/* Import shared styles from identity-match component */
+/* Import shared modern design system */
 @import '../identity-match/identity-match.component.css';
 
-/* Additional specific styles for register component can be added here */
+/* Register Component Specific Overrides */
 .form-card .card-title::before {
-  background: linear-gradient(135deg, var(--success) 0%, var(--success-light) 100%);
-  box-shadow: 0 0 20px rgba(16, 185, 129, 0.3);
+  background: linear-gradient(135deg,
+  var(--success) 0%,
+  var(--success-light) 50%,
+  #22c55e 100%);
+  box-shadow:
+    0 0 20px rgba(16, 185, 129, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+
+.form-card .card-header::after {
+  background: linear-gradient(90deg,
+  transparent,
+  var(--success),
+  var(--success-light),
+  #22c55e,
+  var(--success-light),
+  var(--success),
+  transparent);
+  box-shadow: 0 0 15px rgba(16, 185, 129, 0.5);
 }
 
 .submit-btn {
-  background: linear-gradient(135deg, var(--success) 0%, var(--success-light) 100%) !important;
-  box-shadow: var(--shadow-lg), 0 0 30px rgba(16, 185, 129, 0.3) !important;
+  background: linear-gradient(135deg,
+  var(--success) 0%,
+  var(--success-light) 50%,
+  #22c55e 100%) !important;
+  box-shadow:
+    var(--shadow-xl),
+    0 0 30px rgba(16, 185, 129, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2) !important;
 }
 
 .submit-btn:hover:not([disabled]) {
-  background: linear-gradient(135deg, var(--success-light) 0%, var(--success) 100%) !important;
-  box-shadow: var(--shadow-2xl), 0 0 40px rgba(16, 185, 129, 0.5) !important;
+  background: linear-gradient(135deg,
+  var(--success-light) 0%,
+  #22c55e 50%,
+  #16a34a 100%) !important;
+  box-shadow:
+    var(--shadow-2xl),
+    0 0 50px rgba(16, 185, 129, 0.6),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3) !important;
+}
+
+/* Enhanced Registration Form Styling */
+.identity-form .form-section .section-title::before {
+  background: linear-gradient(135deg,
+  var(--success) 0%,
+  var(--success-light) 100%);
+  box-shadow:
+    0 0 20px rgba(16, 185, 129, 0.5),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+
+/* Success themed focus states */
+.form-field ::ng-deep .mat-mdc-form-field.mat-focused .mat-mdc-form-field-outline {
+  border-color: var(--success) !important;
+  box-shadow: 0 0 0 1px var(--success) !important;
+}
+
+.form-field.mat-focused ::ng-deep .mat-mdc-form-field-icon-suffix {
+  color: var(--success) !important;
+}
+
+/* Registration specific animations */
+@keyframes registerGlow {
+  from {
+    box-shadow:
+      0 0 20px rgba(16, 185, 129, 0.5),
+      inset 0 1px 0 rgba(255, 255, 255, 0.3);
+  }
+  to {
+    box-shadow:
+      0 0 30px rgba(16, 185, 129, 0.8),
+      0 0 40px rgba(16, 185, 129, 0.3),
+      inset 0 1px 0 rgba(255, 255, 255, 0.3);
+  }
+}
+
+.form-section .section-title::before {
+  animation: registerGlow 3s ease-in-out infinite alternate;
 }

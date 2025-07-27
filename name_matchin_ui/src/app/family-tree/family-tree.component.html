@@ -1,3 +1,4 @@
+<!-- src/app/family-tree/family-tree.component.html -->
 <div class="modal-header">
   <h2 mat-dialog-title>Family Tree for {{ data.identity.first_name }}</h2>
   <button mat-icon-button (click)="close()" aria-label="Close dialog">
@@ -6,18 +7,27 @@
 </div>
 
 <mat-dialog-content class="modal-content">
+  <!-- Loading state -->
   <div *ngIf="isLoading" class="loading-indicator">
     <mat-spinner diameter="50"></mat-spinner>
     <p>Loading family tree...</p>
   </div>
 
+  <!-- Error state -->
   <div *ngIf="!isLoading && error" class="error-message">
     <mat-icon color="warn">warning</mat-icon>
     <p>{{ error }}</p>
   </div>
 
-  <div *ngIf="!isLoading && !error && browserUrl" class="network-container-modal">
-    <iframe [src]="browserUrl" width="100%" height="100%" frameborder="0"></iframe>
+  <!-- Visualization container always present -->
+  <div
+    #vizContainer
+    id="vizContainer"
+    class="network-container-modal"
+    [class.hidden]="isLoading || error"
+    style="width:100%; height:600px;"
+  >
+    <!-- Vis Network will render here -->
   </div>
 </mat-dialog-content>
 

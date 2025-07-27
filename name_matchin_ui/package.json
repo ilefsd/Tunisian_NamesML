@@ -21,6 +21,7 @@
     "@angular/platform-browser-dynamic": "^19.1.0",
     "@angular/router": "^19.1.0",
     "neo4j-driver": "^5.28.1",
+    "neovis.js": "^2.1.0",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
     "vis-network": "^9.1.13",
