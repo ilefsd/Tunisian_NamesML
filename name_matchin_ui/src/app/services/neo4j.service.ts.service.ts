@@ -1,7 +1,13 @@
 import { Injectable } from '@angular/core';
-import neo4j, { Driver, Session } from 'neo4j-driver';
-import { FamilyPath } from '../models/family-path/family-path.module';
+import neo4j, { Driver, Session, QueryResult } from 'neo4j-driver';
 import { environment } from '../../environments/environment';
+
+// Define a new interface for a clean graph structure
+export interface FamilyGraph {
+  candidate: any; // The main person for this graph
+  nodes: any[];
+  relationships: any[];
+}
 
 @Injectable({ providedIn: 'root' })
 export class Neo4jService {
@@ -14,52 +20,77 @@ export class Neo4jService {
     );
   }
 
+  // The function now returns a Promise of FamilyGraph[]
   async fetchBestFamilyTrees(
     childName: string,
     fatherName: string,
     motherName: string
-  ): Promise<FamilyPath[]> {
+  ): Promise<FamilyGraph[]> {
     const session: Session = this.driver.session();
-    const cypher = `
-      WITH
-        $childName  AS childName,
-        $fatherName AS fatherName,
-        $motherName AS motherName
 
+    // This query has been rewritten to enforce logical family rules.
+    const cypher = `
+      // Part 1: Find the top 3 candidate persons based on the score.
+      WITH $childName AS childName, $fatherName AS fatherName, $motherName AS motherName
       MATCH (c:Person {name: childName})
-      OPTIONAL MATCH (c)-[:CHILD_OF]->(f:Person) WHERE f.gender = 'ذكر'
-      OPTIONAL MATCH (c)-[:CHILD_OF]->(m:Person) WHERE m.gender = 'أنثى'
-      WITH c, f, m,
+      OPTIONAL MATCH (c)-[:CHILD_OF]->(f:Person {gender: 'ذكر'})
+      OPTIONAL MATCH (c)-[:CHILD_OF]->(m:Person {gender: 'أنثى'})
+      WITH c,
         (CASE WHEN f.name = fatherName THEN 1 ELSE 0 END
        + CASE WHEN m.name = motherName THEN 1 ELSE 0 END) AS score
       ORDER BY score DESC
-      LIMIT 3
-      OPTIONAL MATCH (c)-[:CHILD_OF]->(parent:Person)
-      OPTIONAL MATCH (c)-[:SIBLING_WITH]-(sib:Person)
-      OPTIONAL MATCH (childRel:Person)-[:CHILD_OF]->(c)
-      OPTIONAL MATCH (c)-[:MARRIED_TO]-(sp:Person)
-      WITH
-        c, score,
-        collect(DISTINCT parent)[0..2]   AS parents,
-        collect(DISTINCT sib)[0..3]      AS siblings,
-        collect(DISTINCT childRel)[0..3] AS children,
-        collect(DISTINCT sp)[0..1]       AS spouses
-      UNWIND parents + siblings + children + spouses AS relative
-      MATCH path = (c)-[:CHILD_OF|SIBLING_WITH|MARRIED_TO]-(relative)
-      RETURN
-        c.name    AS candidate,
-        score,
-        path
-      ORDER BY candidate, score DESC;
-    `;
-    const result = await session.run(cypher, { childName, fatherName, motherName });
-    await session.close();
+      LIMIT 3 // Get the top 3 scoring candidates.
 
-    return result.records.map(rec => ({
-      candidate: rec.get('candidate'),
-      score: rec.get('score').toNumber(),
-      // rec.get('path') is a Path object with .segments, each has .start, .end, .relationship
-      path: rec.get('path')
-    }));
+      // Part 2: Use a subquery to process each candidate independently.
+      CALL {
+          WITH c
+          // Step A: Explicitly find a realistic immediate family.
+          // Get one father and one mother based on gender.
+          OPTIONAL MATCH (c)-[:CHILD_OF]->(father:Person {gender: 'ذكر'})
+          OPTIONAL MATCH (c)-[:CHILD_OF]->(mother:Person {gender: 'أنثى'})
+          // Get only the first spouse found to keep the graph clean.
+          OPTIONAL MATCH (c)-[:MARRIED_TO]-(spouse:Person)
+          WITH c, father, mother, spouse LIMIT 1
+          // Get all children of the candidate.
+          OPTIONAL MATCH (child:Person)-[:CHILD_OF]->(c)
+
+          // Step B: Create a clean list of these specific relatives plus the candidate.
+          // This trick collects all non-null family members into a single list.
+          WITH c, COLLECT(DISTINCT c) + COLLECT(DISTINCT father) + COLLECT(DISTINCT mother) + COLLECT(DISTINCT spouse) + COLLECT(DISTINCT child) as familyMembers
+
+          // Step C: Collect the nodes and relationships that exist ONLY within this logical, immediate family group.
+          UNWIND familyMembers AS person
+          WITH c, familyMembers, COLLECT(DISTINCT person) AS nodes
+
+          UNWIND familyMembers AS p1
+          OPTIONAL MATCH (p1)-[r:CHILD_OF|MARRIED_TO]-(p2)
+          WHERE p2 IN familyMembers AND id(p1) < id(p2)
+          WITH c, nodes, COLLECT(DISTINCT r) AS relationships
+
+          // Return the clean graph components for this candidate.
+          RETURN c AS candidate, nodes, relationships
+      }
+
+      // Part 3: Return the results for each of the top 3 candidates.
+      RETURN candidate, nodes, relationships
+    `;
+
+    console.log("Executing LOGICAL subgraph query for:", { childName, fatherName, motherName });
+    const result: QueryResult = await session.run(cypher, { childName, fatherName, motherName });
+    await session.close();
+    console.log("Query returned graphs:", result.records.length);
+
+    // Map the Neo4j records to our clean FamilyGraph structure.
+    return result.records.map(rec => {
+      // Filter out any null nodes or relationships that may have been introduced by OPTIONAL MATCH
+      const nodes = rec.get('nodes').filter(Boolean);
+      const relationships = rec.get('relationships').filter(Boolean);
+
+      return {
+        candidate: rec.get('candidate').properties,
+        nodes: nodes.map((node: any) => ({...node.properties, id: node.elementId})),
+        relationships: relationships.map((rel: any) => ({...rel.properties, id: rel.elementId, type: rel.type, from: rel.startNodeElementId, to: rel.endNodeElementId}))
+      };
+    });
   }
 }

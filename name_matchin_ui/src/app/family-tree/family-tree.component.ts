@@ -1,17 +1,16 @@
-// src/app/family-tree/family-tree.component.ts
-
 import {
   Component,
-  ElementRef,
-  Inject,
   OnInit,
-  ViewChild,
-  AfterViewInit,
+  Inject,
+  ViewChildren,
+  QueryList,
+  ElementRef,
   ChangeDetectorRef,
+  AfterViewInit,
 } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { Neo4jService } from '../services/neo4j.service.ts.service';
-import { FamilyPath } from '../models/family-path/family-path.module';
+// Import the new interface and the service
+import { Neo4jService, FamilyGraph } from '../services/neo4j.service.ts.service';
 import { DataSet } from 'vis-data';
 import {
   Network,
@@ -35,17 +34,14 @@ export interface FamilyTreeModalData {
   styleUrls: ['./family-tree.component.css'],
 })
 export class FamilyTreeComponent implements OnInit, AfterViewInit {
-  @ViewChild('vizContainer', { static: false })
-  vizContainer!: ElementRef<HTMLDivElement>;
+  @ViewChildren('vizContainer') vizContainers!: QueryList<ElementRef<HTMLDivElement>>;
 
   isLoading = true;
   error: string | null = null;
-  private networkInstance: Network | null = null;
-
-  private visNodes: VisNode[] = [];
-  private visEdges: VisEdge[] = [];
-  private isViewInitialized = false;
-  private isDataReady = false;
+  familyGraphs: FamilyGraph[] = [];
+  // New property to hold the formatted JSON string for display
+  rawJsonForDisplay: string | null = null;
+  private networkInstances: Network[] = [];
 
   constructor(
     public dialogRef: MatDialogRef<FamilyTreeComponent>,
@@ -55,156 +51,144 @@ export class FamilyTreeComponent implements OnInit, AfterViewInit {
   ) {}
 
   ngOnInit(): void {
-    this.loadFamilyTree();
+    this.loadAndBuild();
   }
 
   ngAfterViewInit(): void {
-    this.isViewInitialized = true;
-    this.tryRenderNetwork();
+    this.vizContainers.changes.subscribe(() => {
+      this.renderAllNetworks();
+    });
   }
 
-  private async loadFamilyTree(): Promise<void> {
+  private async loadAndBuild(): Promise<void> {
     this.isLoading = true;
     this.error = null;
-
-    const childName = this.data.identity.first_name;
-    if (!childName) {
-      this.error = "Child's first name is required.";
-      this.isLoading = false;
-      this.cdr.detectChanges();
-      return;
-    }
+    this.rawJsonForDisplay = null; // Reset on new load
+    this.cdr.detectChanges();
 
     try {
-      const paths: FamilyPath[] = await this.neo4jService.fetchBestFamilyTrees(
-        childName,
-        this.data.identity.father_name || '',
-        this.data.identity.mother_name || ''
-      );
-      this.processAndRenderPaths(paths || []);
-    } catch (err) {
+      const name = this.data.identity.first_name;
+      if (!name) throw new Error("Child's first name is required.");
+
+      this.familyGraphs =
+        (await this.neo4jService.fetchBestFamilyTrees(
+          name,
+          this.data.identity.father_name || '',
+          this.data.identity.mother_name || ''
+        )) || [];
+
+      if (this.familyGraphs.length === 0) {
+        this.error = "No family data found for the given names.";
+      } else {
+        // Convert the received graph data to a formatted JSON string
+        this.rawJsonForDisplay = JSON.stringify(this.familyGraphs, null, 2);
+      }
+
+    } catch (err: any) {
       console.error(err);
-      this.error = 'Failed to load family tree.';
-      this.visNodes = [];
-      this.visEdges = [];
-      this.isDataReady = true;
+      this.error = err.message || 'Failed to load family data.';
+    } finally {
       this.isLoading = false;
       this.cdr.detectChanges();
-      this.tryRenderNetwork();
     }
   }
 
-  private processAndRenderPaths(paths: FamilyPath[]): void {
-    const nodesMap = new Map<string, VisNode>();
-    const edgesList: VisEdge[] = [];
-    const central = this.data.identity.first_name;
-    const father = this.data.identity.father_name;
-    const mother = this.data.identity.mother_name;
-    const parentColor = { background: '#C459CB', border: '#A23CA8' };
-    const childColor = { background: '#DAE4EF', border: '#666666' };
+  private renderAllNetworks(): void {
+    this.networkInstances.forEach(instance => instance.destroy());
+    this.networkInstances = [];
 
-    // Build nodes
-    for (const fp of paths) {
-      for (const seg of fp.path?.segments || []) {
-        const s = seg.start;
-        const e = seg.end;
-        const r = seg.relationship;
-        const sId = s.identity?.toString();
-        const eId = e.identity?.toString();
-        const sName = s.properties?.['name'] as string | undefined;
-        const eName = e.properties?.['name'] as string | undefined;
+    const containers = this.vizContainers.toArray();
 
-        if (sId && sName && !nodesMap.has(sId)) {
-          nodesMap.set(sId, {
-            id: sId,
-            label: sName,
-            color: sName === central ? parentColor : childColor,
-            shape: 'circle',
-          });
+    this.familyGraphs.forEach((graphData, index) => {
+      const container = containers[index]?.nativeElement;
+      if (!container) return;
+
+      const visNodes: VisNode[] = graphData.nodes.map(node => {
+        const visNode: VisNode = {
+          id: node.id,
+          label: node.name,
+        };
+        // Highlight the main candidate and pin them to the center to create the radial layout
+        if (node.name === graphData.candidate.name && node.family === graphData.candidate.family) {
+          visNode.color = { background: '#C459CB', border: '#A23CA8', highlight: { background: '#D980DE', border: '#A23CA8'} };
+          visNode.font = { color: '#fff', size: 16 };
+          visNode.shape = 'circle';
+          visNode.fixed = { x: true, y: true }; // Pin the node to the center
+          visNode.x = 0;
+          visNode.y = 0;
         }
-        if (eId && eName && !nodesMap.has(eId)) {
-          nodesMap.set(eId, {
-            id: eId,
-            label: eName,
-            color: eName === central ? parentColor : childColor,
-            shape: 'circle',
-          });
-        }
+        return visNode;
+      });
 
-        // CHILD_OF edges: push raw then normalize
-        if (sId && eId) {
-          edgesList.push({ from: sId, to: eId, label: r.type, arrows: r.type === 'MARRIED_TO' ? 'from,to' : 'to' });
-        }
-      }
-    }
-
-    // Normalize CHILD_OF: parents → central, children ← central
-    const centralNode = Array.from(nodesMap.values()).find(n => n.label === central);
-    if (centralNode) {
-      const cid = centralNode.id;
-      this.visEdges = edgesList.map(edge => {
-        if (edge.label === 'CHILD_OF') {
-          // if from is father or mother, that edge should point into central
-          if ((father && edge.from === Array.from(nodesMap.values()).find(n => n.label === father)?.id)
-            || (mother && edge.from === Array.from(nodesMap.values()).find(n => n.label === mother)?.id)) {
-            return { ...edge, from: edge.to, to: edge.from };
-          }
-          // otherwise if edge.from == central, leave outwards
-          if (edge.from === cid) {
-            return edge;
-          }
-          // else if edge.to == cid, flip inward
-          if (edge.to === cid) {
-            return { ...edge, from: edge.to, to: edge.from };
-          }
+      const visEdges: VisEdge[] = graphData.relationships.map(rel => {
+        const edge: VisEdge = {
+          from: rel.from,
+          to: rel.to,
+          label: rel.type.replace('_WITH', '').replace('_TO','').replace('_OF', ''),
+        };
+        switch (rel.type) {
+          case 'MARRIED_TO':
+            edge.color = { color: '#e04141' };
+            edge.dashes = true;
+            break;
+          case 'SIBLING_WITH':
+            edge.color = { color: '#3c78d8' };
+            break;
+          default: // CHILD_OF
+            edge.color = { color: '#848484' };
+            edge.arrows = 'to';
+            break;
         }
         return edge;
       });
-    } else {
-      this.visEdges = edgesList;
-    }
 
-    this.visNodes = Array.from(nodesMap.values());
-    this.isDataReady = true;
-    this.isLoading = false;
-    this.cdr.detectChanges();
-    this.tryRenderNetwork();
-  }
+      const data = {
+        nodes: new DataSet<VisNode>(visNodes),
+        edges: new DataSet<VisEdge>(visEdges),
+      };
 
-  private tryRenderNetwork(): void {
-    if (this.isViewInitialized && this.isDataReady) {
-      setTimeout(() => this.renderNetwork(), 0);
-    }
-  }
-
-  private renderNetwork(): void {
-    if (!this.vizContainer?.nativeElement) {
-      console.warn('vizContainer not initialized—skipping render.');
-      return;
-    }
-    const container = this.vizContainer.nativeElement;
-    const data = {
-      nodes: new DataSet<VisNode>(this.visNodes),
-      edges: new DataSet<VisEdge>(this.visEdges),
-    };
-    const options: Options = {
-      layout: { hierarchical: { enabled: false } },
-      physics: { enabled: true },
-      edges: {
-        smooth: {
-          enabled: true,
-          type: 'cubicBezier',
-          forceDirection: 'vertical',
-          roundness: 0.4,
+      // --- CORRECTED FORCE-DIRECTED LAYOUT OPTIONS ---
+      const options: Options = {
+        // Use the BarnesHut physics model for a more natural, spread-out graph
+        physics: {
+          barnesHut: {
+            gravitationalConstant: -8000, // Pushes nodes away from each other
+            centralGravity: 0.15,         // Pulls the whole graph to the center
+            springLength: 250,            // The ideal length of an edge
+            springConstant: 0.05,
+            damping: 0.09,
+          },
+          stabilization: {
+            iterations: 400, // More iterations for a more stable layout
+          }
         },
-        font: { size: 12, color: '#888888' },
-      },
-      nodes: { font: { size: 14, color: '#ffffff' } },
-      interaction: { hover: true },
-    };
+        interaction: {
+          dragNodes: true,
+          zoomView: true,
+          navigationButtons: true,
+        },
+        edges: {
 
-    this.networkInstance?.destroy();
-    this.networkInstance = new Network(container, data, options);
+          font: {
+            size: 9,
+            color: '#666',
+            strokeWidth: 0,
+            align: 'top',
+          },
+        },
+        nodes: {
+          // Use a circle shape like the Neo4j browser
+          shape: 'circle',
+          font: {
+            size: 14,
+            color: '#333'
+          },
+          borderWidth: 2,
+        },
+      };
+
+      this.networkInstances.push(new Network(container, data, options));
+    });
   }
 
   close(): void {

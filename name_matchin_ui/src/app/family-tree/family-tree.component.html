@@ -1,34 +1,37 @@
-<!-- src/app/family-tree/family-tree.component.html -->
 <div class="modal-header">
-  <h2 mat-dialog-title>Family Tree for {{ data.identity.first_name }}</h2>
-  <button mat-icon-button (click)="close()" aria-label="Close dialog">
+  <h2 mat-dialog-title>Family Tree Results for {{ data.identity.first_name }}</h2>
+  <button mat-icon-button (click)="close()" aria-label="Close">
     <mat-icon>close</mat-icon>
   </button>
 </div>
 
-<mat-dialog-content class="modal-content">
-  <!-- Loading state -->
+<mat-dialog-content class="modal-content" [class.is-scrollable]="familyGraphs.length > 1">
   <div *ngIf="isLoading" class="loading-indicator">
     <mat-spinner diameter="50"></mat-spinner>
-    <p>Loading family tree...</p>
+    <p>Loading family graphs…</p>
   </div>
 
-  <!-- Error state -->
   <div *ngIf="!isLoading && error" class="error-message">
     <mat-icon color="warn">warning</mat-icon>
     <p>{{ error }}</p>
   </div>
 
-  <!-- Visualization container always present -->
-  <div
-    #vizContainer
-    id="vizContainer"
-    class="network-container-modal"
-    [class.hidden]="isLoading || error"
-    style="width:100%; height:600px;"
-  >
-    <!-- Vis Network will render here -->
+  <div *ngIf="!isLoading && !error" class="graphs-wrapper">
+    <!-- Loop for the family tree graphs -->
+    <div *ngFor="let graph of familyGraphs; let i = index" class="graph-container">
+      <h3 class="graph-title">Candidate Match: {{ graph.candidate.name }} (Family: {{ graph.candidate.family }})</h3>
+      <div #vizContainer class="network-canvas"></div>
+    </div>
+
+    <!-- New section to display the raw JSON output -->
+    <div *ngIf="rawJsonForDisplay" class="json-container">
+      <details>
+        <summary class="json-title">View Raw Neo4j JSON Data</summary>
+        <pre><code>{{ rawJsonForDisplay }}</code></pre>
+      </details>
+    </div>
   </div>
+
 </mat-dialog-content>
 
 <mat-dialog-actions align="end">
