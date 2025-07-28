@@ -6,10 +6,11 @@ import { RegisterComponent } from './register/register.component';
 import { AuthGuard } from './services/auth.guard';
 
 const routes: Routes = [
-  { path: '', component: IdentityMatchComponent, canActivate: [AuthGuard] },
+  { path: '', redirectTo: '/identity-match', pathMatch: 'full' },
   { path: 'login', component: LoginComponent },
   { path: 'register', component: RegisterComponent },
-  { path: '**', redirectTo: '' }
+  { path: 'identity-match', component: IdentityMatchComponent, canActivate: [AuthGuard] },
+  { path: '**', redirectTo: '/identity-match' }
 ];
 
 @NgModule({

@@ -94,3 +94,39 @@ pub async fn login(
 
     Ok(Json(Token { token }))
 }
+
+#[derive(Serialize)]
+pub struct ApiUsage {
+    pub id: i32,
+    pub user_id: String,
+    pub api_link: String,
+    pub timestamp: String,
+}
+
+use std::time::SystemTime;
+
+pub async fn get_api_usage(
+    State(pool): State<ConnectionPool>,
+    axum::extract::Path(user_id): axum::extract::Path<String>,
+) -> Result<Json<Vec<ApiUsage>>, (StatusCode, String)> {
+    let conn = pool.get().await.map_err(|_| (StatusCode::INTERNAL_SERVER_ERROR, "Failed to get connection".to_string()))?;
+
+    let rows = conn
+        .query("SELECT * FROM api_usage WHERE user_id = $1", &[&user_id])
+        .await
+        .map_err(|_| (StatusCode::INTERNAL_SERVER_ERROR, "Failed to get API usage".to_string()))?;
+
+    let mut api_usage = Vec::new();
+    for row in rows {
+        let timestamp: SystemTime = row.get("timestamp");
+        let timestamp_dt: chrono::DateTime<Utc> = timestamp.into();
+        api_usage.push(ApiUsage {
+            id: row.get("id"),
+            user_id: row.get("user_id"),
+            api_link: row.get("api_link"),
+            timestamp: timestamp_dt.to_rfc3339(),
+        });
+    }
+
+    Ok(Json(api_usage))
+}

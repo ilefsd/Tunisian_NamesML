@@ -1,0 +1,15 @@
+<h2>API Usage</h2>
+<table>
+  <thead>
+  <tr>
+    <th>API Link</th>
+    <th>Timestamp</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr *ngFor="let usage of data.apiUsage">
+    <td>{{ usage.api_link }}</td>
+    <td>{{ usage.timestamp | date:'medium' }}</td>
+  </tr>
+  </tbody>
+</table>

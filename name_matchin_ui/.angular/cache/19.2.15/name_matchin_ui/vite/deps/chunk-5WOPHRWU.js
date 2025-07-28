@@ -6,10 +6,7 @@ import {
 import {
   _isTestEnvironment,
   coerceCssPixelValue
-} from "./chunk-CYBO3ZPO.js";
-import {
-  supportsScrollBehavior
-} from "./chunk-2O4WY5GE.js";
+} from "./chunk-AL35D3VS.js";
 import {
   ESCAPE,
   _IdGenerator,
@@ -21,6 +18,9 @@ import {
   _CdkPrivateStyleLoader,
   _bindEventWithOptions
 } from "./chunk-TMLOFDYN.js";
+import {
+  supportsScrollBehavior
+} from "./chunk-2O4WY5GE.js";
 import {
   BidiModule,
   Directionality
@@ -3459,4 +3459,4 @@ export {
   CdkConnectedOverlay,
   OverlayModule
 };
-//# sourceMappingURL=chunk-HSF4GLSN.js.map
+//# sourceMappingURL=chunk-5WOPHRWU.js.map

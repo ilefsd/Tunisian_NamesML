@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
+import {jwtDecode} from 'jwt-decode';
 
 @Injectable({
   providedIn: 'root'
@@ -30,8 +31,15 @@ export class AuthService {
   isAuthenticated(): boolean {
     return !!localStorage.getItem('token');
   }
-
-  isLoggedIn() {
-    return false;
+  isLoggedIn(): boolean {
+    return this.isAuthenticated();
+  }
+  getUserId(): string | null {
+    const token = localStorage.getItem('token');
+    if (token) {
+      const decodedToken: any = jwtDecode(token);
+      return decodedToken.sub;
+    }
+    return null;
   }
 }

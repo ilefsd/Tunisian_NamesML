@@ -19,6 +19,7 @@ import {NgOptimizedImage} from '@angular/common';
 import {MatDialogActions, MatDialogContent, MatDialogTitle} from '@angular/material/dialog';
 import { LoginComponent } from './login/login.component';
 import { RegisterComponent } from './register/register.component';
+import { ApiUsagePopupComponent } from './api-usage-popup/api-usage-popup.component';
 
 
 @NgModule({
@@ -27,7 +28,8 @@ import { RegisterComponent } from './register/register.component';
     IdentityMatchComponent,
     FamilyTreeComponent,
     LoginComponent,
-    RegisterComponent
+    RegisterComponent,
+    ApiUsagePopupComponent
 
   ],
   imports: [

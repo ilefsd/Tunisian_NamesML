@@ -24,7 +24,7 @@ function _isTestEnvironment() {
 
 export {
   _isTestEnvironment,
-  coerceCssPixelValue,
-  coerceBooleanProperty
+  coerceBooleanProperty,
+  coerceCssPixelValue
 };
-//# sourceMappingURL=chunk-CYBO3ZPO.js.map
+//# sourceMappingURL=chunk-AL35D3VS.js.map

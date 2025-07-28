@@ -9,7 +9,7 @@ pub async fn create_pool() -> ConnectionPool {
         "host=localhost port=5432 user=postgres password=9155 dbname=tunisian_citizens",
         NoTls,
     )
-    .expect("Invalid connection string");
+        .expect("Invalid connection string");
 
     Pool::builder()
         .max_size(10)
@@ -26,9 +26,15 @@ pub async fn init_db(pool: &ConnectionPool) {
             id TEXT PRIMARY KEY,
             email TEXT UNIQUE NOT NULL,
             password_hash TEXT NOT NULL
+        );
+        CREATE TABLE IF NOT EXISTS api_usage (
+            id SERIAL PRIMARY KEY,
+            user_id TEXT NOT NULL,
+            api_link TEXT NOT NULL,
+            timestamp TIMESTAMPTZ NOT NULL DEFAULT NOW()
         )
     ",
     )
-    .await
-    .expect("Failed to create users table");
+        .await
+        .expect("Failed to create tables");
 }

@@ -3,6 +3,8 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { IdentityMatchService, InputIdentity, MatchResult } from '../services/identity-match.service';
 import { MatDialog } from '@angular/material/dialog';
 import { FamilyTreeComponent } from '../family-tree/family-tree.component';
+import { ApiUsagePopupComponent } from '../api-usage-popup/api-usage-popup.component';
+import { ApiUsageService } from '../services/api-usage.service';
 import { AuthService } from '../services/auth.service';
 import { Router } from '@angular/router';
 
@@ -24,7 +26,8 @@ export class IdentityMatchComponent {
     private matchSvc: IdentityMatchService,
     public dialog: MatDialog,
     private authService: AuthService,
-    private router: Router
+    private router: Router,
+    private apiUsageService: ApiUsageService
   ) {
     this.form = this.fb.group({
       first_name:       ['', Validators.required],
@@ -100,5 +103,17 @@ export class IdentityMatchComponent {
         }
       }
     });
+  }
+
+  openPopup(): void {
+    const userId = this.authService.getUserId();
+    if (userId) {
+      this.apiUsageService.getApiUsage(userId).subscribe(apiUsage => {
+        this.dialog.open(ApiUsagePopupComponent, {
+          width: '600px',
+          data: { apiUsage }
+        });
+      });
+    }
   }
 }
