@@ -1,4 +1,5 @@
-<div class="app-container">
+<div class="register-page">
+  <!-- Government Header -->
   <header class="gov-header">
     <div class="header-content">
       <div class="header-left">
@@ -16,45 +17,144 @@
     </div>
   </header>
 
-  <main class="main-content">
-    <div class="content-wrapper">
-      <div class="form-card">
-        <div class="card-header">
-          <h3 class="card-title">إنشاء حساب جديد</h3>
+  <!-- Registration Container -->
+  <div class="register-container">
+    <div class="register-card">
+      <div class="card-header">
+        <div class="title-section">
+          <mat-icon class="register-icon">person_add</mat-icon>
+          <h2 class="card-title">إنشاء حساب جديد</h2>
+          <p class="card-subtitle">قم بإنشاء حسابك للوصول إلى نظام مطابقة الهوية</p>
+        </div>
+      </div>
+
+      <div class="card-content">
+        <!-- Success Alert -->
+        <div *ngIf="successMessage" class="alert alert-success" role="alert">
+          <mat-icon class="alert-icon">check_circle</mat-icon>
+          <span class="alert-text">{{ successMessage }}</span>
         </div>
 
-        <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="identity-form">
-          <div class="form-section">
-            <div class="form-row">
-              <mat-form-field appearance="outline" class="form-field">
-                <mat-label>البريد الإلكتروني</mat-label>
-                <input matInput formControlName="email" type="email" required>
-                <mat-icon matSuffix>email</mat-icon>
-              </mat-form-field>
-            </div>
+        <!-- Error Alert -->
+        <div *ngIf="errorMessage" class="alert alert-error" role="alert">
+          <mat-icon class="alert-icon">error_outline</mat-icon>
+          <span class="alert-text">{{ errorMessage }}</span>
+          <button type="button" class="alert-close" (click)="clearError()" aria-label="إغلاق التنبيه">
+            <mat-icon>close</mat-icon>
+          </button>
+        </div>
 
-            <div class="form-row">
-              <mat-form-field appearance="outline" class="form-field">
-                <mat-label>كلمة المرور</mat-label>
-                <input matInput formControlName="password" type="password" required>
-                <mat-icon matSuffix>lock</mat-icon>
-              </mat-form-field>
-            </div>
+        <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="register-form">
+          <!-- Email Field -->
+          <div class="form-group">
+            <mat-form-field appearance="outline" class="form-field">
+              <mat-label>البريد الإلكتروني</mat-label>
+              <input matInput
+                     type="email"
+                     formControlName="email"
+                     required
+                     autocomplete="email"
+                     placeholder="أدخل بريدك الإلكتروني">
+              <mat-icon matSuffix>email</mat-icon>
+              <mat-error *ngIf="registerForm.get('email')?.errors?.['required']">
+                البريد الإلكتروني مطلوب
+              </mat-error>
+              <mat-error *ngIf="registerForm.get('email')?.errors?.['email']">
+                يرجى إدخال بريد إلكتروني صحيح
+              </mat-error>
+            </mat-form-field>
           </div>
 
+          <!-- Password Field -->
+          <div class="form-group">
+            <mat-form-field appearance="outline" class="form-field">
+              <mat-label>كلمة المرور</mat-label>
+              <input matInput
+                     [type]="showPassword ? 'text' : 'password'"
+                     formControlName="password"
+                     required
+                     autocomplete="new-password"
+                     placeholder="أدخل كلمة المرور">
+              <button mat-icon-button
+                      matSuffix
+                      type="button"
+                      (click)="togglePasswordVisibility()"
+                      [attr.aria-label]="showPassword ? 'إخفاء كلمة المرور' : 'إظهار كلمة المرور'">
+                <mat-icon>{{ showPassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+              </button>
+              <mat-error *ngIf="registerForm.get('password')?.errors?.['required']">
+                كلمة المرور مطلوبة
+              </mat-error>
+              <mat-error *ngIf="registerForm.get('password')?.errors?.['minlength']">
+                كلمة المرور يجب أن تكون 8 أحرف على الأقل
+              </mat-error>
+            </mat-form-field>
+          </div>
+
+          <!-- Confirm Password Field -->
+          <div class="form-group">
+            <mat-form-field appearance="outline" class="form-field">
+              <mat-label>تأكيد كلمة المرور</mat-label>
+              <input matInput
+                     [type]="showConfirmPassword ? 'text' : 'password'"
+                     formControlName="confirmPassword"
+                     required
+                     autocomplete="new-password"
+                     placeholder="أعد إدخال كلمة المرور">
+              <button mat-icon-button
+                      matSuffix
+                      type="button"
+                      (click)="toggleConfirmPasswordVisibility()"
+                      [attr.aria-label]="showConfirmPassword ? 'إخفاء تأكيد كلمة المرور' : 'إظهار تأكيد كلمة المرور'">
+                <mat-icon>{{ showConfirmPassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+              </button>
+              <mat-error *ngIf="registerForm.get('confirmPassword')?.errors?.['required']">
+                تأكيد كلمة المرور مطلوب
+              </mat-error>
+              <mat-error *ngIf="registerForm.errors?.['passwordMismatch']">
+                كلمات المرور غير متطابقة
+              </mat-error>
+            </mat-form-field>
+          </div>
+
+          <!-- Terms and Conditions -->
+          <div class="form-options">
+            <mat-checkbox formControlName="acceptTerms" class="terms-checkbox" required>
+              <span class="terms-text">
+                أوافق على
+                <a href="#" class="terms-link" (click)="openTerms($event)">الشروط والأحكام</a>
+                و
+                <a href="#" class="terms-link" (click)="openPrivacy($event)">سياسة الخصوصية</a>
+              </span>
+            </mat-checkbox>
+            <mat-error *ngIf="registerForm.get('acceptTerms')?.errors?.['required'] && registerForm.get('acceptTerms')?.touched">
+              يجب الموافقة على الشروط والأحكام
+            </mat-error>
+          </div>
+
+          <!-- Submit Button -->
           <div class="form-actions">
-            <button mat-raised-button type="submit" class="submit-btn" [disabled]="registerForm.invalid">
-              <span>إنشاء حساب</span>
+            <button mat-raised-button
+                    type="submit"
+                    class="register-btn"
+                    [disabled]="registerForm.invalid || isLoading"
+                    [attr.aria-label]="isLoading ? 'جاري إنشاء الحساب' : 'إنشاء حساب جديد'">
+              <mat-icon class="btn-icon" [class.loading]="isLoading">
+                {{ isLoading ? 'hourglass_empty' : 'person_add' }}
+              </mat-icon>
+              <span>{{ isLoading ? 'جاري الإنشاء...' : 'إنشاء حساب' }}</span>
             </button>
           </div>
         </form>
+
+        <!-- Login Link -->
+        <div class="form-footer">
+          <p class="footer-text">
+            لديك حساب بالفعل؟
+            <a routerLink="/login" class="login-link">تسجيل الدخول</a>
+          </p>
+        </div>
       </div>
     </div>
-  </main>
-
-  <footer class="gov-footer">
-    <div class="footer-content">
-      <p>© 2025 الجمهورية التونسية – جميع الحقوق محفوظة</p>
-    </div>
-  </footer>
+  </div>
 </div>

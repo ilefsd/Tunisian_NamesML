@@ -1,86 +1,473 @@
-/* Import shared modern design system */
+/* Import shared theme variables */
 @import '../identity-match/identity-match.component.css';
 
-/* Register Component Specific Overrides */
-.form-card .card-title::before {
+/* Registration Page Styles */
+.register-page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  font-family: 'Cairo', sans-serif;
+  direction: rtl;
   background: linear-gradient(135deg,
-  var(--success) 0%,
-  var(--success-light) 50%,
-  #22c55e 100%);
-  box-shadow:
-    0 0 20px rgba(16, 185, 129, 0.4),
-    inset 0 1px 0 rgba(255, 255, 255, 0.3);
+  var(--gray-50) 0%,
+  var(--white) 25%,
+  var(--gray-100) 50%,
+  var(--white) 75%,
+  var(--gray-50) 100%);
+  background-size: 400% 400%;
+  animation: gradientShift 15s ease infinite;
 }
 
-.form-card .card-header::after {
+/* Registration Container */
+.register-container {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-8) var(--space-4);
+  min-height: calc(100vh - 120px);
+}
+
+/* Registration Card */
+.register-card {
+  width: 100%;
+  max-width: 520px;
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-3xl);
+  backdrop-filter: blur(20px);
+  box-shadow: var(--glass-shadow);
+  overflow: hidden;
+  position: relative;
+  transition: all var(--transition-slow);
+}
+
+.register-card:hover {
+  transform: translateY(-8px);
+  box-shadow: var(--glass-shadow), 0 0 30px rgba(16, 185, 129, 0.2);
+}
+
+.register-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg,
+  var(--success) 0%,
+  var(--success-light) 25%,
+  var(--tunisia-gold) 50%,
+  var(--success-light) 75%,
+  var(--success) 100%);
+  background-size: 200% 100%;
+  animation: borderGlow 3s ease-in-out infinite;
+}
+
+/* Card Header */
+.card-header {
+  padding: var(--space-12) var(--space-10) var(--space-8);
+  background: linear-gradient(135deg,
+  rgba(16, 185, 129, 0.05) 0%,
+  rgba(255, 255, 255, 0.7) 50%,
+  rgba(16, 185, 129, 0.05) 100%);
+  border-bottom: 1px solid var(--glass-border);
+  text-align: center;
+  position: relative;
+}
+
+.card-header::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60px;
+  height: 2px;
   background: linear-gradient(90deg,
   transparent,
   var(--success),
   var(--success-light),
-  #22c55e,
-  var(--success-light),
   var(--success),
   transparent);
-  box-shadow: 0 0 15px rgba(16, 185, 129, 0.5);
+  border-radius: var(--radius-full);
 }
 
-.submit-btn {
+.title-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-4);
+}
+
+.register-icon {
+  font-size: 3rem;
+  color: var(--success);
   background: linear-gradient(135deg,
-  var(--success) 0%,
-  var(--success-light) 50%,
-  #22c55e 100%) !important;
-  box-shadow:
-    var(--shadow-xl),
-    0 0 30px rgba(16, 185, 129, 0.4),
-    inset 0 1px 0 rgba(255, 255, 255, 0.2) !important;
+  rgba(16, 185, 129, 0.15) 0%,
+  rgba(16, 185, 129, 0.05) 100%);
+  padding: var(--space-4);
+  border-radius: var(--radius-full);
+  box-shadow: 0 8px 32px rgba(16, 185, 129, 0.2);
+  animation: pulse 3s ease-in-out infinite alternate;
 }
 
-.submit-btn:hover:not([disabled]) {
-  background: linear-gradient(135deg,
-  var(--success-light) 0%,
-  #22c55e 50%,
-  #16a34a 100%) !important;
-  box-shadow:
-    var(--shadow-2xl),
-    0 0 50px rgba(16, 185, 129, 0.6),
-    inset 0 1px 0 rgba(255, 255, 255, 0.3) !important;
-}
-
-/* Enhanced Registration Form Styling */
-.identity-form .form-section .section-title::before {
-  background: linear-gradient(135deg,
-  var(--success) 0%,
-  var(--success-light) 100%);
-  box-shadow:
-    0 0 20px rgba(16, 185, 129, 0.5),
-    inset 0 1px 0 rgba(255, 255, 255, 0.3);
-}
-
-/* Success themed focus states */
-.form-field ::ng-deep .mat-mdc-form-field.mat-focused .mat-mdc-form-field-outline {
-  border-color: var(--success) !important;
-  box-shadow: 0 0 0 1px var(--success) !important;
-}
-
-.form-field.mat-focused ::ng-deep .mat-mdc-form-field-icon-suffix {
-  color: var(--success) !important;
-}
-
-/* Registration specific animations */
-@keyframes registerGlow {
+@keyframes pulse {
   from {
-    box-shadow:
-      0 0 20px rgba(16, 185, 129, 0.5),
-      inset 0 1px 0 rgba(255, 255, 255, 0.3);
+    box-shadow: 0 8px 32px rgba(16, 185, 129, 0.2);
   }
   to {
-    box-shadow:
-      0 0 30px rgba(16, 185, 129, 0.8),
-      0 0 40px rgba(16, 185, 129, 0.3),
-      inset 0 1px 0 rgba(255, 255, 255, 0.3);
+    box-shadow: 0 8px 32px rgba(16, 185, 129, 0.4);
   }
 }
 
-.form-section .section-title::before {
-  animation: registerGlow 3s ease-in-out infinite alternate;
+.card-title {
+  font-size: 2.25rem;
+  font-weight: 800;
+  color: var(--gray-900) !important;
+  margin: 0;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.card-subtitle {
+  font-size: 1.125rem;
+  color: var(--gray-600);
+  margin: 0;
+  font-weight: 500;
+  line-height: 1.6;
+  max-width: 400px;
+}
+
+/* Card Content */
+.card-content {
+  padding: var(--space-10);
+}
+
+/* Alert Styles */
+.alert {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  padding: var(--space-4) var(--space-5);
+  border-radius: var(--radius-xl);
+  margin-bottom: var(--space-8);
+  font-weight: 600;
+  animation: slideIn var(--transition-bounce);
+  position: relative;
+  backdrop-filter: blur(10px);
+}
+
+.alert-success {
+  background: linear-gradient(135deg,
+  rgba(16, 185, 129, 0.15) 0%,
+  rgba(220, 252, 231, 0.8) 100%);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  color: var(--success-dark);
+}
+
+.alert-error {
+  background: linear-gradient(135deg,
+  rgba(239, 68, 68, 0.15) 0%,
+  rgba(254, 226, 226, 0.8) 100%);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  color: var(--error);
+}
+
+.alert-icon {
+  font-size: 1.5rem;
+  animation: pulse 2s infinite;
+}
+
+.alert-text {
+  flex: 1;
+  font-size: 1rem;
+}
+
+.alert-close {
+  background: none;
+  border: none;
+  color: currentColor;
+  cursor: pointer;
+  padding: var(--space-1);
+  border-radius: var(--radius-full);
+  transition: all var(--transition-fast);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.alert-close:hover {
+  background: rgba(239, 68, 68, 0.1);
+  transform: scale(1.1);
+}
+
+/* Form Styles */
+.register-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+}
+
+.form-group {
+  margin-bottom: var(--space-2);
+}
+
+.form-field {
+  width: 100%;
+  transition: all var(--transition-base);
+}
+
+.form-field:hover {
+  transform: translateY(-2px);
+}
+
+.form-field ::ng-deep .mat-mdc-form-field-outline {
+  border-radius: var(--radius-xl);
+  border-color: var(--gray-300);
+  transition: all var(--transition-base);
+}
+
+.form-field ::ng-deep .mat-mdc-form-field.mat-focused .mat-mdc-form-field-outline {
+  border-color: var(--success);
+  box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.2);
+}
+
+.form-field ::ng-deep .mat-mdc-form-field-icon-suffix {
+  color: var(--gray-500);
+  transition: all var(--transition-base);
+}
+
+.form-field ::ng-deep .mat-mdc-form-field.mat-focused .mat-mdc-form-field-icon-suffix {
+  color: var(--success);
+}
+
+.form-field ::ng-deep .mat-mdc-input-element {
+  font-family: 'Cairo', sans-serif;
+  font-weight: 500;
+  font-size: 1rem;
+}
+
+.form-field ::ng-deep .mat-mdc-floating-label {
+  font-family: 'Cairo', sans-serif;
+  font-weight: 600;
+}
+
+/* Form Options */
+.form-options {
+  margin: var(--space-6) 0;
+  padding: var(--space-5);
+  background: linear-gradient(135deg,
+  rgba(16, 185, 129, 0.05) 0%,
+  rgba(255, 255, 255, 0.6) 100%);
+  border: 1px solid rgba(16, 185, 129, 0.2);
+  border-radius: var(--radius-xl);
+  backdrop-filter: blur(8px);
+}
+
+.terms-checkbox {
+  font-weight: 500;
+  color: var(--gray-700);
+  width: 100%;
+}
+
+.terms-checkbox ::ng-deep .mat-mdc-checkbox .mdc-checkbox {
+  --mdc-checkbox-selected-checkmark-color: var(--white);
+  --mdc-checkbox-selected-focus-icon-color: var(--success);
+  --mdc-checkbox-selected-hover-icon-color: var(--success);
+  --mdc-checkbox-selected-icon-color: var(--success);
+  --mdc-checkbox-selected-pressed-icon-color: var(--success);
+}
+
+.terms-text {
+  line-height: 1.5;
+  font-size: 0.9rem;
+}
+
+.terms-link {
+  color: var(--success);
+  text-decoration: none;
+  font-weight: 700;
+  padding: var(--space-1) var(--space-2);
+  border-radius: var(--radius-md);
+  transition: all var(--transition-base);
+}
+
+.terms-link:hover {
+  color: var(--success-light);
+  background: rgba(16, 185, 129, 0.05);
+  text-decoration: underline;
+}
+
+/* Form Actions */
+.form-actions {
+  margin-top: var(--space-8);
+}
+
+.register-btn {
+  width: 100%;
+  background: linear-gradient(135deg,
+  var(--success) 0%,
+  var(--success-light) 100%) !important;
+  color: var(--white) !important;
+  padding: var(--space-5) var(--space-8) !important;
+  font-size: 1.25rem !important;
+  font-weight: 700 !important;
+  border-radius: var(--radius-2xl) !important;
+  box-shadow: var(--shadow-xl) !important;
+  transition: all var(--transition-bounce) !important;
+  border: none !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: var(--space-4) !important;
+  font-family: 'Cairo', sans-serif !important;
+  position: relative !important;
+  overflow: hidden !important;
+  min-height: 56px !important;
+}
+
+.register-btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg,
+  transparent,
+  rgba(255, 255, 255, 0.3),
+  transparent);
+  transition: left 0.5s;
+}
+
+.register-btn:hover:not([disabled]) {
+  background: linear-gradient(135deg,
+  var(--success-light) 0%,
+  #22c55e 100%) !important;
+  transform: translateY(-4px) scale(1.02) !important;
+  box-shadow: var(--shadow-2xl), 0 0 30px rgba(16, 185, 129, 0.4) !important;
+}
+
+.register-btn:hover:not([disabled])::before {
+  left: 100%;
+}
+
+.register-btn[disabled] {
+  opacity: 0.6 !important;
+  cursor: not-allowed !important;
+  transform: none !important;
+}
+
+.btn-icon {
+  font-size: 1.5rem !important;
+}
+
+.btn-icon.loading {
+  animation: spin 1s linear infinite;
+}
+
+/* Form Footer */
+.form-footer {
+  margin-top: var(--space-10);
+  padding-top: var(--space-6);
+  border-top: 1px solid var(--glass-border);
+  text-align: center;
+  background: linear-gradient(135deg,
+  rgba(16, 185, 129, 0.03) 0%,
+  rgba(255, 255, 255, 0.3) 100%);
+  margin-left: calc(var(--space-10) * -1);
+  margin-right: calc(var(--space-10) * -1);
+  padding-left: var(--space-10);
+  padding-right: var(--space-10);
+  border-bottom-left-radius: var(--radius-3xl);
+  border-bottom-right-radius: var(--radius-3xl);
+}
+
+.footer-text {
+  font-size: 1rem;
+  color: var(--gray-600);
+  margin: 0;
+  font-weight: 500;
+}
+
+.login-link {
+  color: var(--success);
+  text-decoration: none;
+  font-weight: 700;
+  padding: var(--space-1) var(--space-2);
+  border-radius: var(--radius-md);
+  transition: all var(--transition-base);
+}
+
+.login-link:hover {
+  color: var(--success-light);
+  background: rgba(16, 185, 129, 0.05);
+  transform: translateY(-1px);
+  text-decoration: underline;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .register-container {
+    padding: var(--space-4) var(--space-2);
+  }
+
+  .register-card {
+    max-width: 100%;
+    margin: var(--space-4);
+  }
+
+  .card-header {
+    padding: var(--space-8) var(--space-6);
+  }
+
+  .card-content {
+    padding: var(--space-6);
+  }
+
+  .card-title {
+    font-size: 1.75rem;
+  }
+
+  .card-subtitle {
+    font-size: 1rem;
+  }
+
+  .form-footer {
+    margin-left: calc(var(--space-6) * -1);
+    margin-right: calc(var(--space-6) * -1);
+    padding-left: var(--space-6);
+    padding-right: var(--space-6);
+  }
+}
+
+@media (max-width: 480px) {
+  .register-container {
+    padding: var(--space-2);
+  }
+
+  .card-header {
+    padding: var(--space-6) var(--space-4);
+  }
+
+  .card-content {
+    padding: var(--space-4);
+  }
+
+  .register-icon {
+    font-size: 2.5rem;
+    padding: var(--space-3);
+  }
+
+  .card-title {
+    font-size: 1.5rem;
+  }
+
+  .card-subtitle {
+    font-size: 0.9rem;
+  }
+
+  .terms-text {
+    font-size: 0.8rem;
+  }
 }

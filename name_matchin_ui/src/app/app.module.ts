@@ -20,6 +20,7 @@ import {MatDialogActions, MatDialogContent, MatDialogTitle} from '@angular/mater
 import { LoginComponent } from './login/login.component';
 import { RegisterComponent } from './register/register.component';
 import { ApiUsagePopupComponent } from './api-usage-popup/api-usage-popup.component';
+import {MatCheckbox} from '@angular/material/checkbox';
 
 
 @NgModule({
@@ -51,6 +52,7 @@ import { ApiUsagePopupComponent } from './api-usage-popup/api-usage-popup.compon
     MatDialogContent,
     MatDialogActions,
     MatDialogTitle,
+    MatCheckbox,
   ],
   providers: [],
   bootstrap: [AppComponent]

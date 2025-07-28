@@ -1,91 +1,120 @@
-<header class="gov-header">
-  <div class="header-content">
-    <div class="header-left">
-      <img ngSrc="assets/Tunisia-Coat-Of-Arms-Logo.png" alt="علم تونس" class="flag" height="800" width="800"/>
-    </div>
+<div class="login-page">
+  <!-- Government Header -->
+  <header class="gov-header">
+    <div class="header-content">
+      <div class="header-left">
+        <img ngSrc="assets/Tunisia-Coat-Of-Arms-Logo.png" alt="علم تونس" class="flag" height="800" width="800"/>
+      </div>
 
-    <div class="header-center">
-      <h1 class="republic-title">الجمهورية التونسية</h1>
-      <h2 class="ministry-title">وزارة الداخلية – مطابق الهوية</h2>
-    </div>
+      <div class="header-center">
+        <h1 class="republic-title">الجمهورية التونسية</h1>
+        <h2 class="ministry-title">وزارة الداخلية – مطابق الهوية</h2>
+      </div>
 
-    <div class="header-right">
-      <img ngSrc="assets/coat-of-arms.png" alt="شعار الجمهورية" class="coat" height="183" width="275"/>
+      <div class="header-right">
+        <img ngSrc="assets/coat-of-arms.png" alt="شعار الجمهورية" class="coat" height="183" width="275"/>
+      </div>
     </div>
-  </div>
-</header>
-<div class="login-container">
+  </header>
 
-  <div class="card">
-    <div class="card-header">
-      <h2 class="card-title">تسجيل الدخول</h2>
-      <p class="card-subtitle">أدخل بياناتك للوصول إلى النظام</p>
-    </div>
-
-    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="login-form">
-      <div class="form-group">
-        <label for="email" class="form-label">البريد الإلكتروني</label>
-        <input
-          type="email"
-          id="email"
-          formControlName="email"
-          class="form-input"
-          placeholder="أدخل بريدك الإلكتروني"
-          required
-        >
-        <div *ngIf="loginForm.get('email')?.invalid && loginForm.get('email')?.touched" class="error-message">
-          <span *ngIf="loginForm.get('email')?.errors?.['required']">البريد الإلكتروني مطلوب</span>
-          <span *ngIf="loginForm.get('email')?.errors?.['email']">يرجى إدخال بريد إلكتروني صحيح</span>
+  <!-- Login Container -->
+  <div class="login-container">
+    <div class="login-card">
+      <div class="card-header">
+        <div class="title-section">
+          <mat-icon class="login-icon">login</mat-icon>
+          <h2 class="card-title">تسجيل الدخول</h2>
+          <p class="card-subtitle">أدخل بياناتك للوصول إلى النظام</p>
         </div>
       </div>
 
-      <div class="form-group">
-        <label for="password" class="form-label">كلمة المرور</label>
-        <div class="password-input-container">
-          <input
-            [type]="showPassword ? 'text' : 'password'"
-            id="password"
-            formControlName="password"
-            class="form-input"
-            placeholder="أدخل كلمة المرور"
-            required
-          >
-          <button
-            type="button"
-            class="password-toggle"
-            (click)="togglePasswordVisibility()"
-            tabindex="-1"
-          >
-            <i class="password-icon">{{showPassword ? '🙈' : '👁️'}}</i>
+      <div class="card-content">
+        <!-- Error Alert -->
+        <div *ngIf="errorMessage" class="alert alert-error" role="alert">
+          <mat-icon class="alert-icon">error_outline</mat-icon>
+          <span class="alert-text">{{ errorMessage }}</span>
+          <button type="button" class="alert-close" (click)="clearError()" aria-label="إغلاق التنبيه">
+            <mat-icon>close</mat-icon>
           </button>
         </div>
-        <div *ngIf="loginForm.get('password')?.invalid && loginForm.get('password')?.touched" class="error-message">
-          <span *ngIf="loginForm.get('password')?.errors?.['required']">كلمة المرور مطلوبة</span>
+
+        <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="login-form">
+          <!-- Email Field -->
+          <div class="form-group">
+            <mat-form-field appearance="outline" class="form-field">
+              <mat-label>البريد الإلكتروني</mat-label>
+              <input matInput
+                     type="email"
+                     formControlName="email"
+                     required
+                     autocomplete="email"
+                     placeholder="أدخل بريدك الإلكتروني">
+              <mat-icon matSuffix>email</mat-icon>
+              <mat-error *ngIf="loginForm.get('email')?.errors?.['required']">
+                البريد الإلكتروني مطلوب
+              </mat-error>
+              <mat-error *ngIf="loginForm.get('email')?.errors?.['email']">
+                يرجى إدخال بريد إلكتروني صحيح
+              </mat-error>
+            </mat-form-field>
+          </div>
+
+          <!-- Password Field -->
+          <div class="form-group">
+            <mat-form-field appearance="outline" class="form-field">
+              <mat-label>كلمة المرور</mat-label>
+              <input matInput
+                     [type]="showPassword ? 'text' : 'password'"
+                     formControlName="password"
+                     required
+                     autocomplete="current-password"
+                     placeholder="أدخل كلمة المرور">
+              <button mat-icon-button
+                      matSuffix
+                      type="button"
+                      (click)="togglePasswordVisibility()"
+                      [attr.aria-label]="showPassword ? 'إخفاء كلمة المرور' : 'إظهار كلمة المرور'">
+                <mat-icon>{{ showPassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+              </button>
+              <mat-error *ngIf="loginForm.get('password')?.errors?.['required']">
+                كلمة المرور مطلوبة
+              </mat-error>
+            </mat-form-field>
+          </div>
+
+          <!-- Remember Me & Forgot Password -->
+          <div class="form-options">
+            <mat-checkbox formControlName="rememberMe" class="remember-checkbox">
+              تذكرني
+            </mat-checkbox>
+<!--            <a href="#" class="forgot-link" (click)="forgotPassword($event)">
+              نسيت كلمة المرور؟
+            </a>-->
+          </div>
+
+          <!-- Submit Button -->
+          <div class="form-actions">
+            <button mat-raised-button
+                    type="submit"
+                    class="login-btn"
+                    [disabled]="loginForm.invalid || isLoading"
+                    [attr.aria-label]="isLoading ? 'جاري تسجيل الدخول' : 'تسجيل الدخول'">
+              <mat-icon class="btn-icon" [class.loading]="isLoading">
+                {{ isLoading ? 'hourglass_empty' : 'login' }}
+              </mat-icon>
+              <span>{{ isLoading ? 'جاري التحميل...' : 'تسجيل الدخول' }}</span>
+            </button>
+          </div>
+        </form>
+
+        <!-- Registration Link -->
+        <div class="form-footer">
+          <p class="footer-text">
+            ليس لديك حساب؟
+            <a routerLink="/register" class="register-link">إنشاء حساب جديد</a>
+          </p>
         </div>
       </div>
-
-      <div class="form-group remember-me">
-        <label class="checkbox-label">
-          <input type="checkbox" formControlName="rememberMe">
-          <span class="checkbox-text">تذكرني</span>
-        </label>
-        <a href="#" class="forgot-password">نسيت كلمة المرور؟</a>
-      </div>
-
-      <div class="form-actions">
-        <button
-          type="submit"
-          class="btn-accent login-btn"
-          [disabled]="loginForm.invalid || isLoading"
-        >
-          <span *ngIf="!isLoading">تسجيل الدخول</span>
-          <span *ngIf="isLoading" class="loading-spinner">جاري التحميل...</span>
-        </button>
-      </div>
-
-      <div class="form-footer">
-        <p>ليس لديك حساب؟ <a routerLink="/register" class="register-link">إنشاء حساب جديد</a></p>
-      </div>
-    </form>
+    </div>
   </div>
 </div>
