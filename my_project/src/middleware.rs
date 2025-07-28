@@ -1,18 +1,15 @@
+// src/middleware.rs
+
 use axum::{
-    extract::{State, Request},
+    extract::{Request, State},
     http::{HeaderMap, StatusCode},
     middleware::Next,
     response::Response,
 };
 use jsonwebtoken::{decode, DecodingKey, Validation};
-use serde::{Deserialize, Serialize};
-use crate::db::ConnectionPool;
 
-#[derive(Debug, Serialize, Deserialize)]
-struct Claims {
-    sub: String,
-    exp: usize,
-}
+// Import the shared models
+use crate::{db::ConnectionPool, models::Claims};
 
 pub async fn track_api_usage(
     State(pool): State<ConnectionPool>,
@@ -28,20 +25,25 @@ pub async fn track_api_usage(
         if let Some(token) = auth_header.strip_prefix("Bearer ") {
             let decoding_key = DecodingKey::from_secret("secret".as_ref());
             let validation = Validation::default();
+
+            // Use the correct, unified Claims struct for decoding
             if let Ok(token_data) = decode::<Claims>(token, &decoding_key, &validation) {
-                let user_email = token_data.claims.sub;
+                // BUG FIX: The 'sub' claim IS the user_id.
+                // We can use it directly without another database query.
+                let user_id = token_data.claims.sub;
                 let api_link = request.uri().to_string();
 
                 let conn = pool.get().await.map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?;
-                let user_row = conn.query_one("SELECT id FROM users WHERE email = $1", &[&user_email]).await.map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?;
-                let user_id: String = user_row.get("id");
 
                 conn.execute(
                     "INSERT INTO api_usage (user_id, api_link) VALUES ($1, $2)",
                     &[&user_id, &api_link],
                 )
                     .await
-                    .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?;
+                    .map_err(|e| {
+                        eprintln!("Failed to track API usage: {}", e);
+                        StatusCode::INTERNAL_SERVER_ERROR
+                    })?;
             }
         }
     }
@@ -49,21 +51,26 @@ pub async fn track_api_usage(
     Ok(next.run(request).await)
 }
 
-pub async fn auth(request: Request, next: Next) -> Result<Response, StatusCode> {
+pub async fn auth(mut request: Request, next: Next) -> Result<Response, StatusCode> {
     let auth_header = request
         .headers()
         .get("authorization")
-        .and_then(|header| header.to_str().ok());
+        .and_then(|header| header.to_str().ok())
+        .ok_or(StatusCode::UNAUTHORIZED)?;
 
-    if let Some(auth_header) = auth_header {
-        if let Some(token) = auth_header.strip_prefix("Bearer ") {
-            let decoding_key = DecodingKey::from_secret("secret".as_ref());
-            let validation = Validation::default();
-            if decode::<Claims>(token, &decoding_key, &validation).is_ok() {
-                return Ok(next.run(request).await);
-            }
-        }
-    }
+    let token = auth_header
+        .strip_prefix("Bearer ")
+        .ok_or(StatusCode::UNAUTHORIZED)?;
 
-    Err(StatusCode::UNAUTHORIZED)
+    let decoding_key = DecodingKey::from_secret("secret".as_ref());
+    let validation = Validation::default();
+
+    // Also use the unified Claims struct here
+    let token_data = decode::<Claims>(token, &decoding_key, &validation)
+        .map_err(|_| StatusCode::UNAUTHORIZED)?;
+
+    // Optional: Pass claims to handlers via request extensions
+    request.extensions_mut().insert(token_data.claims);
+
+    Ok(next.run(request).await)
 }
