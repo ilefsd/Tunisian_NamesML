@@ -1,0 +1,162 @@
+\documentclass[12pt,a4paper]{report}
+
+% --- Preamble ---
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[english]{babel}
+\usepackage{geometry}
+\geometry{margin=1in}
+
+\usepackage{graphicx}   % needed for \includegraphics
+\usepackage{pdfpages}   % needed for \includepdf
+\usepackage{caption}
+\usepackage[hidelinks]{hyperref}
+\usepackage[nameinlink]{cleveref}
+
+% ---------------- Document ----------------
+\begin{document}
+
+% ---- Cover page (first page, unnumbered) ----
+\includepdf[pages=1]{figures/cover_page.pdf}
+\includegraphics[width=\textwidth]{figures/cover_page2.pdf.png}
+\includegraphics[width=\textwidth]{figures/cover_page3.pdf.png}
+
+% Roman numbering for front matter
+\pagenumbering{roman}
+
+% ---- ToC ----
+\tableofcontents
+\clearpage
+
+% Switch to arabic numbering for main matter
+\pagenumbering{arabic}
+
+% ================================
+% General Introduction
+% ================================
+\chapter*{General Introduction}
+\addcontentsline{toc}{chapter}{General Introduction}
+
+Every day in Tunisia, countless citizens face a bureaucratic nightmare that shouldn’t exist
+in the 21\textsuperscript{st} century. A mother cannot register her child for school because the system shows
+no record of his birth. A university graduate is denied a job because her name appears
+differently on her diploma than in the national database. An elderly man waits months for
+his pension because a single missing diacritical mark makes him invisible to government
+computers.
+
+% (--- keep full introduction text here, unchanged ---)
+
+This is more than a thesis about computer science—it is about human dignity, governmental
+responsibility, and the transformative power of technology when it is designed
+with empathy and purpose. In the pages that follow, we detail not just how this system
+works, but why it matters for the future of Tunisia and other Arabic-speaking nations
+facing similar challenges.
+
+% ================================
+% Chapter 1
+% ================================
+\chapter{General Context of the Project}
+
+\section{Introduction}
+In today’s digital era, identity management has become one of the most critical challenges
+for both governments and organizations. Tunisia, like many other countries, faces
+difficulties in ensuring accurate citizen identification due to fragmented systems,
+orthographic variations of Arabic names, and inconsistencies across registries.
+This project is situated within this context and aims to design a robust system for
+Arabic identity matching, developed in collaboration with \textbf{Inetum Tunisie}.
+
+\section{Presentation of the Host Organization}
+
+\subsection{The Inetum Group}
+Inetum is an international IT services and digital solutions company that helps
+organizations in their digital transformation. It provides consulting, innovation,
+and technology services across a wide range of industries, combining local expertise
+with a global presence.
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=\textwidth]{figures/Inetum_Worldwide.png}
+  \caption{Inetum worldwide presence.}
+  \label{fig:inetum-worldwide}
+\end{figure}
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=\textwidth]{figures/Key figures of Inetum.png}
+  \caption{Key figures of Inetum (employees, offices, revenue, etc.).}
+  \label{fig:key-figures-inetum}
+\end{figure}
+
+\subsection{Domains of Expertise}
+Inetum’s expertise covers consulting, business solutions, infrastructure services,
+and application services. The group also invests in cloud computing, artificial
+intelligence, cybersecurity, and digital experience, delivering value across diverse
+industries.
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=.9\textwidth]{figures/inetum_clients.png}
+  \caption{Representative Inetum clients across sectors.}
+  \label{fig:inetum-clients}
+\end{figure}
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=.9\textwidth]{figures/partners.png}
+  \caption{Strategic partners supporting Inetum’s services.}
+  \label{fig:inetum-partners}
+\end{figure}
+
+\subsection{Inetum Tunisia}
+Inetum Tunisia is the group’s local branch delivering technology services adapted to
+the regional context. It serves both public and private organizations while leveraging
+Inetum’s global know-how.
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=\textwidth]{figures/org_chart.png}
+  \caption{High-level organizational chart (Inetum Tunisia).}
+  \label{fig:org-chart}
+\end{figure}
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=.38\textwidth]{figures/inetum.jpg}
+  \caption{Inetum visual/brand mark.}
+  \label{fig:inetum-logo}
+\end{figure}
+
+\section{Domain of the Project: Arabic Identity Matching}
+This project focuses on the development of an identity matching system specifically
+adapted to the Arabic language. Unlike Latin-based systems, Arabic introduces challenges
+such as orthographic variability, phonetic ambiguity, and transliteration issues.
+The objective is to design a reliable and scalable solution that integrates seamlessly
+into existing organizational workflows.
+
+\section{Motivation and Challenges}
+The motivation for this project stems from the shortcomings of current systems,
+which fail to handle the complexities of Arabic names. Key challenges include:
+\begin{itemize}
+  \item \textbf{Linguistic variability:} different spellings and regional conventions.
+  \item \textbf{Phonetic similarity:} multiple names sounding alike but spelled differently.
+  \item \textbf{Clerical errors:} manual entry mistakes leading to inconsistencies.
+  \item \textbf{Integration:} ensuring the system can adapt to multiple applications.
+\end{itemize}
+
+\section{Project Management Methodology}
+The project follows an \textbf{Agile methodology}, organized into iterative sprints.
+This approach ensures continuous feedback, incremental development, and adaptability
+to changing requirements. Each sprint focuses on a defined set of features, from
+backend foundations to frontend development and workflow integration.
+
+\section{Conclusion}
+This chapter introduced the general context of the project, presented the host
+organization (Inetum and its Tunisian branch), and defined the scope, motivations,
+and challenges of the work. The next chapter provides a review of existing
+solutions and a detailed needs analysis.
+
+% ================================
+% Next chapters...
+% ================================
+
+\end{document}
