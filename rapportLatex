@@ -143,29 +143,10 @@ This chapter introduced the host organization, Inetum, and its Tunisian branch, 
 % ================================
 % Chapter 2
 % ================================
-\chapter{Project Definition and Planning}
+\chapter{Project Context and Planning}
 
 \section{Introduction}
-This chapter presents the project in detail, including its general overview, architecture, problem statement, and objectives.
-
-\section{General Overview}
-This project focuses on the development of an identity matching system specifically
-adapted to the Arabic language. Unlike Latin-based systems, Arabic introduces challenges
-such as orthographic variability, phonetic ambiguity, and transliteration issues.
-The objective is to design a reliable and scalable solution that integrates seamlessly
-into existing organizational workflows.
-
-\section{High-Level Architecture}
-The system follows a classic client-server architecture. The frontend is an application built with Angular, which communicates with a backend REST API. The backend is a Rust application that handles the business logic, data access, and family tree generation. The architecture also includes **n8n** for workflow automation and data integration tasks.
-
-\section{Study of the Existing System}
-The current identity verification process is predominantly manual, leading to significant inefficiencies and risks. Key characteristics of the existing system include:
-\begin{itemize}
-    \item \textbf{Manual Paper-Based Management:} All requests and supporting documents are archived on printed media. Biographical information is often entered by hand into physical registers or basic spreadsheets.
-    \item \textbf{Visual Matching and Spreadsheets:} Agents manually scan lists to identify duplicates and inconsistencies. This process relies heavily on intensive filtering and sorting in tools like Excel or Access, which lack sophisticated similarity algorithms.
-    \item \textbf{Lack of Centralization and Automation:} Data is fragmented across silos in different departments, consulates, and local databases. The process is slow, prone to human error, and provides no real-time feedback.
-\end{itemize}
-
+This chapter presents the project in detail, outlining the problem domain, the proposed solution, and the strategic plan for its execution. It covers the core business drivers, system architecture, development methodologies, and risk management.
 
 \section{Problem Statement}
 The motivation for this project stems from the shortcomings of the current systems, which are ill-equipped to handle the complexities of Arabic names. The core challenges can be summarized as follows:
@@ -184,7 +165,29 @@ The problem is particularly acute for individuals who may lack a national ID num
     \item \textbf{Vulnerable Populations:} Such as homeless individuals or refugees who may be disconnected from the civil registry.
 \end{itemize}
 
-\section{Stakeholders & Core Use Cases}
+\section{Study of the Existing System}
+The current identity verification process is predominantly manual, leading to significant inefficiencies and risks. Key characteristics of the existing system include:
+\begin{itemize}
+    \item \textbf{Manual Paper-Based Management:} All requests and supporting documents are archived on printed media. Biographical information is often entered by hand into physical registers or basic spreadsheets.
+    \item \textbf{Visual Matching and Spreadsheets:} Agents manually scan lists to identify duplicates and inconsistencies. This process relies heavily on intensive filtering and sorting in tools like Excel or Access, which lack sophisticated similarity algorithms.
+    \item \textbf{Lack of Centralization and Automation:} Data is fragmented across silos in different departments, consulates, and local databases. The process is slow, prone to human error, and provides no real-time feedback.
+\end{itemize}
+
+\section{Objectives \& Success Criteria}
+The primary objective of this project is to develop a highly accurate and efficient system for Arabic identity matching.
+Success will be measured by the following criteria:
+\begin{itemize}
+    \item \textbf{Accuracy:} The system must achieve a high precision and recall rate in matching Arabic names.
+    \item \textbf{Performance:} The matching process should be fast enough to handle real-time requests.
+    \item \textbf{Scalability:} The system should be able to handle a large volume of data and users.
+    \item \textbf{Usability:} The user interface should be intuitive and easy to use.
+\end{itemize}
+
+\section{Project Scope}
+\subsection{Scope, Dataset, and Boundaries}
+The scope of this project is to develop a system for matching Arabic identities from a given dataset. The dataset consists of a large number of identity records, each containing personal information such as name, date of birth, and place of birth. The system assumes that the input data is in a specific format and that the database is accessible. The main constraint is the performance of the matching algorithm, which must be fast enough to handle real-time requests.
+
+\subsection{Stakeholders \& Core Use Cases}
 The main stakeholders of the project are the users who need to match identities (e.g., government agents), and the administrators who manage the system. The core use cases include:
 \begin{itemize}
     \item Searching for a citizen's record using partial or inexact information.
@@ -195,50 +198,82 @@ The main stakeholders of the project are the users who need to match identities 
   \centering
   \includegraphics[width=.9\textwidth]
   {figures/Core Use Cases Hierarchy.png}
-
+  \caption{Core Use Cases Hierarchy.}
   \label{fig:Core_Us_Cases_Hierarchy}
-    \captionCore Use Cases Hierarchy.}
 \end{figure}
 
-\section{Objectives & Success Criteria}
-The primary objective of this project is to develop a highly accurate and efficient system for Arabic identity matching.
-Success will be measured by the following criteria:
+\section{Proposed Solution}
+\subsection{General Overview}
+This project focuses on the development of an identity matching system specifically
+adapted to the Arabic language. Unlike Latin-based systems, Arabic introduces challenges
+such as orthographic variability, phonetic ambiguity, and transliteration issues.
+The objective is to design a reliable and scalable solution that integrates seamlessly
+into existing organizational workflows.
+
+\subsection{High-Level Architecture}
+The system follows a classic client-server architecture. The frontend, an Angular application, communicates with a backend REST API built in Rust. The backend handles business logic, data access from a PostgreSQL database, and graph-based family tree queries via Neo4j. A separate workflow, orchestrated by **n8n**, is triggered for family tree visualization. This workflow retrieves family data from Neo4j, passes it to an OpenAI service to generate a hierarchical image, and returns the visual to the frontend.
+
+\subsection{Technology Stack}
+The choice of technologies was driven by the project's requirements for performance, scalability, and modern user experience. Each component was selected to fill a specific role in the architecture.
+
 \begin{itemize}
-    \item \textbf{Accuracy:} The system must achieve a high precision and recall rate in matching Arabic names.
-    \item \textbf{Performance:} The matching process should be fast enough to handle real-time requests.
-    \item \textbf{Scalability:} The system should be able to handle a large volume of data and users.
-    \item \textbf{Usability:} The user interface should be intuitive and easy to use.
+    \item \textbf{Rust [LOGO]:} Chosen for the backend due to its exceptional performance, memory safety, and concurrency features, which are critical for handling real-time matching requests efficiently.
+    \item \textbf{Angular [LOGO]:} A powerful frontend framework used to build the responsive and feature-rich single-page application (SPA) that serves as the user interface for government agents.
+    \item \textbf{PostgreSQL [LOGO]:} A reliable and scalable open-source relational database used to store the core identity records, offering robust data integrity and performance.
+    \item \textbf{Neo4j [LOGO]:} A native graph database ideal for managing and querying the complex, interconnected data of family trees. Its graph-based model allows for efficient traversal of familial relationships.
+    \item \textbf{n8n [LOGO]:} A workflow automation tool used to orchestrate the family tree visualization process. It acts as the glue between Neo4j and the OpenAI API, automating the generation of the family tree image without adding complexity to the core backend application.
+    \item \textbf{OpenAI API [LOGO]:} Leveraged within the n8n workflow to dynamically generate a clear, hierarchical image of a family tree based on the structured JSON data provided by Neo4j.
+    \item \textbf{Docker [LOGO]:} Used for containerizing the entire application stack (backend, frontend, databases), ensuring consistent development and deployment environments.
 \end{itemize}
 
-\section{Scope Boundaries, Assumptions & Constraints}
-The scope of the project is limited to matching Arabic names. The system assumes that the input data is in a specific format and that the database is accessible. The main constraint is the performance of the matching algorithm, which must be fast enough to handle real-time requests.
-
-\section{Scope & Dataset}
-The scope of this project is to develop a system for matching Arabic identities from a given dataset. The dataset consists of a large number of identity records, each containing personal information such as name, date of birth, and place of birth.
-
-\section{Adopted Development Methodology}
+\section{Development Methodology}
 The project follows a hybrid approach, combining the Scrum framework for project management with the CRISP-DM methodology for the data science lifecycle.
 
 \subsection{Scrum Framework}
-Scrum is an agile framework for managing and completing complex projects. It uses short, iterative cycles called Sprints to deliver value incrementally. A Scrum team, consisting of a Product Owner, a Scrum Master, and Developers, works together through a series of structured events and with a set of artifacts to guide their work.
+Scrum is an agile framework designed for developing, delivering, and sustaining complex products. It is built on the principles of transparency, inspection, and adaptation. The framework is structured around a series of events, artifacts, and roles that work in concert to manage product development.
 
+\begin{itemize}
+    \item \textbf{Roles:}
+    \begin{itemize}
+        \item \textbf{Product Owner:} Responsible for maximizing the value of the product resulting from the work of the Development Team. This includes managing the Product Backlog.
+        \item \textbf{Scrum Master:} A servant-leader for the Scrum Team, helping everyone understand Scrum theory, practices, rules, and values.
+        \item \textbf{Development Team:} A self-organizing, cross-functional team of professionals who do the work of delivering a potentially releasable Increment of "Done" product at the end of each Sprint.
+    \end{itemize}
+    \item \textbf{Events (Ceremonies):}
+    \begin{itemize}
+        \item \textbf{The Sprint:} A time-box of one month or less during which a "Done," usable, and potentially releasable product Increment is created. Our project used two-week sprints.
+        \item \textbf{Sprint Planning:} A meeting where the work to be performed in the Sprint is planned.
+        \item \textbf{Daily Scrum:} A 15-minute daily meeting for the Development Team to synchronize activities and create a plan for the next 24 hours.
+        \item \textbf{Sprint Review:} Held at the end of the Sprint to inspect the Increment and adapt the Product Backlog if needed.
+        \item \textbf{Sprint Retrospective:} An opportunity for the Scrum Team to inspect itself and create a plan for improvements to be enacted during the next Sprint.
+    \end{itemize}
+    \item \textbf{Artifacts:}
+    \begin{itemize}
+        \item \textbf{Product Backlog:} An ordered list of everything that is known to be needed in the product. It is the single source of requirements for any changes to be made to the product.
+        \item \textbf{Sprint Backlog:} The set of Product Backlog items selected for the Sprint, plus a plan for delivering the product Increment and realizing the Sprint Goal.
+        \item \textbf{Increment:} The sum of all the Product Backlog items completed during a Sprint and the value of the increments of all previous Sprints.
+    \end{itemize}
+\end{itemize}
+
+This structured, iterative approach was essential for navigating the project's complexity, allowing for regular feedback and continuous improvement.
 
 \subsection{CRISP-DM Methodology}
-The data science component of the project followed the \textbf{Cross-Industry Standard Process for Data Mining (CRISP-DM)}. The phases were applied as follows:
+The data science component of the project followed the \textbf{Cross-Industry Standard Process for Data Mining (CRISP-DM)}. This methodology provides a structured approach to planning a data mining project. It is a robust and well-proven methodology. The phases were applied as follows:
 \begin{itemize}
-    \item \textbf{Business Understanding:} Focused on defining the core problem of identity matching within the operational context of the Ministère de l'Intérieur.
-    \item \textbf{Data Understanding:} Involved an in-depth analysis of the identity records to identify patterns, inconsistencies, and the types of orthographic and phonetic variations in Arabic names.
-    \item \textbf{Data Preparation:} Consisted of developing the text normalization pipeline to clean and standardize the names before matching.
-    \item \textbf{Modeling:} Centered on designing and implementing the hybrid matching algorithm, which combines phonetic encoding (Aramix Soundex) and fuzzy string similarity metrics.
-    \item \textbf{Evaluation:} The model's performance was measured for accuracy using a predefined golden set of matches and for speed via load testing.
-    \item \textbf{Deployment:} The final system, including the backend API and frontend application, was containerized using Docker for deployment.
+    \item \textbf{Business Understanding:} Focused on defining the core problem of identity matching within the operational context of the Ministère de l'Intérieur. This involved understanding the project objectives and requirements from a business perspective.
+    \item \textbf{Data Understanding:} Involved an in-depth analysis of the identity records to identify patterns, inconsistencies, and the types of orthographic and phonetic variations in Arabic names. This initial data collection and exploration helped to familiarize with the data and identify any quality issues.
+    \item \textbf{Data Preparation:} Consisted of developing the text normalization pipeline to clean and standardize the names before matching. This phase covered all activities to construct the final dataset from the initial raw data.
+    \item \textbf{Modeling:} Centered on designing and implementing the hybrid matching algorithm, which combines phonetic encoding (Aramix Soundex) and fuzzy string similarity metrics. Various modeling techniques were selected and applied, and their parameters were calibrated to optimal values.
+    \item \textbf{Evaluation:} The model's performance was measured for accuracy using a predefined golden set of matches and for speed via load testing. Before proceeding to final deployment, it was important to thoroughly evaluate the model and review the steps executed to construct it.
+    \item \textbf{Deployment:} The final system, including the backend API and frontend application, was containerized using Docker for deployment. The model was deployed into a production environment, ready to be used by the end-users.
 \end{itemize}
-By integrating these phases into the Scrum sprints, the development of the matching engine was both systematic and agile.
+By integrating these phases into the Scrum sprints, the development of the matching engine was both systematic and agile, ensuring that the data science components were developed iteratively and aligned with the overall project goals.
 
-\section{Roadmap & Timeline}
+\section{Project Planning}
+\subsection{Roadmap & Timeline}
 The project was executed over a six-month period, organized into three main phases. This structure allowed for a systematic progression from foundational research to final deployment, with iterative development within each phase.
 
-\subsection{Phase 1: Foundation \& Analysis (Months 1-2)}
+\subsubsection{Phase 1: Foundation \& Analysis (Months 1-2)}
 This initial phase focused on establishing the project's groundwork. Key activities included:
 \begin{itemize}
     \item A deep dive into the business requirements of the Ministère de l'Intérieur.
@@ -247,16 +282,16 @@ This initial phase focused on establishing the project's groundwork. Key activit
     \item Development of the initial text normalization and phonetic encoding prototypes.
 \end{itemize}
 
-\subsection{Phase 2: Core Development \& Implementation (Months 3-4)}
+\subsubsection{Phase 2: Core Development & Implementation (Months 3-4)}
 This phase involved the bulk of the implementation work. The focus was on building the core components of the system:
 \begin{itemize}
     \item Implementation of the full matching engine, including the weighted scoring algorithm combining Jaro-Winkler and Levenshtein metrics.
     \item Development of the backend REST API using Axum to serve the matching logic.
     \item Creation of the user interface with Angular, allowing agents to input data and view match results.
-    \item Integration with the PostgreSQL database and implementation of the Neo4j graph database for family tree visualization.
+    \item Integration with the Neo4j graph database and implementation of the n8n workflow for automated family tree image generation.
 \end{itemize}
 
-\subsection{Phase 3: Evaluation, Refinement \& Deployment (Months 5-6)}
+\subsubsection{Phase 3: Evaluation, Refinement \& Deployment (Months 5-6)}
 The final phase was dedicated to testing, improving, and preparing the system for production. Activities included:
 \begin{itemize}
     \item Rigorous evaluation of the matching algorithm's accuracy using the golden set.
@@ -265,15 +300,48 @@ The final phase was dedicated to testing, improving, and preparing the system fo
     \item Containerizing the application using Docker and preparing the deployment pipeline.
 \end{itemize}
 
+\subsection{Project Backlog}
+The Product Backlog is a dynamic, ordered list of what is needed to improve the product. The following table represents a sample of the initial backlog created for this project, detailing the key epics, user stories, and tasks.
 
+\begin{center}
+\begin{tabular}{|p{3cm}|l|l|p{6cm}|}
+\hline
+\textbf{Epic} & \textbf{ID} & \textbf{Type} & \textbf{Description} \\
+\hline
+\hline
+User Management & UM-1 & User Story & As an Administrator, I want to create, edit, and delete user accounts so that I can manage access to the system. \\
+\hline
+User Management & UM-2 & User Story & As a User, I want to be able to log in and log out of the system to securely access its features. \\
+\hline
+\hline
+Core Matching Functionality & CMF-1 & User Story & As a Government Agent, I want to input a citizen's biographical details into a form to search for potential matches. \\
+\hline
+Core Matching Functionality & CMF-2 & User Story & As a Government Agent, I want to see a list of potential matches ranked by a similarity score so that I can quickly identify the most likely candidates. \\
+\hline
+Core Matching Functionality & CMF-3 & Task & Implement the Jaro-Winkler and Levenshtein algorithms for string similarity. \\
+\hline
+Core Matching Functionality & CMF-4 & Task & Develop the Aramix Soundex phonetic encoding algorithm. \\
+\hline
+Core Matching Functionality & CMF-5 & Task & Create the weighted scoring model to combine individual field scores. \\
+\hline
+\hline
+Family Tree Visualization & FTV-1 & User Story & As a Government Agent, I want to click on a matched record to view the individual's family tree. \\
+\hline
+Family Tree Visualization & FTV-2 & Task & Set up the Neo4j graph database schema for storing family relationships. \\
+\hline
+Family Tree Visualization & FTV-3 & Task & Create the n8n workflow to query Neo4j, generate a family tree image via the OpenAI API, and return it to the frontend. \\
+\hline
+\hline
+System Infrastructure \& Deployment & SID-1 & Task & Set up the PostgreSQL database and create the necessary tables. \\
+\hline
+System Infrastructure \& Deployment & SID-2 & Task & Dockerize the Rust backend and Angular frontend applications. \\
+\hline
+System Infrastructure \& Deployment & SID-3 & Task & Create a `docker-compose.yml` file for easy local deployment. \\
+\hline
+\end{tabular}
+\end{center}
 
-\section{Data & Matching Primer (for context)}
-The system uses a dataset of identity records, which are loaded into a PostgreSQL database. The matching process involves normalizing the input data, generating a Soundex code for the names, and then comparing the records using a combination of string similarity metrics.
-
-\section{Technology Justifications}
-The choice of technologies was driven by the requirements of the project. Rust was chosen for the backend because of its performance and safety features. Angular was chosen for the frontend because of its rich feature set and its ability to build complex single-page applications. PostgreSQL was chosen for the database because of its reliability and scalability. Neo4j was chosen for the family tree feature due to its powerful graph database capabilities.
-
-\section{Risk & Mitigation (Top 5)}
+\subsection{Risk & Mitigation}
 \begin{enumerate}
     \item \textbf{Risk:} The matching algorithm is not accurate enough. \textbf{Mitigation:} Use a combination of different matching techniques and a weighted scoring model.
     \item \textbf{Risk:} The performance of the system is not good enough. \textbf{Mitigation:} Use a fast programming language like Rust and parallelize the scoring of candidates.
@@ -283,7 +351,7 @@ The choice of technologies was driven by the requirements of the project. Rust w
 \end{enumerate}
 
 \section{Conclusion}
-This chapter has provided a comprehensive presentation of the project, from its objectives to its technical and methodological choices.
+This chapter has provided a comprehensive presentation of the project, from its objectives to its technical and methodological choices. It establishes a clear foundation for the subsequent chapters, which will delve into the specific details of the system's analysis, design, and implementation.
 
 % ================================
 % Chapter 3
@@ -858,6 +926,18 @@ This will build the frontend and backend applications, create Docker images, and
 \end{appendices}
 
 \end{document}
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
