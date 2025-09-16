@@ -165,13 +165,7 @@ The current identity verification process is predominantly manual, leading to si
     \item \textbf{Visual Matching and Spreadsheets:} Agents manually scan lists to identify duplicates and inconsistencies. This process relies heavily on intensive filtering and sorting in tools like Excel or Access, which lack sophisticated similarity algorithms.
     \item \textbf{Lack of Centralization and Automation:} Data is fragmented across silos in different departments, consulates, and local databases. The process is slow, prone to human error, and provides no real-time feedback.
 \end{itemize}
-\section{Study of the Existing System}
-The current identity verification process is predominantly manual, leading to significant inefficiencies and risks. Key characteristics of the existing system include:
-\begin{itemize}
-    \item \textbf{Manual Paper-Based Management:} All requests and supporting documents are archived on printed media. Biographical information is often entered by hand into physical registers or basic spreadsheets.
-    \item \textbf{Visual Matching and Spreadsheets:} Agents manually scan lists to identify duplicates and inconsistencies. This process relies heavily on intensive filtering and sorting in tools like Excel or Access, which lack sophisticated similarity algorithms.
-    \item \textbf{Lack of Centralization and Automation:} Data is fragmented across silos in different departments, consulates, and local databases. The process is slow, prone to human error, and provides no real-time feedback.
-\end{itemize}
+
 
 \section{Problem Statement}
 The motivation for this project stems from the shortcomings of the current systems, which are ill-equipped to handle the complexities of Arabic names. The core challenges can be summarized as follows:
@@ -226,7 +220,8 @@ The scope of this project is to develop a system for matching Arabic identities 
 The project follows a hybrid approach, combining the Scrum framework for project management with the CRISP-DM methodology for the data science lifecycle.
 
 \subsection{Scrum Framework}
-The project was managed using the \textbf{Scrum} framework. In this context, I acted as the sole developer, while my academic and company supervisors served as the Product Owners, guiding the project vision and prioritizing the backlog. The project was organized into two-week sprints. Each sprint began with a planning session to define the goal and select tasks. Regular check-ins functioned as daily stand-ups to monitor progress. At the end of each sprint, a review was conducted to demonstrate the working increment and gather feedback, ensuring the project remained aligned with its objectives.
+Scrum is an agile framework for managing and completing complex projects. It uses short, iterative cycles called Sprints to deliver value incrementally. A Scrum team, consisting of a Product Owner, a Scrum Master, and Developers, works together through a series of structured events and with a set of artifacts to guide their work.
+
 
 \subsection{CRISP-DM Methodology}
 The data science component of the project followed the \textbf{Cross-Industry Standard Process for Data Mining (CRISP-DM)}. The phases were applied as follows:
@@ -863,6 +858,10 @@ This will build the frontend and backend applications, create Docker images, and
 \end{appendices}
 
 \end{document}
+
+
+
+
 
 
 
