@@ -77,6 +77,16 @@ Today, Inetum operates in over 27 countries across Europe, the Americas, Asia, a
   \label{fig:key-figures-inetum}
 \end{figure}
 
+\begin{figure}[htbp]
+\section{Inetum in the World}
+Inetum maintains strong alliances with the world's leading software and hardware vendors to deliver robust and integrated solutions. Key strategic partners include SAP, Microsoft, IBM, Oracle, Salesforce, and Sage. These partnerships enable Inetum to offer cutting-edge technologies and enterprise-grade solutions to its clients.
+
+  \centering
+  \includegraphics[width=\textwidth]{figures/Inetum_Worldwide.png} 
+  \caption{Inetum worldwide presence.}
+  \label{fig:inetum-worldwide}
+\end{figure}
+
 \section{Inetum in Tunisia}
 The Tunisian subsidiary of Inetum has over a decade of experience in IT organization and systems integration. With a team of more than 250 employees, the branch has achieved an annual revenue of €10 million in recent years.
 
@@ -97,14 +107,21 @@ Inetum Tunisia serves both public and private sector clients by leveraging the g
 
 
 
-\section{Clients}
-\begin{figure}[htbp]
-  \centering
-  \includegraphics[width=\textwidth]{figures/Clients.jpg}
-  \caption{ Inetum Tunisia clients.}
-  \label{fig:Clients}
-\end{figure}
 
+
+\section{Core Values}
+Inetum's core values are ambition, commitment, excellence, innovation, and solidarity. These values guide the company's actions and decisions, and they are reflected in the quality of the services and solutions that Inetum provides to its clients.
+
+
+
+\begin{figure}[htbp]
+\section{Clients}
+
+  \centering
+  \includegraphics[width=.9\textwidth]{figures/Clients.jpg}
+  \caption{Representative Inetum clients across sectors.}
+  \label{fig:inetum-clients}
+\end{figure}
 
 \subsection{Sectors of Activity}
 With its multi-specialist profile, Inetum provides a distinctive blend of proximity, sector-based organization, and high-quality industrial solutions to its clients. The group serves a wide range of industries, including:
@@ -116,12 +133,6 @@ With its multi-specialist profile, Inetum provides a distinctive blend of proxim
     \item Government and Public Sector
     \item Manufacturing and Industry
 \end{itemize}
-\begin{figure}[htbp]
-  \centering
-  \includegraphics[width=.9\textwidth]{figures/inetum_clients.png}
-  \caption{Representative Inetum clients across sectors.}
-  \label{fig:inetum-clients}
-\end{figure}
 
 \subsection{Strategic Partners}
 Inetum maintains strong alliances with the world's leading software and hardware vendors to deliver robust and integrated solutions. Key strategic partners include SAP, Microsoft, IBM, Oracle, Salesforce, and Sage. These partnerships enable Inetum to offer cutting-edge technologies and enterprise-grade solutions to its clients.
