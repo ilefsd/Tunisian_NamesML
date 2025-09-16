@@ -49,19 +49,18 @@
 \chapter*{General Introduction}
 \addcontentsline{toc}{chapter}{General Introduction}
 
-\section{Introduction}
-Every day in Tunisia, countless citizens face a bureaucratic nightmare that shouldn’t exist
-in the 21\textsuperscript{st} century. A mother cannot register her child for school because the system shows
-no record of his birth. A university graduate is denied a job because her name appears
-differently on her diploma than in the national database. An elderly man waits months for
-his pension because a single missing diacritical mark makes him invisible to government
-computers.
+Imagine waiting for hours at a government office in Tunisia, only to be told that your name cannot be found—not because you don’t exist, but because it was spelled slightly differently decades ago. This frustrating reality is a daily occurrence, but it is most acute for the millions who lack a standard national ID: citizens living abroad, minors in remote rural areas, newborns, and those who have lost their documentation. For them, a simple administrative query becomes an insurmountable barrier to accessing healthcare, education, and social aid.
 
-This is more than a thesis about computer science—it is about human dignity, governmental
-responsibility, and the transformative power of technology when it is designed
-with empathy and purpose. In the pages that follow, we detail not just how this system
-works, but why it matters for the future of Tunisia and other Arabic-speaking nations
-facing similar challenges.
+This crisis stems from two fundamental challenges. First, the inherent linguistic variability of Arabic names—with their nuanced diacritics, regional spellings, and multiple transliteration standards—creates a minefield for rigid, exact-match digital searches. Second, this complexity is compounded by administrative data fragmented across disconnected paper ledgers, spreadsheets, and legacy systems.
+
+The consequences are severe. Government agents, lacking intelligent tools, are forced into slow, error-prone manual verification. This process creates administrative bottlenecks, drives up operational costs, and introduces risks, ultimately eroding public trust. The requirement for a system that is not only accurate but also highly responsive, with a modern user experience (UX) for the agents who use it daily, is more critical than ever.
+
+This thesis addresses these challenges by designing and implementing an intelligent system for the robust matching of Arabic biographical records. We propose a hybrid pipeline that combines rule-based text normalization to unify orthographic variants, a custom phonetic algorithm called Aramix Soundex to account for similarities in pronunciation, and weighted fuzzy string matching using Levenshtein and Jaro-Winkler distances to accurately rank potential matches.
+
+This high-performance engine, built in Rust and served via a REST API, powers an intuitive Angular web application that empowers government agents to find individuals quickly and reliably. Furthermore, the system leverages a Neo4j graph database to model and visualize family trees, allowing for the reconstruction of familial relationships from the identity records.
+
+By bridging this critical gap, our work aims not only to solve a technical problem but also to restore dignity and access for countless individuals. The following chapters will detail the design, implementation, and evaluation of this solution, demonstrating a practical path toward a more inclusive and efficient digital state.
+
 
 % ================================
 % Chapter 1
@@ -69,15 +68,20 @@ facing similar challenges.
 \chapter{Presentation of the Host Organization}
 
 \section{Inetum: Global Overview}
-Inetum is an international IT services and digital solutions company that helps
-organizations in their digital transformation. It provides consulting, innovation,
-and technology services across a wide range of industries, combining local expertise
-with a global presence.
+Inetum, formerly known as GFI (Groupe Français d'Informatique), is a global IT services company specializing in digital transformation and consulting. In 2021, the group rebranded to Inetum to mark a new era as an expert in the "digital flow."
 
-\subsection{Organizational Structure of Inetum Tunisie}
-Inetum Tunisia is the group’s local branch delivering technology services adapted to
-the regional context. It serves both public and private organizations while leveraging
-Inetum’s global know-how.
+Today, Inetum operates in over 27 countries across Europe, the Americas, Asia, and Africa. With a dedicated team of nearly 27,000 professionals, the company generated a revenue of €2.2 billion in the last fiscal year. It provides a wide range of services, from consulting and innovation to application development, leveraging its local expertise on a global scale.
+
+\section{Inetum in Tunisia}
+The Tunisian subsidiary of Inetum has over a decade of experience in IT organization and systems integration. With a team of more than 250 employees, the branch has achieved an annual revenue of €10 million in recent years.
+
+Inetum Tunisia serves both public and private sector clients by leveraging the group's global expertise while adapting it to the regional context. The branch's activities are structured around four main pillars:
+\begin{itemize}
+    \item \textbf{Consulting and Services:} Including custom development for web and mobile portals, IoT solutions, and UX design.
+    \item \textbf{Business Intelligence:} Providing data-driven insights and analytics.
+    \item \textbf{Enterprise Solutions:} Implementing and managing solutions from partners like SAP and Microsoft.
+    \item \textbf{Human Resources (SIRH):} Offering specialized HR information systems.
+\end{itemize}
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=\textwidth]{figures/org_chart.png}
@@ -95,7 +99,7 @@ Inetum’s global know-how.
 
 \begin{figure}[htbp]
   \centering
-  \includegraphics[width=\textwidth]{figures/Key figures of Inetum.png}
+  \includegraphics[width=\textwidth]{figures/Key_figures_of_Inetum.png}
   \caption{Key figures of Inetum (employees, offices, revenue, etc.).}
   \label{fig:key-figures-inetum}
 \end{figure}
@@ -105,10 +109,15 @@ Inetum's core values are ambition, commitment, excellence, innovation, and solid
 
 \section{Clients}
 \subsection{Sectors of Activity}
-Inetum’s expertise covers consulting, business solutions, infrastructure services,
-and application services. The group also invests in cloud computing, artificial
-intelligence, cybersecurity, and digital experience, delivering value across diverse
-industries.
+With its multi-specialist profile, Inetum provides a distinctive blend of proximity, sector-based organization, and high-quality industrial solutions to its clients. The group serves a wide range of industries, including:
+\begin{itemize}
+    \item Banking and Financial Services
+    \item Telecommunications and Technology
+    \item Energy and Chemicals
+    \item Retail and Services
+    \item Government and Public Sector
+    \item Manufacturing and Industry
+\end{itemize}
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=.9\textwidth]{figures/inetum_clients.png}
@@ -117,6 +126,7 @@ industries.
 \end{figure}
 
 \subsection{Strategic Partners}
+Inetum maintains strong alliances with the world's leading software and hardware vendors to deliver robust and integrated solutions. Key strategic partners include SAP, Microsoft, IBM, Oracle, Salesforce, and Sage. These partnerships enable Inetum to offer cutting-edge technologies and enterprise-grade solutions to its clients.
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=.9\textwidth]{figures/partners.png}
@@ -165,16 +175,22 @@ The system follows a classic client-server architecture. The frontend is a singl
 
 \section{Problem Statement}
 The motivation for this project stems from the shortcomings of current systems,
-which fail to handle the complexities of Arabic names. Key challenges include:
+which fail to handle the complexities of Arabic names. The problem is particularly acute for individuals who may lack a national ID number, including:
 \begin{itemize}
-  \item \textbf{Linguistic variability:} different spellings and regional conventions.
-  \item \textbf{Phonetic similarity:} multiple names sounding alike but spelled differently.
-  \item \textbf{Clerical errors:} manual entry mistakes leading to inconsistencies.
-  \item \textbf{Integration:} ensuring the system can adapt to multiple applications.
+    \item \textbf{Newborns and Unregistered Births:} Especially in rural areas where births may not be officially declared in a timely manner.
+    \item \textbf{Minors:} Who often rely on family booklets or birth certificates before being issued a national ID at age 16 or 18.
+    \item \textbf{Citizens Living Abroad:} Who may have lost documents or only have foreign transliterations of their names.
+    \item \textbf{Elderly People:} Many of whom were born before the era of digitization and are only listed in handwritten registers.
+    \item \textbf{Vulnerable Populations:} Such as homeless individuals or refugees who may be disconnected from the civil registry.
 \end{itemize}
 
 \section{Stakeholders & Core Use Cases}
-The main stakeholders of the project are the users who need to match identities, and the administrators who manage the system. The core use case is the search for matches for a given identity.
+The main stakeholders of the project are the users who need to match identities (e.g., government agents), and the administrators who manage the system. The core use cases include:
+\begin{itemize}
+    \item Searching for a citizen's record using partial or inexact information.
+    \item Verifying an individual's identity when a national ID is not available.
+    \item Reconstructing family relationships through the family tree visualization.
+\end{itemize}
 
 \section{Objectives & Success Criteria}
 The primary objective of this project is to develop a highly accurate and efficient system for Arabic identity matching.
@@ -193,7 +209,7 @@ The scope of the project is limited to matching Arabic names. The system assumes
 The system uses a dataset of identity records, which are loaded into a PostgreSQL database. The matching process involves normalizing the input data, generating a Soundex code for the names, and then comparing the records using a combination of string similarity metrics.
 
 \section{Technology Justifications}
-The choice of technologies was driven by the requirements of the project. Rust was chosen for the backend because of its performance and safety features. Angular was chosen for the frontend because of its rich feature set and its ability to build complex single-page applications. PostgreSQL was chosen for the database because of its reliability and scalability.
+The choice of technologies was driven by the requirements of the project. Rust was chosen for the backend because of its performance and safety features. Angular was chosen for the frontend because of its rich feature set and its ability to build complex single-page applications. PostgreSQL was chosen for the database because of its reliability and scalability. Neo4j was chosen for the family tree feature due to its powerful graph database capabilities.
 
 \section{Risk & Mitigation (Top 5)}
 \begin{enumerate}
@@ -217,7 +233,12 @@ This chapter details the functional and non-functional requirements of the syste
 
 \section{Use–Case Model}
 \subsection{Main Use Cases}
-The main use case is the search for matches for a given identity. The user enters the identity information in a form, and the system returns a list of matching records.
+The main use cases of the system are:
+\begin{itemize}
+    \item \textbf{UC-01: Search for Matches:} An agent enters a citizen's details to find potential matches in the national registry.
+    \item \textbf{UC-02: Reconstruct Identity Profile:} An agent uses partial information (e.g., name and parents' names) to reconstruct and verify an identity profile for a citizen with lost or missing documents.
+    \item \textbf{UC-03: Visualize Family Tree:} An agent visualizes a citizen's family tree to understand familial relationships.
+\end{itemize}
 
 \subsection{Use‐Case Flow (UC-01 Search for Matches)}
 \begin{enumerate}
@@ -256,7 +277,7 @@ The following validation rules are applied to the input data:
 \end{itemize}
 
 \section{Traceability Matrix}
-A traceability matrix is a document that traces the requirements of the project from their origin to their implementation and verification. It is used to ensure that all requirements are met and that the system is built according to the specifications.
+(Content to be added)
 
 \section{Conclusion}
 This chapter has defined the requirements for the system, which will guide the design and implementation process.
@@ -442,7 +463,7 @@ This chapter has detailed the implementation of the system.
 This chapter presents the evaluation of the system, including the datasets and test cases used, and the accuracy and performance results.
 
 \section{Datasets and Test Cases}
-The system was tested using a dataset of synthetic identity records. The dataset was designed to cover a wide range of variations in Arabic names.
+The system was tested using a dataset of synthetic identity records. The dataset was designed to cover a wide range of variations in Arabic names, including the cases identified in the problem statement (e.g., unregistered births, citizens living abroad, etc.).
 
 \section{Accuracy and Performance}
 The accuracy of the matching algorithm was evaluated using the "golden set" of known matches. The system achieved a high precision and recall rate. The performance of the system was evaluated using a load testing tool, and the results showed that the system was able to handle a high volume of requests with low latency.
