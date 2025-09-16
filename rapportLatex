@@ -48,13 +48,7 @@
 \chapter*{General Introduction}
 \addcontentsline{toc}{chapter}{General Introduction}
 
-Imagine waiting for hours at a government office in Tunisia, only to be told that your name cannot be found—not because you don’t exist, but because it was spelled slightly differently decades ago. This frustrating reality is a daily occurrence, but it is most acute for the millions who lack a standard national ID: citizens living abroad, minors in remote rural areas, newborns, and those who have lost their documentation. For them, a simple administrative query becomes an insurmountable barrier to accessing healthcare, education, and social aid.
-
-This crisis stems from two fundamental challenges. First, the inherent linguistic variability of Arabic names—with their nuanced diacritics, regional spellings, and multiple transliteration standards—creates a minefield for rigid, exact-match digital searches. Second, this complexity is compounded by administrative data fragmented across disconnected paper ledgers, spreadsheets, and legacy systems.
-
-The consequences are severe. Government agents, lacking intelligent tools, are forced into slow, error-prone manual verification. This process creates administrative bottlenecks, drives up operational costs, and introduces risks, ultimately eroding public trust. The requirement for a system that is not only accurate but also highly responsive, with a modern user experience (UX) for the agents who use it daily, is more critical than ever.
-
-This thesis addresses these challenges by designing and implementing an intelligent system for the robust matching of Arabic biographical records. We propose a hybrid pipeline that combines rule-based text normalization to unify orthographic variants, a custom phonetic algorithm called Aramix Soundex to account for similarities in pronunciation, and weighted fuzzy string matching using Levenshtein and Jaro-Winkler distances to accurately rank potential matches.
+This thesis, undertaken for the **Ministère de l'Intérieur**, addresses these challenges by designing and implementing an intelligent system for the robust matching of Arabic biographical records. We propose a hybrid pipeline that combines rule-based text normalization to unify orthographic variants, a custom phonetic algorithm called Aramix Soundex to account for similarities in pronunciation, and weighted fuzzy string matching using Levenshtein and Jaro-Winkler distances to accurately rank potential matches.
 
 This high-performance engine, built in Rust and served via a REST API, powers an intuitive Angular web application that empowers government agents to find individuals quickly and reliably. Furthermore, the system leverages a Neo4j graph database to model and visualize family trees, allowing for the reconstruction of familial relationships from the identity records.
 
@@ -143,31 +137,13 @@ Inetum maintains strong alliances with the world's leading software and hardware
   \label{fig:inetum-partners}
 \end{figure}
 
-\section{Scope & Dataset}
-The scope of this project is to develop a system for matching Arabic identities from a given dataset. The dataset consists of a large number of identity records, each containing personal information such as name, date of birth, and place of birth.
-
-\section{Adopted Development Methodology}
-The project follows an \textbf{Agile methodology}, organized into iterative sprints.
-This approach ensures continuous feedback, incremental development, and adaptability
-to changing requirements. Each sprint focuses on a defined set of features, from
-backend foundations to frontend development and workflow integration.
-
-\section{Roadmap & Timeline}
-The project is divided into four sprints, each lasting two weeks. The roadmap is as follows:
-\begin{itemize}
-    \item \textbf{Sprint 1:} Backend Foundations and Matching Logic
-    \item \textbf{Sprint 2:} Database Integration and Advanced Modules
-    \item \textbf{Sprint 3:} Frontend Development and API Connection
-    \item \textbf{Sprint 4:} Evaluation, Optimization, and Deployment
-\end{itemize}
-
 \section{Conclusion}
-This chapter introduced the host organization, Inetum, and its Tunisian branch, providing an overview of its global presence, values, clients, and the context of the project.
+This chapter introduced the host organization, Inetum, and its Tunisian branch, providing an overview of its global presence, values, and clients.
 
 % ================================
 % Chapter 2
 % ================================
-\chapter{Project Presentation}
+\chapter{Project Definition and Planning}
 
 \section{Introduction}
 This chapter presents the project in detail, including its general overview, architecture, problem statement, and objectives.
@@ -180,11 +156,32 @@ The objective is to design a reliable and scalable solution that integrates seam
 into existing organizational workflows.
 
 \section{High-Level Architecture}
-The system follows a classic client-server architecture. The frontend is a single-page application (SPA) built with Angular, which communicates with a backend REST API. The backend is a Rust application that handles the business logic and data access.
+The system follows a classic client-server architecture. The frontend is an application built with Angular, which communicates with a backend REST API. The backend is a Rust application that handles the business logic, data access, and family tree generation. The architecture also includes **n8n** for workflow automation and data integration tasks.
+
+\section{Study of the Existing System}
+The current identity verification process is predominantly manual, leading to significant inefficiencies and risks. Key characteristics of the existing system include:
+\begin{itemize}
+    \item \textbf{Manual Paper-Based Management:} All requests and supporting documents are archived on printed media. Biographical information is often entered by hand into physical registers or basic spreadsheets.
+    \item \textbf{Visual Matching and Spreadsheets:} Agents manually scan lists to identify duplicates and inconsistencies. This process relies heavily on intensive filtering and sorting in tools like Excel or Access, which lack sophisticated similarity algorithms.
+    \item \textbf{Lack of Centralization and Automation:} Data is fragmented across silos in different departments, consulates, and local databases. The process is slow, prone to human error, and provides no real-time feedback.
+\end{itemize}
+\section{Study of the Existing System}
+The current identity verification process is predominantly manual, leading to significant inefficiencies and risks. Key characteristics of the existing system include:
+\begin{itemize}
+    \item \textbf{Manual Paper-Based Management:} All requests and supporting documents are archived on printed media. Biographical information is often entered by hand into physical registers or basic spreadsheets.
+    \item \textbf{Visual Matching and Spreadsheets:} Agents manually scan lists to identify duplicates and inconsistencies. This process relies heavily on intensive filtering and sorting in tools like Excel or Access, which lack sophisticated similarity algorithms.
+    \item \textbf{Lack of Centralization and Automation:} Data is fragmented across silos in different departments, consulates, and local databases. The process is slow, prone to human error, and provides no real-time feedback.
+\end{itemize}
 
 \section{Problem Statement}
-The motivation for this project stems from the shortcomings of current systems,
-which fail to handle the complexities of Arabic names. The problem is particularly acute for individuals who may lack a national ID number, including:
+The motivation for this project stems from the shortcomings of the current systems, which are ill-equipped to handle the complexities of Arabic names. The core challenges can be summarized as follows:
+\begin{itemize}
+    \item \textbf{Linguistic Variability of Arabic Names:} Orthographic and phonetic ambiguities create significant challenges for digital systems that rely on exact matches.
+    \item \textbf{Costs and Risks of Manual Verification:} The manual process is slow, expensive, and prone to errors that can deny citizens access to essential services.
+    \item \textbf{Need for a Modern and Responsive UX:} The current tools are outdated and inefficient, leading to a poor user experience for government agents and long wait times for citizens.
+\end{itemize}
+
+The problem is particularly acute for individuals who may lack a national ID number, including:
 \begin{itemize}
     \item \textbf{Newborns and Unregistered Births:} Especially in rural areas where births may not be officially declared in a timely manner.
     \item \textbf{Minors:} Who often rely on family booklets or birth certificates before being issued a national ID at age 16 or 18.
@@ -200,6 +197,14 @@ The main stakeholders of the project are the users who need to match identities 
     \item Verifying an individual's identity when a national ID is not available.
     \item Reconstructing family relationships through the family tree visualization.
 \end{itemize}
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=.9\textwidth]
+  {figures/Core Use Cases Hierarchy.png}
+
+  \label{fig:Core_Us_Cases_Hierarchy}
+    \captionCore Use Cases Hierarchy.}
+\end{figure}
 
 \section{Objectives & Success Criteria}
 The primary objective of this project is to develop a highly accurate and efficient system for Arabic identity matching.
@@ -213,6 +218,59 @@ Success will be measured by the following criteria:
 
 \section{Scope Boundaries, Assumptions & Constraints}
 The scope of the project is limited to matching Arabic names. The system assumes that the input data is in a specific format and that the database is accessible. The main constraint is the performance of the matching algorithm, which must be fast enough to handle real-time requests.
+
+\section{Scope & Dataset}
+The scope of this project is to develop a system for matching Arabic identities from a given dataset. The dataset consists of a large number of identity records, each containing personal information such as name, date of birth, and place of birth.
+
+\section{Adopted Development Methodology}
+The project follows a hybrid approach, combining the Scrum framework for project management with the CRISP-DM methodology for the data science lifecycle.
+
+\subsection{Scrum Framework}
+The project was managed using the \textbf{Scrum} framework. In this context, I acted as the sole developer, while my academic and company supervisors served as the Product Owners, guiding the project vision and prioritizing the backlog. The project was organized into two-week sprints. Each sprint began with a planning session to define the goal and select tasks. Regular check-ins functioned as daily stand-ups to monitor progress. At the end of each sprint, a review was conducted to demonstrate the working increment and gather feedback, ensuring the project remained aligned with its objectives.
+
+\subsection{CRISP-DM Methodology}
+The data science component of the project followed the \textbf{Cross-Industry Standard Process for Data Mining (CRISP-DM)}. The phases were applied as follows:
+\begin{itemize}
+    \item \textbf{Business Understanding:} Focused on defining the core problem of identity matching within the operational context of the Ministère de l'Intérieur.
+    \item \textbf{Data Understanding:} Involved an in-depth analysis of the identity records to identify patterns, inconsistencies, and the types of orthographic and phonetic variations in Arabic names.
+    \item \textbf{Data Preparation:} Consisted of developing the text normalization pipeline to clean and standardize the names before matching.
+    \item \textbf{Modeling:} Centered on designing and implementing the hybrid matching algorithm, which combines phonetic encoding (Aramix Soundex) and fuzzy string similarity metrics.
+    \item \textbf{Evaluation:} The model's performance was measured for accuracy using a predefined golden set of matches and for speed via load testing.
+    \item \textbf{Deployment:} The final system, including the backend API and frontend application, was containerized using Docker for deployment.
+\end{itemize}
+By integrating these phases into the Scrum sprints, the development of the matching engine was both systematic and agile.
+
+\section{Roadmap & Timeline}
+The project was executed over a six-month period, organized into three main phases. This structure allowed for a systematic progression from foundational research to final deployment, with iterative development within each phase.
+
+\subsection{Phase 1: Foundation \& Analysis (Months 1-2)}
+This initial phase focused on establishing the project's groundwork. Key activities included:
+\begin{itemize}
+    \item A deep dive into the business requirements of the Ministère de l'Intérieur.
+    \item Thorough analysis of the dataset to understand its structure and the nuances of Arabic name variations.
+    \item Design of the system architecture and initial setup of the development environment (Rust backend, Angular frontend).
+    \item Development of the initial text normalization and phonetic encoding prototypes.
+\end{itemize}
+
+\subsection{Phase 2: Core Development \& Implementation (Months 3-4)}
+This phase involved the bulk of the implementation work. The focus was on building the core components of the system:
+\begin{itemize}
+    \item Implementation of the full matching engine, including the weighted scoring algorithm combining Jaro-Winkler and Levenshtein metrics.
+    \item Development of the backend REST API using Axum to serve the matching logic.
+    \item Creation of the user interface with Angular, allowing agents to input data and view match results.
+    \item Integration with the PostgreSQL database and implementation of the Neo4j graph database for family tree visualization.
+\end{itemize}
+
+\subsection{Phase 3: Evaluation, Refinement \& Deployment (Months 5-6)}
+The final phase was dedicated to testing, improving, and preparing the system for production. Activities included:
+\begin{itemize}
+    \item Rigorous evaluation of the matching algorithm's accuracy using the golden set.
+    \item Performance profiling and optimization of the backend to ensure low latency.
+    \item Incorporating user feedback to refine the frontend and user experience.
+    \item Containerizing the application using Docker and preparing the deployment pipeline.
+\end{itemize}
+
+
 
 \section{Data & Matching Primer (for context)}
 The system uses a dataset of identity records, which are loaded into a PostgreSQL database. The matching process involves normalizing the input data, generating a Soundex code for the names, and then comparing the records using a combination of string similarity metrics.
@@ -805,6 +863,10 @@ This will build the frontend and backend applications, create Docker images, and
 \end{appendices}
 
 \end{document}
+
+
+
+
 
 
 
