@@ -217,11 +217,12 @@ The system follows a classic client-server architecture. The frontend, an Angula
 The choice of technologies was driven by the project's requirements for performance, scalability, and modern user experience. Each component was selected to fill a specific role in the architecture.
 
 \begin{itemize}
-    \item \textbf{Rust [LOGO]:} Chosen for the backend due to its exceptional performance, memory safety, and concurrency features, which are critical for handling real-time matching requests efficiently.
-    \item \textbf{Angular [LOGO]:} A powerful frontend framework used to build the responsive and feature-rich single-page application (SPA) that serves as the user interface for government agents.
-    \item \textbf{PostgreSQL [LOGO]:} A reliable and scalable open-source relational database used to store the core identity records, offering robust data integrity and performance.
-    \item \textbf{Neo4j [LOGO]:} A native graph database ideal for managing and querying the complex, interconnected data of family trees. Its graph-based model allows for efficient traversal of familial relationships.
-    \item \textbf{n8n [LOGO]:} A workflow automation tool used to orchestrate the family tree visualization process. It acts as the glue between Neo4j and the OpenAI API, automating the generation of the family tree image without adding complexity to the core backend application.
+   \item \textbf{Rust \includegraphics[height=1.2em]{figures/Rust.png}:} Chosen for the backend due to its exceptional performance, memory safety, and concurrency features, which are critical for handling real-time matching requests efficiently.
+    \item \textbf{Angular \includegraphics[height=1.2em]{figures/Angular.png}:} A powerful frontend framework used to build the responsive and feature-rich single-page application (SPA) that serves as the user interface for government agents.
+    \item \textbf{PostgreSQL \includegraphics[height=1.2em]{figures/postgres.png}:} A reliable and scalable open-source relational database used to store the core identity records, offering robust data integrity and performance.
+    \item \textbf{Neo4j \includegraphics[height=1.2em]{figures/Neo4j.png}:} A native graph database ideal for managing and querying the complex, interconnected data of family trees. Its graph-based model allows for efficient traversal of familial relationships.
+    \item \textbf{n8n \includegraphics[height=1.2em]{figures/n8n.png}:} A workflow automation tool used to orchestrate the family tree visualization process. It acts as the glue between Neo4j and the OpenAI API, automating the generation of the family tree image without adding complexity to the core backend application.
+    family tree image without adding complexity to the core backend application.
     \item \textbf{OpenAI API [LOGO]:} Leveraged within the n8n workflow to dynamically generate a clear, hierarchical image of a family tree based on the structured JSON data provided by Neo4j.
     \item \textbf{Docker [LOGO]:} Used for containerizing the entire application stack (backend, frontend, databases), ensuring consistent development and deployment environments.
 \end{itemize}
@@ -926,18 +927,6 @@ This will build the frontend and backend applications, create Docker images, and
 \end{appendices}
 
 \end{document}
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
