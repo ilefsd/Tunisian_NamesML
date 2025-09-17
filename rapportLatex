@@ -1,9 +1,15 @@
 \documentclass[12pt,a4paper]{report}
 
 % --- Preamble ---
-\usepackage[utf8]{inputenc}
-\usepackage[T1]{fontenc}
-\usepackage[english]{babel}
+\usepackage{fontspec}
+\usepackage{polyglossia}
+
+\setmainlanguage{english}
+\setotherlanguage{arabic}
+
+\setmainfont{Times New Roman} % Or any other suitable font for English
+\newfontfamily\arabicfont[Script=Arabic]{Amiri}
+
 \usepackage{geometry}
 \geometry{margin=1in}
 \usepackage{amsmath}
@@ -21,7 +27,7 @@
     breaklines=true,
     frame=single,
     showstringspaces=false,
-    language=Rust
+    language=rust
 }
 
 % ---------------- Document ----------------
@@ -205,10 +211,19 @@ The main stakeholders of the project are the users who need to match identities 
 \section{Proposed Solution}
 \subsection{General Overview}
 This project focuses on the development of an identity matching system specifically
-adapted to the Arabic language. Unlike Latin-based systems, Arabic introduces challenges
-such as orthographic variability, phonetic ambiguity, and transliteration issues.
-The objective is to design a reliable and scalable solution that integrates seamlessly
-into existing organizational workflows.
+adapted to the Arabic language. Unlike Latin-based systems, Arabic introduces unique challenges such as orthographic variability, phonetic ambiguity, and transliteration issues.
+
+For example, the system must handle:
+\begin{itemize}
+    \item \textarabic{همزة} (ء) in its multiple forms (\textarabic{أ، إ، ؤ، ئ}) and their interchangeable usage.
+    \item \textarabic{تنوين} (\textarabic{ً ٍ ٌ}) which may appear or be omitted in different records.
+    \item Diacritics (\textarabic{حركات}) like \textarabic{َ ِ ُ} that are often inconsistently written.
+    \item Ligatures such as (\textarabic{ﻻ}) for "lam-alef".
+    \item Variations in letter forms, e.g., "\textarabic{ة}" vs "\textarabic{ه}", or "\textarabic{ى}" vs "\textarabic{ي}".
+    \item Prefix and naming conventions (\textarabic{الـ، ابن، بن، بنت، أبو، أم}).
+\end{itemize}
+
+The objective is to design a reliable and scalable solution that integrates seamlessly into existing organizational workflows while accounting for these Arabic-specific linguistic variations. By combining normalization, phonetic encoding (Aramix Soundex), and fuzzy similarity scoring, the system ensures robust identity matching across heterogeneous data sources.
 
 \subsection{High-Level Architecture}
 The system follows a classic client-server architecture. The frontend, an Angular application, communicates with a backend REST API built in Rust. The backend handles business logic, data access from a PostgreSQL database, and graph-based family tree queries via Neo4j. A separate workflow, orchestrated by **n8n**, is triggered for family tree visualization. This workflow retrieves family data from Neo4j, passes it to an OpenAI service to generate a hierarchical image, and returns the visual to the frontend.
@@ -271,7 +286,7 @@ The data science component of the project followed the \textbf{Cross-Industry St
 By integrating these phases into the Scrum sprints, the development of the matching engine was both systematic and agile, ensuring that the data science components were developed iteratively and aligned with the overall project goals.
 
 \section{Project Planning}
-\subsection{Roadmap & Timeline}
+\subsection{Roadmap \& Timeline}
 The project was executed over a six-month period, organized into three main phases. This structure allowed for a systematic progression from foundational research to final deployment, with iterative development within each phase.
 
 \subsubsection{Phase 1: Foundation \& Analysis (Months 1-2)}
@@ -283,7 +298,7 @@ This initial phase focused on establishing the project's groundwork. Key activit
     \item Development of the initial text normalization and phonetic encoding prototypes.
 \end{itemize}
 
-\subsubsection{Phase 2: Core Development & Implementation (Months 3-4)}
+\subsubsection{Phase 2: Core Development \& Implementation (Months 3-4)}
 This phase involved the bulk of the implementation work. The focus was on building the core components of the system:
 \begin{itemize}
     \item Implementation of the full matching engine, including the weighted scoring algorithm combining Jaro-Winkler and Levenshtein metrics.
@@ -342,7 +357,7 @@ System Infrastructure \& Deployment & SID-3 & Task & Create a `docker-compose.ym
 \end{tabular}
 \end{center}
 
-\subsection{Risk & Mitigation}
+\subsection{Risk \& Mitigation}
 \begin{enumerate}
     \item \textbf{Risk:} The matching algorithm is not accurate enough. \textbf{Mitigation:} Use a combination of different matching techniques and a weighted scoring model.
     \item \textbf{Risk:} The performance of the system is not good enough. \textbf{Mitigation:} Use a fast programming language like Rust and parallelize the scoring of candidates.
@@ -357,7 +372,7 @@ This chapter has provided a comprehensive presentation of the project, from its 
 % ================================
 % Chapter 3
 % ================================
-\chapter{Analysis & Requirements}
+\chapter{Analysis \& Requirements}
 
 \section{Introduction}
 This chapter details the functional and non-functional requirements of the system, based on an analysis of the use cases.
@@ -416,7 +431,7 @@ This chapter has defined the requirements for the system, which will guide the d
 % ================================
 % Chapter 4
 % ================================
-\chapter{State of the Art & Foundations}
+\chapter{State of the Art \& Foundations}
 
 \section{Introduction}
 This chapter explores the existing landscape of identity matching systems, with a focus on the unique challenges posed by Arabic names. We will review current solutions, analyze their limitations, and provide an overview of our proposed approach.
@@ -448,22 +463,22 @@ This chapter outlines the design of the system, including the architecture, data
 \subsection{High-Level Architecture}
 \begin{figure}[htbp]
   \centering
-  \includegraphics[width=0.8\textwidth]{name_matchin_ui/src/assets/bg-tunisia.png}
+  \includegraphics[width=0.8\textwidth]{name_matchin_ui/src/assets/bg-tunisia}
   \caption{High-Level Architecture.}
   \label{fig:high-level-architecture}
 \end{figure}
 
-\subsection{Component Interaction & Data Flow}
+\subsection{Component Interaction \& Data Flow}
 The frontend sends a request to the backend API with the identity information. The backend then queries the database for candidate records and scores them using the matching algorithm. The results are then returned to the frontend and displayed to the user.
 
-\subsection{Technology Stack & Deployment}
+\subsection{Technology Stack \& Deployment}
 The backend is built using Rust, a modern systems programming language that is known for its performance, safety, and concurrency. The frontend is built using Angular, a popular framework for building single-page applications. The system uses a PostgreSQL database to store the identity records.
 
-\section{Data Model & UML Diagrams}
+\section{Data Model \& UML Diagrams}
 \subsection{Entity–Relationship Diagram}
 \begin{figure}[htbp]
   \centering
-  \includegraphics[width=0.8\textwidth]{name_matchin_ui/src/assets/bg-tunisia.png}
+  \includegraphics[width=0.8\textwidth]{name_matchin_ui/src/assets/bg-tunisia}
   \caption{Data Model (ERD).}
   \label{fig:data-model-2}
 \end{figure}
@@ -475,7 +490,7 @@ The backend is built using Rust, a modern systems programming language that is k
 (Content to be added)
 
 \section{Matching Algorithm Flow}
-\subsection{Overview & Mapping to FRs}
+\subsection{Overview \& Mapping to FRs}
 The matching algorithm is designed to meet the functional requirement of real-time matching. It uses a combination of pre-filtering and parallel scoring to achieve high performance.
 
 \subsection{Pseudocode}
@@ -927,14 +942,3 @@ This will build the frontend and backend applications, create Docker images, and
 \end{appendices}
 
 \end{document}
-
-
-
-
-
-
-
-
-
-
-
