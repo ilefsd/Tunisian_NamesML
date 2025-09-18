@@ -1,21 +1,27 @@
-<div class="app-container">
+<div class="app-container rtl-layout" dir="rtl">
   <!-- Modern Government Header -->
-  <header class="gov-header">
+  <header class="modern-header">
     <div class="header-content">
       <div class="header-left">
-        <img ngSrc="assets/Tunisia-Coat-Of-Arms-Logo.png" alt="علم تونس" class="flag" height="800" width="800"/>
-      </div>
-
-      <div class="header-center">
-        <h1 class="republic-title">الجمهورية التونسية</h1>
-        <h2 class="ministry-title">وزارة الداخلية – مطابق الهوية</h2>
+        <div class="logo-container">
+          <div class="tunisia-emblem">
+            <mat-icon class="emblem-icon">shield</mat-icon>
+          </div>
+          <div class="header-text">
+            <h1 class="republic-title">الجمهورية التونسية</h1>
+            <h2 class="ministry-title">وزارة الداخلية – مطابق الهوية</h2>
+          </div>
+        </div>
       </div>
 
       <div class="header-right">
-        <button mat-icon-button (click)="logout()" aria-label="تسجيل الخروج" class="logout-btn">
+        <button mat-stroked-button (click)="logout()" class="logout-btn">
           <mat-icon>logout</mat-icon>
+          <span>تسجيل الخروج</span>
         </button>
-        <img ngSrc="assets/coat-of-arms.png" alt="شعار الجمهورية" class="coat" height="183" width="275"/>
+        <div class="coat-emblem">
+          <mat-icon class="emblem-icon">account_balance</mat-icon>
+        </div>
       </div>
     </div>
   </header>
@@ -23,207 +29,236 @@
   <!-- Main Content -->
   <main class="main-content">
     <div class="content-wrapper">
+      <div class="layout-grid">
 
-      <!-- Form Card -->
-      <div class="form-card">
-        <div class="card-header">
-          <div class="title-section">
-            <h3 class="card-title">استمارة مطابقة الهوية</h3>
-            <p class="card-subtitle">يرجى ملء جميع البيانات المطلوبة بدقة لضمان الحصول على أفضل نتائج المطابقة</p>
-          </div>
-        </div>
-
-        <form [formGroup]="form" (ngSubmit)="onSubmit()" class="identity-form" [attr.aria-label]="'نموذج مطابقة الهوية'">
-
-          <!-- Global Error Message -->
-          <div *ngIf="error && error !== 'لا يوجد تطابق بسبب اختلاف الجنس'"
-               class="alert alert-error"
-               role="alert"
-               aria-live="polite">
-            <div class="alert-icon">
-              <mat-icon>error_outline</mat-icon>
-            </div>
-            <span class="alert-text">{{ error }}</span>
-          </div>
-
-          <!-- Form Grid -->
-          <div class="form-grid">
-
-            <!-- Personal Names Section -->
-            <div class="form-section">
-              <div class="section-header">
-                <mat-icon class="section-icon">person</mat-icon>
-                <h4 class="section-title">البيانات الشخصية</h4>
+        <!-- Left Panel - Branding -->
+        <div class="branding-panel">
+          <mat-card class="branding-card glass-effect">
+            <mat-card-content class="branding-content">
+              <div class="brand-logo">
+                <div class="logo-circle">
+                  <mat-icon class="main-logo">verified_user</mat-icon>
+                </div>
+                <h2 class="brand-title">مطابق الهوية</h2>
+                <p class="brand-subtitle">نظام التحقق من الهوية الرقمي</p>
               </div>
 
-              <div class="form-row">
-                <mat-form-field appearance="outline" class="form-field">
-                  <mat-label>الاسم الأول</mat-label>
-                  <input matInput formControlName="first_name" required autocomplete="given-name">
-                  <mat-icon matSuffix>badge</mat-icon>
-                  <mat-error *ngIf="form.get('first_name')?.errors?.['required']">
-                    الاسم الأول مطلوب
-                  </mat-error>
-                </mat-form-field>
-
-                <mat-form-field appearance="outline" class="form-field">
-                  <mat-label>اسم العائلة</mat-label>
-                  <input matInput formControlName="last_name" required autocomplete="family-name">
-                  <mat-icon matSuffix>family_restroom</mat-icon>
-                  <mat-error *ngIf="form.get('last_name')?.errors?.['required']">
-                    اسم العائلة مطلوب
-                  </mat-error>
-                </mat-form-field>
-              </div>
-
-              <div class="form-row">
-                <mat-form-field appearance="outline" class="form-field">
-                  <mat-label>اسم الأب</mat-label>
-                  <input matInput formControlName="father_name">
-                  <mat-icon matSuffix>man</mat-icon>
-                </mat-form-field>
-
-                <mat-form-field appearance="outline" class="form-field">
-                  <mat-label>اسم الجد</mat-label>
-                  <input matInput formControlName="grandfather_name">
-                  <mat-icon matSuffix>elderly</mat-icon>
-                </mat-form-field>
-              </div>
-
-              <div class="form-row">
-                <mat-form-field appearance="outline" class="form-field">
-                  <mat-label>اسم الأم</mat-label>
-                  <input matInput formControlName="mother_name">
-                  <mat-icon matSuffix>woman</mat-icon>
-                </mat-form-field>
-
-                <mat-form-field appearance="outline" class="form-field">
-                  <mat-label>اسم عائلة الأم</mat-label>
-                  <input matInput formControlName="mother_last_name">
-                  <mat-icon matSuffix>family_restroom</mat-icon>
-                </mat-form-field>
-              </div>
-            </div>
-
-            <!-- Birth Information Section -->
-            <div class="form-section">
-              <div class="section-header">
-                <mat-icon class="section-icon">cake</mat-icon>
-                <h4 class="section-title">بيانات الميلاد</h4>
-              </div>
-
-              <div class="birth-date-group">
-                <label class="group-label">
-                  <mat-icon class="label-icon">event</mat-icon>
-                  تاريخ الميلاد
-                </label>
-                <div class="date-inputs" role="group" aria-label="تاريخ الميلاد">
-                  <mat-form-field appearance="outline" class="date-field">
-                    <mat-label>يوم</mat-label>
-                    <input matInput type="number" formControlName="dob_day" min="1" max="31"
-                           placeholder="01" aria-label="يوم الميلاد">
-                  </mat-form-field>
-
-                  <mat-form-field appearance="outline" class="date-field">
-                    <mat-label>شهر</mat-label>
-                    <input matInput type="number" formControlName="dob_month" min="1" max="12"
-                           placeholder="01" aria-label="شهر الميلاد">
-                  </mat-form-field>
-
-                  <mat-form-field appearance="outline" class="date-field">
-                    <mat-label>سنة</mat-label>
-                    <input matInput type="number" formControlName="dob_year"
-                           placeholder="1990" aria-label="سنة الميلاد">
-                  </mat-form-field>
+              <div class="feature-list">
+                <div class="feature-item">
+                  <mat-icon class="feature-icon">check_circle</mat-icon>
+                  <span>نظام آمن ومشفر</span>
+                </div>
+                <div class="feature-item">
+                  <mat-icon class="feature-icon">check_circle</mat-icon>
+                  <span>مطابقة دقيقة وسريعة</span>
+                </div>
+                <div class="feature-item">
+                  <mat-icon class="feature-icon">check_circle</mat-icon>
+                  <span>متوافق مع المعايير الدولية</span>
                 </div>
               </div>
 
-              <div class="form-row">
-                <mat-form-field appearance="outline" class="form-field">
-                  <mat-label>الجنس</mat-label>
-                  <mat-select formControlName="sex" aria-label="اختر الجنس">
-                    <mat-option [value]="1">
-                      <div class="select-option">
-                        <mat-icon>male</mat-icon>
-                        ذكر
-                      </div>
-                    </mat-option>
-                    <mat-option [value]="2">
-                      <div class="select-option">
-                        <mat-icon>female</mat-icon>
-                        أنثى
-                      </div>
-                    </mat-option>
-                  </mat-select>
-                  <mat-icon matSuffix>wc</mat-icon>
-                  <mat-error *ngIf="error === 'لا يوجد تطابق بسبب اختلاف الجنس'">
-                    {{ error }}
-                  </mat-error>
-                </mat-form-field>
-
-                <mat-form-field appearance="outline" class="form-field">
-                  <mat-label>مكان الولادة</mat-label>
-                  <input matInput formControlName="place_of_birth" autocomplete="address-level2">
-                  <mat-icon matSuffix>location_on</mat-icon>
-                </mat-form-field>
+              <div class="info-box">
+                <mat-icon class="info-icon">info</mat-icon>
+                <p class="info-text">
+                  يرجى التأكد من صحة جميع البيانات المدخلة لضمان الحصول على أفضل نتائج المطابقة
+                </p>
               </div>
-            </div>
-          </div>
+            </mat-card-content>
+          </mat-card>
+        </div>
 
-          <!-- Submit Button -->
-          <div class="form-actions">
-            <button
-              mat-raised-button
-              type="submit"
-              class="submit-btn"
-              [disabled]="loading || form.invalid"
-              [attr.aria-label]="loading ? 'جاري المطابقة' : 'بدء مطابقة الهوية'">
-              <mat-icon class="btn-icon" [class.loading]="loading">
-                {{ loading ? 'hourglass_empty' : 'search' }}
-              </mat-icon>
-              <span>{{ loading ? 'جارٍ المطابقة…' : 'مطابقة الهوية' }}</span>
-            </button>
-          </div>
+        <!-- Right Panel - Form -->
+        <div class="form-panel">
+          <mat-card class="form-card glass-effect">
+            <mat-card-header class="form-header">
+              <mat-card-title class="form-title">
+                <mat-icon class="title-icon">person</mat-icon>
+                <span>استمارة مطابقة الهوية</span>
+              </mat-card-title>
+              <mat-card-subtitle class="form-subtitle">
+                يرجى ملء جميع البيانات المطلوبة بدقة
+              </mat-card-subtitle>
+            </mat-card-header>
 
-        </form>
+            <mat-card-content class="form-content">
+              <!-- Global Error Message -->
+              <mat-card *ngIf="error && error !== 'لا يوجد تطابق بسبب اختلاف الجنس'"
+                        class="error-alert"
+                        role="alert">
+                <mat-card-content class="error-content">
+                  <mat-icon class="error-icon">error_outline</mat-icon>
+                  <span class="error-text">{{ error }}</span>
+                </mat-card-content>
+              </mat-card>
 
-        <!-- Loading State -->
-        <div *ngIf="loading" class="loading-overlay" role="status" aria-label="جاري التحميل">
-          <div class="loading-content">
-            <mat-spinner diameter="60" class="loading-spinner"></mat-spinner>
-            <p class="loading-text">جارٍ البحث والمطابقة…</p>
-          </div>
+              <form [formGroup]="form" (ngSubmit)="onSubmit()" class="identity-form">
+
+                <!-- Personal Information Section -->
+                <div class="form-section">
+                  <div class="section-header">
+                    <mat-icon class="section-icon">person</mat-icon>
+                    <h3 class="section-title">البيانات الشخصية</h3>
+                  </div>
+
+                  <div class="form-grid">
+                    <mat-form-field appearance="outline" class="modern-field">
+                      <mat-label>الاسم الأول *</mat-label>
+                      <input matInput formControlName="first_name" required>
+                      <mat-icon matSuffix>badge</mat-icon>
+                      <mat-error *ngIf="form.get('first_name')?.errors?.['required']">
+                        الاسم الأول مطلوب
+                      </mat-error>
+                    </mat-form-field>
+
+                    <mat-form-field appearance="outline" class="modern-field">
+                      <mat-label>اسم العائلة *</mat-label>
+                      <input matInput formControlName="last_name" required>
+                      <mat-icon matSuffix>family_restroom</mat-icon>
+                      <mat-error *ngIf="form.get('last_name')?.errors?.['required']">
+                        اسم العائلة مطلوب
+                      </mat-error>
+                    </mat-form-field>
+
+                    <mat-form-field appearance="outline" class="modern-field">
+                      <mat-label>اسم الأب</mat-label>
+                      <input matInput formControlName="father_name">
+                      <mat-icon matSuffix>man</mat-icon>
+                    </mat-form-field>
+
+                    <mat-form-field appearance="outline" class="modern-field">
+                      <mat-label>اسم الجد</mat-label>
+                      <input matInput formControlName="grandfather_name">
+                      <mat-icon matSuffix>elderly</mat-icon>
+                    </mat-form-field>
+
+                    <mat-form-field appearance="outline" class="modern-field">
+                      <mat-label>اسم الأم</mat-label>
+                      <input matInput formControlName="mother_name">
+                      <mat-icon matSuffix>woman</mat-icon>
+                    </mat-form-field>
+
+                    <mat-form-field appearance="outline" class="modern-field">
+                      <mat-label>اسم عائلة الأم</mat-label>
+                      <input matInput formControlName="mother_last_name">
+                      <mat-icon matSuffix>family_restroom</mat-icon>
+                    </mat-form-field>
+                  </div>
+                </div>
+
+                <mat-divider class="section-divider"></mat-divider>
+
+                <!-- Birth Information Section -->
+                <div class="form-section">
+                  <div class="section-header">
+                    <mat-icon class="section-icon">cake</mat-icon>
+                    <h3 class="section-title">بيانات الميلاد</h3>
+                  </div>
+
+                  <div class="birth-section">
+                    <div class="birth-date-group">
+                      <label class="group-label">
+                        <mat-icon class="label-icon">event</mat-icon>
+                        تاريخ الميلاد
+                      </label>
+                      <div class="date-inputs">
+                        <mat-form-field appearance="outline" class="date-field">
+                          <mat-label>يوم</mat-label>
+                          <input matInput type="number" formControlName="dob_day" min="1" max="31" placeholder="01">
+                        </mat-form-field>
+                        <mat-form-field appearance="outline" class="date-field">
+                          <mat-label>شهر</mat-label>
+                          <input matInput type="number" formControlName="dob_month" min="1" max="12" placeholder="01">
+                        </mat-form-field>
+                        <mat-form-field appearance="outline" class="date-field">
+                          <mat-label>سنة</mat-label>
+                          <input matInput type="number" formControlName="dob_year" placeholder="1990">
+                        </mat-form-field>
+                      </div>
+                    </div>
+
+                    <div class="other-fields">
+                      <mat-form-field appearance="outline" class="modern-field">
+                        <mat-label>الجنس</mat-label>
+                        <mat-select formControlName="sex">
+                          <mat-option [value]="1">
+                            <div class="select-option">
+                              <mat-icon>male</mat-icon>
+                              ذكر
+                            </div>
+                          </mat-option>
+                          <mat-option [value]="2">
+                            <div class="select-option">
+                              <mat-icon>female</mat-icon>
+                              أنثى
+                            </div>
+                          </mat-option>
+                        </mat-select>
+                        <mat-icon matSuffix>wc</mat-icon>
+                        <mat-error *ngIf="error === 'لا يوجد تطابق بسبب اختلاف الجنس'">
+                          {{ error }}
+                        </mat-error>
+                      </mat-form-field>
+
+                      <mat-form-field appearance="outline" class="modern-field">
+                        <mat-label>مكان الولادة</mat-label>
+                        <input matInput formControlName="place_of_birth">
+                        <mat-icon matSuffix>location_on</mat-icon>
+                      </mat-form-field>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Submit Button -->
+                <div class="form-actions">
+                  <button mat-raised-button
+                          type="submit"
+                          class="submit-btn modern-btn"
+                          [disabled]="loading || form.invalid">
+                    <mat-icon class="btn-icon" [class.loading]="loading">
+                      {{ loading ? 'hourglass_empty' : 'search' }}
+                    </mat-icon>
+                    <span>{{ loading ? 'جارٍ المطابقة…' : 'مطابقة الهوية' }}</span>
+                  </button>
+                </div>
+              </form>
+
+              <!-- Loading Overlay -->
+              <div *ngIf="loading" class="loading-overlay">
+                <div class="loading-content">
+                  <mat-spinner diameter="60" class="loading-spinner"></mat-spinner>
+                  <p class="loading-text">جارٍ البحث والمطابقة…</p>
+                </div>
+              </div>
+            </mat-card-content>
+          </mat-card>
         </div>
       </div>
 
       <!-- Results Section -->
-      <div *ngIf="results.length" class="results-section" role="region" aria-label="نتائج المطابقة">
-        <div *ngFor="let result of results; let i = index"
-             class="result-iteration"
-             (click)="openFamilyTreeModal(result)"
-             (keydown.enter)="openFamilyTreeModal(result)"
-             (keydown.space)="openFamilyTreeModal(result)"
-             tabindex="0"
-             role="button"
-             [attr.aria-label]="'عرض تفاصيل المطابقة رقم ' + (i + 1)">
+      <div *ngIf="results.length" class="results-section">
+        <div *ngFor="let result of results; let i = index" class="result-container">
 
           <!-- Matched Identity Card -->
-          <div class="result-card matched-identity-card">
-            <div class="card-header">
-              <div class="header-with-icon">
+          <mat-card class="result-card glass-effect clickable-card"
+                    (click)="openFamilyTreeModal(result)"
+                    tabindex="0"
+                    role="button">
+            <mat-card-header class="result-header">
+              <div class="result-title-section">
                 <mat-icon class="success-icon">verified</mat-icon>
-                <h4>الهوية المطابقة #{{ i + 1 }}</h4>
+                <h4 class="result-title">الهوية المطابقة #{{ i + 1 }}</h4>
               </div>
-              <div class="match-score" [attr.aria-label]="'درجة التطابق ' + result.total_score + '%'">
-                <div class="score-circle">
+              <div class="score-display">
+                <div class="score-circle" [ngClass]="getScoreClass(result.total_score)">
                   <span class="score-value">{{ result.total_score }}%</span>
                 </div>
                 <span class="score-label">درجة التطابق</span>
               </div>
-            </div>
+            </mat-card-header>
 
-            <div class="identity-details">
-              <div class="detail-grid">
+            <mat-card-content class="identity-details">
+              <div class="details-grid">
                 <div class="detail-item">
                   <div class="detail-label">
                     <mat-icon>badge</mat-icon>
@@ -288,41 +323,42 @@
                   <div class="detail-value">{{ result.matched_identity.sex === 1 ? 'ذكر' : 'أنثى' }}</div>
                 </div>
               </div>
-            </div>
-          </div>
+            </mat-card-content>
+          </mat-card>
 
           <!-- Score Breakdown Card -->
-          <div class="result-card score-breakdown-card">
-            <div class="card-header">
-              <div class="header-with-icon">
+          <mat-card class="score-card glass-effect">
+            <mat-card-header class="score-header">
+              <div class="score-title-section">
                 <mat-icon class="chart-icon">analytics</mat-icon>
-                <h4>تفصيل درجات التطابق #{{ i + 1 }}</h4>
+                <h4 class="score-title">تفصيل درجات التطابق #{{ i + 1 }}</h4>
               </div>
-            </div>
+            </mat-card-header>
 
-            <div class="score-list">
-              <div *ngFor="let f of result.breakdown" class="score-item">
-                <div class="score-info">
-                  <span class="field-name">{{ f.field }}</span>
-                  <span class="score-percentage">{{ f.score }}%</span>
-                </div>
-                <div class="score-bar" role="progressbar"
-                     [attr.aria-valuenow]="f.score"
-                     [attr.aria-valuetext]="f.score + '%'"
-                     aria-valuemin="0"
-                     aria-valuemax="100">
-                  <div class="score-fill" [style.width.%]="f.score"></div>
+            <mat-card-content class="score-content">
+              <div class="score-list">
+                <div *ngFor="let f of result.breakdown" class="score-item">
+                  <div class="score-info">
+                    <span class="field-name">{{ f.field }}</span>
+                    <span class="score-percentage" [ngClass]="getScoreClass(f.score)">{{ f.score }}%</span>
+                  </div>
+                  <mat-progress-bar
+                    mode="determinate"
+                    [value]="f.score"
+                    [color]="getScoreColor(f.score)"
+                    class="score-bar">
+                  </mat-progress-bar>
                 </div>
               </div>
-            </div>
-          </div>
+            </mat-card-content>
+          </mat-card>
 
         </div>
       </div>
 
       <!-- API Usage Button -->
       <div class="utility-section">
-        <button mat-raised-button color="accent" class="utility-btn" (click)="openPopup()">
+        <button mat-stroked-button class="utility-btn" (click)="openPopup()">
           <mat-icon>analytics</mat-icon>
           عرض استخدام API
         </button>
@@ -332,10 +368,10 @@
   </main>
 
   <!-- Footer -->
-  <footer class="gov-footer">
+  <footer class="modern-footer">
     <div class="footer-content">
       <div class="footer-logo">
-        <img src="assets/Tunisia-Coat-Of-Arms-Logo.png" alt="شعار تونس" class="footer-flag">
+        <mat-icon class="footer-emblem">account_balance</mat-icon>
       </div>
       <p class="footer-text">© 2025 الجمهورية التونسية – جميع الحقوق محفوظة</p>
     </div>

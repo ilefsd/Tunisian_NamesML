@@ -51,18 +51,16 @@ export class IdentityMatchComponent {
 
   openFamilyTreeModal(matchResult: MatchResult): void {
     const dialogRef = this.dialog.open(FamilyTreeComponent, {
-      width: '80vw', // Consider making this responsive or using CSS classes
+      width: '80vw',
       maxWidth: '95vw',
       maxHeight: '90vh',
       data: { identity: matchResult.matched_identity },
-      panelClass: 'family-tree-dialog-container' // For custom global styling if needed
+      panelClass: 'family-tree-dialog-container'
     });
 
     dialogRef.afterClosed().subscribe((dialogResult: any) => {
       console.log('The dialog was closed', dialogResult);
-      // You can add logic here if needed after the dialog closes
     });
-    // console.log("Opening modal for:", matchResult.matched_identity); // Placeholder action removed
   }
 
   onSubmit() {
@@ -94,11 +92,9 @@ export class IdentityMatchComponent {
       },
       error: (err: any) => {
         this.loading = false;
-        // If the backend returns 400 with { message: "لا يوجد تطابق بسبب اختلاف الجنس" }
         if (err.status === 400 && err.error && err.error.message) {
           this.error = err.error.message;
         } else {
-          // Generic fallback
           this.error = 'حدث خطأ أثناء المطابقة. يُرجى المحاولة مجددًا.';
         }
       }
@@ -115,5 +111,17 @@ export class IdentityMatchComponent {
         });
       });
     }
+  }
+
+  getScoreColor(score: number): string {
+    if (score >= 90) return 'primary';
+    if (score >= 70) return 'accent';
+    return 'warn';
+  }
+
+  getScoreClass(score: number): string {
+    if (score >= 90) return 'score-excellent';
+    if (score >= 70) return 'score-good';
+    return 'score-poor';
   }
 }

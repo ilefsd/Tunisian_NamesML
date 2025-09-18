@@ -1,0 +1,59 @@
+version: '3.8'
+
+services:
+  # Frontend Service (Angular)
+  frontend:
+    build:
+      context: ./name_matchin_ui # Path to your Angular project
+      dockerfile: Dockerfile
+    container_name: angular_frontend
+    ports:
+      - "4200:80" # Map host port 4200 to container port 80 (Nginx)
+    restart: unless-stopped
+    networks:
+      - app-network
+
+  # Backend Service (Rust)
+  backend:
+    build:
+      context: ./my_project # Path to your Rust project
+      dockerfile: Dockerfile
+    container_name: rust_backend
+    ports:
+      - "8000:8000" # Map host port 8000 to the port your Rust app listens on
+    restart: unless-stopped
+    depends_on:
+      - db # Wait for the database to be ready before starting
+    environment:
+      # Pass the database connection URL to your Rust application
+      - DATABASE_URL=postgres://myuser:mypassword@db:5432/mydatabase
+      # Ensure your Rust app listens on 0.0.0.0:8000
+      - ROCKET_ADDRESS=0.0.0.0
+    networks:
+      - app-network
+
+  # Database Service (PostgreSQL)
+  db:
+    image: postgres:15-alpine
+    container_name: postgres_db
+    environment:
+      POSTGRES_USER: myuser
+      POSTGRES_PASSWORD: mypassword
+      POSTGRES_DB: mydatabase
+    ports:
+      - "5432:5432" # Expose Postgres port to the host for debugging/management
+    volumes:
+      - postgres_data:/var/lib/postgresql/data # Persist database data
+    networks:
+      - app-network
+    restart: unless-stopped
+
+# Define the network
+networks:
+  app-network:
+    driver: bridge
+
+# Define the named volume for data persistence
+volumes:
+  postgres_data:
+    driver: local

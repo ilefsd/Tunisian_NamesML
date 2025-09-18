@@ -4,14 +4,14 @@ import {
   supportsScrollBehavior
 } from "./chunk-2O4WY5GE.js";
 import {
+  BidiModule,
+  Directionality
+} from "./chunk-DKVKHOTZ.js";
+import {
   Platform,
   coerceElement,
   coerceNumberProperty
 } from "./chunk-YJG3EPL7.js";
-import {
-  BidiModule,
-  Directionality
-} from "./chunk-DKVKHOTZ.js";
 import {
   DOCUMENT
 } from "./chunk-SIGGMPJI.js";
@@ -1682,4 +1682,4 @@ export {
   CdkScrollableModule,
   ScrollingModule
 };
-//# sourceMappingURL=chunk-RHDJR77Q.js.map
+//# sourceMappingURL=chunk-7ECAOBVF.js.map
