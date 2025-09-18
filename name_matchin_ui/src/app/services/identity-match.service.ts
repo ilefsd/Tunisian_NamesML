@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import {HttpClient, HttpHeaders} from '@angular/common/http';
 import { Observable } from 'rxjs';
+import {AuthService} from './auth.service';
 
 export interface InputIdentity {
   first_name:       string;
@@ -39,9 +40,11 @@ export interface MatchResult {
 export class IdentityMatchService {
   private apiUrl = '/match';
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private authService: AuthService) { }
 
-  matchIdentity(input: InputIdentity): Observable<MatchResult[]> {
-    return this.http.post<MatchResult[]>(this.apiUrl, input);
+  matchIdentity(identity: InputIdentity): Observable<MatchResult[]> {
+    const token = localStorage.getItem('token');
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    return this.http.post<MatchResult[]>(this.apiUrl, identity, { headers });
   }
 }

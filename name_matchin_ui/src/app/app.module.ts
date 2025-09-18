@@ -11,17 +11,29 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatButtonModule } from '@angular/material/button';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import {MatCard} from '@angular/material/card';
+import {MatCard, MatCardContent, MatCardHeader} from '@angular/material/card';
 import {MatIcon} from '@angular/material/icon';
 import {MatProgressSpinner} from '@angular/material/progress-spinner';
 import { FamilyTreeComponent } from './family-tree/family-tree.component';
-
+import {NgOptimizedImage} from '@angular/common';
+import {MatDialogActions, MatDialogContent, MatDialogTitle} from '@angular/material/dialog';
+import { LoginComponent } from './login/login.component';
+import { RegisterComponent } from './register/register.component';
+import { ApiUsagePopupComponent } from './api-usage-popup/api-usage-popup.component';
+import {MatCheckbox} from '@angular/material/checkbox';
+import {MatProgressBar} from '@angular/material/progress-bar';
+import {MatDivider} from '@angular/material/divider';
+import { MatCardModule } from '@angular/material/card';
 
 @NgModule({
   declarations: [
     AppComponent,
     IdentityMatchComponent,
-    FamilyTreeComponent
+    FamilyTreeComponent,
+    LoginComponent,
+    RegisterComponent,
+    ApiUsagePopupComponent
+
   ],
   imports: [
     BrowserModule,
@@ -38,6 +50,16 @@ import { FamilyTreeComponent } from './family-tree/family-tree.component';
     MatCard,
     MatIcon,
     MatProgressSpinner,
+    NgOptimizedImage,
+    MatDialogContent,
+    MatDialogActions,
+    MatDialogTitle,
+    MatCheckbox,
+    MatCardHeader,
+    MatProgressBar,
+    MatCardContent,
+    MatDivider,
+    MatCardModule,
   ],
   providers: [],
   bootstrap: [AppComponent]

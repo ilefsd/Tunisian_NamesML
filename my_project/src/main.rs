@@ -4,13 +4,17 @@ use axum::{
     routing::post,
     extract::Json,
     http::StatusCode,
-    Router,
+    Router, middleware as axum_middleware,
 };
 use serde::{Deserialize, Serialize};
 use std::net::SocketAddr;
 use rayon::prelude::*;
 
 pub mod utils;
+pub mod models;
+pub mod db;
+pub mod handlers;
+pub mod middleware;
 
 use crate::utils::{
     loader::{load_identities_by_generation, generation_key},
@@ -65,7 +69,16 @@ struct MatchResult {
 
 #[tokio::main]
 async fn main() {
-    let app = Router::new().route("/match", post(match_identity));
+    let pool = db::create_pool().await;
+    db::init_db(&pool).await;
+
+    let app = Router::new()
+       
+        
+        .route("/match", post(match_identity).route_layer(axum_middleware::from_fn(middleware::auth)))
+        .route("/api/usage/:user_id", axum::routing::get(handlers::get_api_usage))
+        .layer(axum_middleware::from_fn_with_state(pool.clone(), middleware::track_api_usage))
+        .with_state(pool);
 
     let addr = SocketAddr::from(([127, 0, 0, 1], 3000));
     println!("🚀 Server running on http://{}", addr);

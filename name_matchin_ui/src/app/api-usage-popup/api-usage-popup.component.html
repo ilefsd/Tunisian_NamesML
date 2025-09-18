@@ -1,0 +1,84 @@
+<div class="popup-container">
+  <div class="popup-header">
+    <div class="header-content">
+      <mat-icon class="header-icon">analytics</mat-icon>
+      <h2 class="popup-title">إحصائيات استخدام API</h2>
+    </div>
+  </div>
+
+  <div class="popup-content">
+    <div class="stats-overview">
+      <div class="stat-card">
+        <mat-icon class="stat-icon">api</mat-icon>
+        <div class="stat-info">
+          <span class="stat-number">{{ data.apiUsage?.length || 0 }}</span>
+          <span class="stat-label">إجمالي الطلبات</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="table-container">
+      <div class="table-header">
+        <h3 class="table-title">سجل الطلبات المفصل</h3>
+      </div>
+
+      <div class="table-wrapper">
+        <table class="modern-table">
+          <thead>
+          <tr>
+            <th class="table-header-cell">
+              <div class="header-content">
+                <mat-icon>link</mat-icon>
+                رابط API
+              </div>
+            </th>
+            <th class="table-header-cell">
+              <div class="header-content">
+                <mat-icon>schedule</mat-icon>
+                الطابع الزمني
+              </div>
+            </th>
+            <th class="table-header-cell">
+              <div class="header-content">
+                <mat-icon>info</mat-icon>
+                الحالة
+              </div>
+            </th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr *ngFor="let usage of data.apiUsage; let i = index"
+              class="table-row"
+              [class.row-even]="i % 2 === 0"
+              [class.row-odd]="i % 2 === 1">
+            <td class="table-cell api-link-cell">
+              <div class="cell-content">
+                <mat-icon class="cell-icon">api</mat-icon>
+                <span class="api-link">{{ usage.api_link }}</span>
+              </div>
+            </td>
+            <td class="table-cell timestamp-cell">
+              <div class="cell-content">
+                <mat-icon class="cell-icon">event</mat-icon>
+                <span class="timestamp">{{ usage.timestamp | date:'medium':'ar-TN' }}</span>
+              </div>
+            </td>
+            <td class="table-cell status-cell">
+              <div class="status-badge success">
+                <mat-icon class="status-icon">check_circle</mat-icon>
+                <span>مكتمل</span>
+              </div>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div *ngIf="!data.apiUsage || data.apiUsage.length === 0" class="empty-state">
+        <mat-icon class="empty-icon">inbox</mat-icon>
+        <h3 class="empty-title">لا توجد بيانات</h3>
+        <p class="empty-description">لم يتم العثور على أي طلبات API حتى الآن</p>
+      </div>
+    </div>
+  </div>
+</div>

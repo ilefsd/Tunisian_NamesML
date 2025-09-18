@@ -3,6 +3,7 @@ export const environment = {
   neo4j: {
     boltUrl: 'bolt://localhost:7687',
     user:     'neo4j',
-    pass:     '91559155'
+    pass:     '91559155',
+    browserUrl: 'http://localhost:7474/browser/'
   }
 };

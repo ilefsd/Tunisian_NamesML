@@ -1,8 +1,19 @@
 {
+  "/api": {
+    "target": "http://localhost:3000",
+    "secure": false
+  },
   "/match": {
     "target": "http://127.0.0.1:3000",
     "secure": false,
     "changeOrigin": true,
+    "logLevel": "debug"
+  },
+  "/neo4j": {
+    "target": "http://localhost:7687",
+    "secure": false,
+    "changeOrigin": true,
+    "ws": true,
     "logLevel": "debug"
   }
 }

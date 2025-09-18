@@ -1,36 +1,39 @@
-<!-- src/app/components/family-tree/family-tree.component.html -->
-<form (ngSubmit)="search()" #f="ngForm" class="search-form">
-  <div class="input-group">
-    <label for="childName">اسم الطفل</label>
-    <input
-      id="childName"
-      name="child"
-      [(ngModel)]="childName"
-      placeholder="اسم الطفل"
-      required
-    />
-  </div>
-  <div class="input-group">
-    <label for="fatherName">اسم الأب</label>
-    <input
-      id="fatherName"
-      name="father"
-      [(ngModel)]="fatherName"
-      placeholder="اسم الأب"
-      required
-    />
-  </div>
-  <div class="input-group">
-    <label for="motherName">اسم الأم</label>
-    <input
-      id="motherName"
-      name="mother"
-      [(ngModel)]="motherName"
-      placeholder="اسم الأم"
-      required
-    />
-  </div>
-  <button type="submit" [disabled]="f.invalid">ابحث</button>
-</form>
+<div class="modal-header">
+  <h2 mat-dialog-title>Family Tree Results for {{ data.identity.first_name }}</h2>
+  <button mat-icon-button (click)="close()" aria-label="Close">
+    <mat-icon>close</mat-icon>
+  </button>
+</div>
 
-<div #network class="network-container"></div>
+<mat-dialog-content class="modal-content" [class.is-scrollable]="familyGraphs.length > 1">
+  <div *ngIf="isLoading" class="loading-indicator">
+    <mat-spinner diameter="50"></mat-spinner>
+    <p>Loading family graphs…</p>
+  </div>
+
+  <div *ngIf="!isLoading && error" class="error-message">
+    <mat-icon color="warn">warning</mat-icon>
+    <p>{{ error }}</p>
+  </div>
+
+  <div *ngIf="!isLoading && !error" class="graphs-wrapper">
+    <!-- Loop for the family tree graphs -->
+    <div *ngFor="let graph of familyGraphs; let i = index" class="graph-container">
+      <h3 class="graph-title">Candidate Match: {{ graph.candidate.name }} (Family: {{ graph.candidate.family }})</h3>
+      <div #vizContainer class="network-canvas"></div>
+    </div>
+
+    <!-- New section to display the raw JSON output -->
+    <div *ngIf="rawJsonForDisplay" class="json-container">
+      <details>
+        <summary class="json-title">View Raw Neo4j JSON Data</summary>
+        <pre><code>{{ rawJsonForDisplay }}</code></pre>
+      </details>
+    </div>
+  </div>
+
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-stroked-button (click)="close()">Close</button>
+</mat-dialog-actions>

@@ -1,0 +1,120 @@
+<div class="login-page">
+  <!-- Government Header -->
+  <header class="gov-header">
+    <div class="header-content">
+      <div class="header-left">
+        <img ngSrc="assets/Tunisia-Coat-Of-Arms-Logo.png" alt="علم تونس" class="flag" height="800" width="800"/>
+      </div>
+
+      <div class="header-center">
+        <h1 class="republic-title">الجمهورية التونسية</h1>
+        <h2 class="ministry-title">وزارة الداخلية – مطابق الهوية</h2>
+      </div>
+
+      <div class="header-right">
+        <img ngSrc="assets/coat-of-arms.png" alt="شعار الجمهورية" class="coat" height="183" width="275"/>
+      </div>
+    </div>
+  </header>
+
+  <!-- Login Container -->
+  <div class="login-container">
+    <div class="login-card">
+      <div class="card-header">
+        <div class="title-section">
+          <mat-icon class="login-icon">login</mat-icon>
+          <h2 class="card-title">تسجيل الدخول</h2>
+          <p class="card-subtitle">أدخل بياناتك للوصول إلى النظام</p>
+        </div>
+      </div>
+
+      <div class="card-content">
+        <!-- Error Alert -->
+        <div *ngIf="errorMessage" class="alert alert-error" role="alert">
+          <mat-icon class="alert-icon">error_outline</mat-icon>
+          <span class="alert-text">{{ errorMessage }}</span>
+          <button type="button" class="alert-close" (click)="clearError()" aria-label="إغلاق التنبيه">
+            <mat-icon>close</mat-icon>
+          </button>
+        </div>
+
+        <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="login-form">
+          <!-- Email Field -->
+          <div class="form-group">
+            <mat-form-field appearance="outline" class="form-field">
+              <mat-label>البريد الإلكتروني</mat-label>
+              <input matInput
+                     type="email"
+                     formControlName="email"
+                     required
+                     autocomplete="email"
+                     placeholder="أدخل بريدك الإلكتروني">
+              <mat-icon matSuffix>email</mat-icon>
+              <mat-error *ngIf="loginForm.get('email')?.errors?.['required']">
+                البريد الإلكتروني مطلوب
+              </mat-error>
+              <mat-error *ngIf="loginForm.get('email')?.errors?.['email']">
+                يرجى إدخال بريد إلكتروني صحيح
+              </mat-error>
+            </mat-form-field>
+          </div>
+
+          <!-- Password Field -->
+          <div class="form-group">
+            <mat-form-field appearance="outline" class="form-field">
+              <mat-label>كلمة المرور</mat-label>
+              <input matInput
+                     [type]="showPassword ? 'text' : 'password'"
+                     formControlName="password"
+                     required
+                     autocomplete="current-password"
+                     placeholder="أدخل كلمة المرور">
+              <button mat-icon-button
+                      matSuffix
+                      type="button"
+                      (click)="togglePasswordVisibility()"
+                      [attr.aria-label]="showPassword ? 'إخفاء كلمة المرور' : 'إظهار كلمة المرور'">
+                <mat-icon>{{ showPassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+              </button>
+              <mat-error *ngIf="loginForm.get('password')?.errors?.['required']">
+                كلمة المرور مطلوبة
+              </mat-error>
+            </mat-form-field>
+          </div>
+
+          <!-- Remember Me & Forgot Password -->
+          <div class="form-options">
+            <mat-checkbox formControlName="rememberMe" class="remember-checkbox">
+              تذكرني
+            </mat-checkbox>
+<!--            <a href="#" class="forgot-link" (click)="forgotPassword($event)">
+              نسيت كلمة المرور؟
+            </a>-->
+          </div>
+
+          <!-- Submit Button -->
+          <div class="form-actions">
+            <button mat-raised-button
+                    type="submit"
+                    class="login-btn"
+                    [disabled]="loginForm.invalid || isLoading"
+                    [attr.aria-label]="isLoading ? 'جاري تسجيل الدخول' : 'تسجيل الدخول'">
+              <mat-icon class="btn-icon" [class.loading]="isLoading">
+                {{ isLoading ? 'hourglass_empty' : 'login' }}
+              </mat-icon>
+              <span>{{ isLoading ? 'جاري التحميل...' : 'تسجيل الدخول' }}</span>
+            </button>
+          </div>
+        </form>
+
+        <!-- Registration Link -->
+        <div class="form-footer">
+          <p class="footer-text">
+            ليس لديك حساب؟
+            <a routerLink="/register" class="register-link">إنشاء حساب جديد</a>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

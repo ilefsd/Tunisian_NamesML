@@ -10,7 +10,7 @@ describe('FamilyTreeComponent', () => {
     await TestBed.configureTestingModule({
       declarations: [FamilyTreeComponent]
     })
-    .compileComponents();
+      .compileComponents();
 
     fixture = TestBed.createComponent(FamilyTreeComponent);
     component = fixture.componentInstance;

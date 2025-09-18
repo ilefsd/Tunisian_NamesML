@@ -1,6 +1,12 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { IdentityMatchService, InputIdentity, MatchResult } from '../services/identity-match.service';
+import { MatDialog } from '@angular/material/dialog';
+import { FamilyTreeComponent } from '../family-tree/family-tree.component';
+import { ApiUsagePopupComponent } from '../api-usage-popup/api-usage-popup.component';
+import { ApiUsageService } from '../services/api-usage.service';
+import { AuthService } from '../services/auth.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-identity-match',
@@ -9,6 +15,7 @@ import { IdentityMatchService, InputIdentity, MatchResult } from '../services/id
   styleUrls: ['./identity-match.component.css']
 })
 export class IdentityMatchComponent {
+
   form: FormGroup;
   results: MatchResult[] = [];
   loading = false;
@@ -16,7 +23,11 @@ export class IdentityMatchComponent {
 
   constructor(
     private fb: FormBuilder,
-    private matchSvc: IdentityMatchService
+    private matchSvc: IdentityMatchService,
+    public dialog: MatDialog,
+    private authService: AuthService,
+    private router: Router,
+    private apiUsageService: ApiUsageService
   ) {
     this.form = this.fb.group({
       first_name:       ['', Validators.required],
@@ -30,6 +41,25 @@ export class IdentityMatchComponent {
       dob_year:         [''],
       sex:              [1],
       place_of_birth:   ['']
+    });
+  }
+
+  logout(): void {
+    this.authService.logout();
+    this.router.navigate(['/login']);
+  }
+
+  openFamilyTreeModal(matchResult: MatchResult): void {
+    const dialogRef = this.dialog.open(FamilyTreeComponent, {
+      width: '80vw',
+      maxWidth: '95vw',
+      maxHeight: '90vh',
+      data: { identity: matchResult.matched_identity },
+      panelClass: 'family-tree-dialog-container'
+    });
+
+    dialogRef.afterClosed().subscribe((dialogResult: any) => {
+      console.log('The dialog was closed', dialogResult);
     });
   }
 
@@ -56,20 +86,42 @@ export class IdentityMatchComponent {
     this.loading = true;
     this.error = null;
     this.matchSvc.matchIdentity(input).subscribe({
-      next: rs => {
+      next: (rs: MatchResult[]) => {
         this.results = rs;
         this.loading = false;
       },
-      error: err => {
+      error: (err: any) => {
         this.loading = false;
-        // If the backend returns 400 with { message: "لا يوجد تطابق بسبب اختلاف الجنس" }
         if (err.status === 400 && err.error && err.error.message) {
           this.error = err.error.message;
         } else {
-          // Generic fallback
           this.error = 'حدث خطأ أثناء المطابقة. يُرجى المحاولة مجددًا.';
         }
       }
     });
+  }
+
+  openPopup(): void {
+    const userId = this.authService.getUserId();
+    if (userId) {
+      this.apiUsageService.getApiUsage(userId).subscribe(apiUsage => {
+        this.dialog.open(ApiUsagePopupComponent, {
+          width: '600px',
+          data: { apiUsage }
+        });
+      });
+    }
+  }
+
+  getScoreColor(score: number): string {
+    if (score >= 90) return 'primary';
+    if (score >= 70) return 'accent';
+    return 'warn';
+  }
+
+  getScoreClass(score: number): string {
+    if (score >= 90) return 'score-excellent';
+    if (score >= 70) return 'score-good';
+    return 'score-poor';
   }
 }

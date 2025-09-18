@@ -1,0 +1,430 @@
+/* Import shared theme variables */
+@import '../identity-match/identity-match.component.css';
+
+/* Login Page Styles */
+.login-page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  font-family: 'Cairo', sans-serif;
+  direction: rtl;
+  background: linear-gradient(135deg,
+  var(--gray-50) 0%,
+  var(--white) 25%,
+  var(--gray-100) 50%,
+  var(--white) 75%,
+  var(--gray-50) 100%);
+  background-size: 400% 400%;
+  animation: gradientShift 15s ease infinite;
+}
+
+/* Login Container */
+.login-container {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-8) var(--space-4);
+  min-height: calc(100vh - 120px);
+}
+
+/* Login Card */
+.login-card {
+  width: 100%;
+  max-width: 480px;
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-3xl);
+  backdrop-filter: blur(20px);
+  box-shadow: var(--glass-shadow);
+  overflow: hidden;
+  position: relative;
+  transition: all var(--transition-slow);
+}
+
+.login-card:hover {
+  transform: translateY(-8px);
+  box-shadow: var(--glass-shadow), var(--shadow-glow);
+}
+
+.login-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg,
+  var(--tunisia-red) 0%,
+  var(--tunisia-gold) 50%,
+  var(--tunisia-red) 100%);
+  background-size: 200% 100%;
+  animation: borderGlow 3s ease-in-out infinite;
+}
+
+/* Card Header */
+.card-header {
+  padding: var(--space-12) var(--space-10) var(--space-8);
+  background: linear-gradient(135deg,
+  rgba(248, 250, 252, 0.9) 0%,
+  rgba(255, 255, 255, 0.7) 100%);
+  border-bottom: 1px solid var(--glass-border);
+  text-align: center;
+}
+
+.title-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-4);
+}
+
+.login-icon {
+  font-size: 3rem;
+  color: var(--tunisia-red);
+  background: linear-gradient(135deg,
+  rgba(200, 16, 46, 0.15) 0%,
+  rgba(200, 16, 46, 0.05) 100%);
+  padding: var(--space-4);
+  border-radius: var(--radius-full);
+  box-shadow: 0 8px 32px rgba(200, 16, 46, 0.2);
+}
+
+.card-title {
+  font-size: 2.25rem;
+  font-weight: 800;
+  color: var(--gray-900) !important;
+  margin: 0;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.card-subtitle {
+  font-size: 1.125rem;
+  color: var(--gray-600);
+  margin: 0;
+  font-weight: 500;
+  line-height: 1.5;
+}
+
+/* Card Content */
+.card-content {
+  padding: var(--space-10);
+}
+
+/* Alert Styles */
+.alert {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  padding: var(--space-4) var(--space-5);
+  border-radius: var(--radius-xl);
+  margin-bottom: var(--space-8);
+  font-weight: 600;
+  animation: slideIn var(--transition-bounce);
+  position: relative;
+  backdrop-filter: blur(10px);
+}
+
+.alert-error {
+  background: linear-gradient(135deg,
+  rgba(239, 68, 68, 0.15) 0%,
+  rgba(254, 226, 226, 0.8) 100%);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  color: var(--error);
+}
+
+.alert-icon {
+  font-size: 1.5rem;
+  animation: pulse 2s infinite;
+}
+
+.alert-text {
+  flex: 1;
+  font-size: 1rem;
+}
+
+.alert-close {
+  background: none;
+  border: none;
+  color: currentColor;
+  cursor: pointer;
+  padding: var(--space-1);
+  border-radius: var(--radius-full);
+  transition: all var(--transition-fast);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.alert-close:hover {
+  background: rgba(239, 68, 68, 0.1);
+  transform: scale(1.1);
+}
+
+/* Form Styles */
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+}
+
+.form-group {
+  margin-bottom: var(--space-2);
+}
+
+.form-field {
+  width: 100%;
+  transition: all var(--transition-base);
+}
+
+.form-field:hover {
+  transform: translateY(-2px);
+}
+
+.form-field ::ng-deep .mat-mdc-form-field-outline {
+  border-radius: var(--radius-xl);
+  border-color: var(--gray-300);
+  transition: all var(--transition-base);
+}
+
+.form-field ::ng-deep .mat-mdc-form-field.mat-focused .mat-mdc-form-field-outline {
+  border-color: var(--tunisia-red);
+  box-shadow: 0 0 0 2px rgba(200, 16, 46, 0.2);
+}
+
+.form-field ::ng-deep .mat-mdc-form-field-icon-suffix {
+  color: var(--gray-500);
+  transition: all var(--transition-base);
+}
+
+.form-field ::ng-deep .mat-mdc-form-field.mat-focused .mat-mdc-form-field-icon-suffix {
+  color: var(--tunisia-red);
+}
+
+.form-field ::ng-deep .mat-mdc-input-element {
+  font-family: 'Cairo', sans-serif;
+  font-weight: 500;
+  font-size: 1rem;
+}
+
+.form-field ::ng-deep .mat-mdc-floating-label {
+  font-family: 'Cairo', sans-serif;
+  font-weight: 600;
+}
+
+/* Form Options */
+.form-options {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: var(--space-6) 0;
+  padding: var(--space-4);
+  background: linear-gradient(135deg,
+  rgba(248, 250, 252, 0.8) 0%,
+  rgba(255, 255, 255, 0.6) 100%);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-xl);
+  backdrop-filter: blur(8px);
+}
+
+.remember-checkbox {
+  font-weight: 500;
+  color: var(--gray-700);
+}
+
+.remember-checkbox ::ng-deep .mat-mdc-checkbox .mdc-checkbox {
+  --mdc-checkbox-selected-checkmark-color: var(--white);
+  --mdc-checkbox-selected-focus-icon-color: var(--tunisia-red);
+  --mdc-checkbox-selected-hover-icon-color: var(--tunisia-red);
+  --mdc-checkbox-selected-icon-color: var(--tunisia-red);
+  --mdc-checkbox-selected-pressed-icon-color: var(--tunisia-red);
+}
+
+.forgot-link {
+  color: var(--tunisia-red);
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.875rem;
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-lg);
+  transition: all var(--transition-base);
+}
+
+.forgot-link:hover {
+  color: var(--tunisia-red-light);
+  background: rgba(200, 16, 46, 0.05);
+  transform: translateY(-1px);
+  text-decoration: underline;
+}
+
+/* Form Actions */
+.form-actions {
+  margin-top: var(--space-8);
+}
+
+.login-btn {
+  width: 100%;
+  background: linear-gradient(135deg,
+  var(--tunisia-red) 0%,
+  var(--tunisia-red-light) 100%) !important;
+  color: var(--white) !important;
+  padding: var(--space-5) var(--space-8) !important;
+  font-size: 1.25rem !important;
+  font-weight: 700 !important;
+  border-radius: var(--radius-2xl) !important;
+  box-shadow: var(--shadow-xl) !important;
+  transition: all var(--transition-bounce) !important;
+  border: none !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: var(--space-4) !important;
+  font-family: 'Cairo', sans-serif !important;
+  position: relative !important;
+  overflow: hidden !important;
+  min-height: 56px !important;
+}
+
+.login-btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg,
+  transparent,
+  rgba(255, 255, 255, 0.3),
+  transparent);
+  transition: left 0.5s;
+}
+
+.login-btn:hover:not([disabled]) {
+  background: linear-gradient(135deg,
+  var(--tunisia-red-light) 0%,
+  var(--tunisia-red) 100%) !important;
+  transform: translateY(-4px) scale(1.02) !important;
+  box-shadow: var(--shadow-2xl), var(--shadow-glow) !important;
+}
+
+.login-btn:hover:not([disabled])::before {
+  left: 100%;
+}
+
+.login-btn[disabled] {
+  opacity: 0.6 !important;
+  cursor: not-allowed !important;
+  transform: none !important;
+}
+
+.btn-icon {
+  font-size: 1.5rem !important;
+}
+
+.btn-icon.loading {
+  animation: spin 1s linear infinite;
+}
+
+/* Form Footer */
+.form-footer {
+  margin-top: var(--space-10);
+  padding-top: var(--space-6);
+  border-top: 1px solid var(--glass-border);
+  text-align: center;
+  background: linear-gradient(135deg,
+  rgba(248, 250, 252, 0.5) 0%,
+  rgba(255, 255, 255, 0.3) 100%);
+  margin-left: calc(var(--space-10) * -1);
+  margin-right: calc(var(--space-10) * -1);
+  padding-left: var(--space-10);
+  padding-right: var(--space-10);
+  border-bottom-left-radius: var(--radius-3xl);
+  border-bottom-right-radius: var(--radius-3xl);
+}
+
+.footer-text {
+  font-size: 1rem;
+  color: var(--gray-600);
+  margin: 0;
+  font-weight: 500;
+}
+
+.register-link {
+  color: var(--tunisia-red);
+  text-decoration: none;
+  font-weight: 700;
+  padding: var(--space-1) var(--space-2);
+  border-radius: var(--radius-md);
+  transition: all var(--transition-base);
+}
+
+.register-link:hover {
+  color: var(--tunisia-red-light);
+  background: rgba(200, 16, 46, 0.05);
+  transform: translateY(-1px);
+  text-decoration: underline;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .login-container {
+    padding: var(--space-4) var(--space-2);
+  }
+
+  .login-card {
+    max-width: 100%;
+    margin: var(--space-4);
+  }
+
+  .card-header {
+    padding: var(--space-8) var(--space-6);
+  }
+
+  .card-content {
+    padding: var(--space-6);
+  }
+
+  .card-title {
+    font-size: 1.75rem;
+  }
+
+  .form-options {
+    flex-direction: column;
+    gap: var(--space-4);
+    align-items: stretch;
+  }
+
+  .form-footer {
+    margin-left: calc(var(--space-6) * -1);
+    margin-right: calc(var(--space-6) * -1);
+    padding-left: var(--space-6);
+    padding-right: var(--space-6);
+  }
+}
+
+@media (max-width: 480px) {
+  .login-container {
+    padding: var(--space-2);
+  }
+
+  .card-header {
+    padding: var(--space-6) var(--space-4);
+  }
+
+  .card-content {
+    padding: var(--space-4);
+  }
+
+  .login-icon {
+    font-size: 2.5rem;
+    padding: var(--space-3);
+  }
+
+  .card-title {
+    font-size: 1.5rem;
+  }
+
+  .card-subtitle {
+    font-size: 1rem;
+  }
+}
