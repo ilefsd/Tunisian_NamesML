@@ -1,14 +1,14 @@
 import {
-  ScrollDispatcher,
-  ScrollingModule,
-  ViewportRuler
-} from "./chunk-7ECAOBVF.js";
-import {
   _isTestEnvironment
 } from "./chunk-42FJBLFI.js";
 import {
   coerceCssPixelValue
 } from "./chunk-IBYU652R.js";
+import {
+  ScrollDispatcher,
+  ScrollingModule,
+  ViewportRuler
+} from "./chunk-7ECAOBVF.js";
 import {
   supportsScrollBehavior
 } from "./chunk-2O4WY5GE.js";
@@ -3461,4 +3461,4 @@ export {
   CdkConnectedOverlay,
   OverlayModule
 };
-//# sourceMappingURL=chunk-YWZL7WFT.js.map
+//# sourceMappingURL=chunk-UX7CJX47.js.map

@@ -1,5 +1,4 @@
 // src/middleware.rs
-
 use axum::{
     extract::{Request, State},
     http::{HeaderMap, StatusCode},
