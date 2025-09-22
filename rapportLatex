@@ -32,18 +32,30 @@
 
 % ---------------- Document ----------------
 \begin{document}
+% path to your images folder
+\graphicspath{{figures/}}
 
+\newgeometry{margin=0pt}
+\includepdf[pages=-]{Page Garde Rapport Stage(Ang)_page-0001.jpg}
+\restoregeometry
+\clearpage
+\newgeometry{margin=0pt}
+\includepdf[pages=-]{Page Garde Rapport Stage(Ang)_page-0002.jpg}
+\restoregeometry
+\clearpage
+\newgeometry{margin=0pt}
+\includepdf[pages=-]{Page Garde Rapport Stage(Ang)_page-0003.jpg}
+\restoregeometry
+\clearpage
 % ---- Cover page (first page, unnumbered) ----
-\includepdf[pages=1]{figures/cover_page.pdf}
-\includegraphics[width=\textwidth]{figures/cover_page2.pdf.png}
-\includegraphics[width=\textwidth]{figures/cover_page3.pdf.png}
+
 
 % Roman numbering for front matter
 \pagenumbering{roman}
 
 % ---- ToC ----
-\tableofcontents
-\clearpage
+% \tableofcontents
+\newpage
 
 % Switch to arabic numbering for main matter
 \pagenumbering{arabic}
@@ -52,7 +64,7 @@
 % General Introduction
 % ================================
 \chapter*{General Introduction}
-\addcontentsline{toc}{chapter}{General Introduction}
+% \addcontentsline{toc}{chapter}{General Introduction}
 
 This thesis, undertaken for the **Ministère de l'Intérieur**, addresses these challenges by designing and implementing an intelligent system for the robust matching of Arabic biographical records. We propose a hybrid pipeline that combines rule-based text normalization to unify orthographic variants, a custom phonetic algorithm called Aramix Soundex to account for similarities in pronunciation, and weighted fuzzy string matching using Levenshtein and Jaro-Winkler distances to accurately rank potential matches.
 
@@ -77,10 +89,10 @@ Today, Inetum operates in over 27 countries across Europe, the Americas, Asia, a
   \label{fig:key-figures-inetum}
 \end{figure}
 
-\begin{figure}[htbp]
 \section{Inetum in the World}
 Inetum maintains strong alliances with the world's leading software and hardware vendors to deliver robust and integrated solutions. Key strategic partners include SAP, Microsoft, IBM, Oracle, Salesforce, and Sage. These partnerships enable Inetum to offer cutting-edge technologies and enterprise-grade solutions to its clients.
 
+\begin{figure}[htbp]
   \centering
   \includegraphics[width=\textwidth]{figures/Inetum_Worldwide.png} 
   \caption{Inetum worldwide presence.}
@@ -114,9 +126,9 @@ Inetum's core values are ambition, commitment, excellence, innovation, and solid
 
 
 
-\begin{figure}[htbp]
 \section{Clients}
 
+\begin{figure}[htbp]
   \centering
   \includegraphics[width=.9\textwidth]{figures/Clients.jpg}
   \caption{Representative Inetum clients across sectors.}
@@ -942,6 +954,10 @@ This will build the frontend and backend applications, create Docker images, and
 \end{appendices}
 
 \end{document}
+
+
+
+
 
 
 
