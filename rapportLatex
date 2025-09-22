@@ -68,7 +68,7 @@
 
 This thesis, undertaken for the **Ministère de l'Intérieur**, addresses these challenges by designing and implementing an intelligent system for the robust matching of Arabic biographical records. We propose a hybrid pipeline that combines rule-based text normalization to unify orthographic variants, a custom phonetic algorithm called Aramix Soundex to account for similarities in pronunciation, and weighted fuzzy string matching using Levenshtein and Jaro-Winkler distances to accurately rank potential matches.
 
-This high-performance engine, built in Rust and served via a REST API, powers an intuitive Angular web application that empowers government agents to find individuals quickly and reliably. Furthermore, the system leverages a Neo4j graph database to model and visualize family trees, allowing for the reconstruction of familial relationships from the identity records.
+This high-performance engine, built in Rust and served via a REST API, powers an intuitive Angular web application that empowers government agents to find individuals quickly and reliably. Furthermore, the system leverages a Neo4j graph database to model family trees, allowing for the reconstruction of familial relationships from identity records. The visualization of these trees is handled by an automated n8n workflow, which processes the graph data, uses a generative AI to create a diagram, and delivers it to the user.
 
 By bridging this critical gap, our work aims not only to solve a technical problem but also to restore dignity and access for countless individuals. The following chapters will detail the design, implementation, and evaluation of this solution, demonstrating a practical path toward a more inclusive and efficient digital state.
 
@@ -163,7 +163,9 @@ This chapter introduced the host organization, Inetum, and its Tunisian branch, 
 \chapter{Project Context and Planning}
 
 \section{Introduction}
-This chapter presents the project in detail, outlining the problem domain, the proposed solution, and the strategic plan for its execution. It covers the core business drivers, system architecture, development methodologies, and risk management.
+This chapter transitions from the organizational context to the core of the project itself. The primary goal of this initiative is to replace an outdated, manual, and often inefficient identity verification system with a modern, high-performance, and intelligent solution. The existing processes, heavily reliant on paper-based records and basic digital tools, are inadequate for handling the linguistic nuances of Arabic names, leading to significant delays and potential errors that impact citizen services.
+
+This chapter will provide a comprehensive overview of the project, beginning with a detailed problem statement that highlights the specific challenges faced by the Ministère de l'Intérieur. From there, we will define the project's objectives and scope, outlining what we aim to achieve. We will then present the proposed solution, including its high-level architecture and the technology stack chosen to meet the demanding requirements of performance, accuracy, and scalability. Finally, the chapter will cover the development methodologies and project planning that guided the execution of this complex undertaking, ensuring a structured path from conception to deployment.
 
 \section{Problem Statement}
 The motivation for this project stems from the shortcomings of the current systems, which are ill-equipped to handle the complexities of Arabic names. The core challenges can be summarized as follows:
@@ -237,7 +239,22 @@ For example, the system must handle:
 The objective is to design a reliable and scalable solution that integrates seamlessly into existing organizational workflows while accounting for these Arabic-specific linguistic variations. By combining normalization, phonetic encoding (Aramix Soundex), and fuzzy similarity scoring, the system ensures robust identity matching across heterogeneous data sources.
 
 \subsection{High-Level Architecture}
-The system follows a classic client-server architecture. The frontend, an Angular application, communicates with a backend REST API built in Rust. The backend handles business logic, data access from a PostgreSQL database, and graph-based family tree queries via Neo4j. A separate workflow, orchestrated by **n8n**, is triggered for family tree visualization. This workflow retrieves family data from Neo4j, passes it to an OpenAI service to generate a hierarchical image, and returns the visual to the frontend.
+The system is designed with a microservices-oriented approach, separating the core matching logic from the family tree generation process. The main components are:
+\begin{itemize}
+    \item \textbf{Angular Frontend:} A responsive single-page application providing the user interface for government agents.
+    \item \textbf{Rust Backend:} A high-performance REST API that handles user authentication, identity matching requests against the PostgreSQL database, and initiates family tree generation by calling the n8n workflow.
+    \item \textbf{Databases:} PostgreSQL for storing primary identity records and Neo4j for modeling and querying complex family relationships as a graph.
+    \item \textbf{n8n Automation Workflow:} A dedicated workflow that orchestrates the entire family tree visualization process, acting as a middleware that connects multiple services.
+\end{itemize}
+
+The family tree generation follows a specific, automated sequence:
+\begin{enumerate}
+    \item When a user requests a family tree, the Rust backend queries the Neo4j database to retrieve all known relationships for that individual.
+    \item The backend then sends this raw, complex JSON data to a secure n8n webhook.
+    \item The n8n workflow receives the data and passes it to the \textbf{Google Gemini API} with a specific prompt, asking it to process the graph data and return a simplified, structured JSON object that clearly outlines the family hierarchy (e.g., parents, siblings, children).
+    \item This simplified JSON is then sent via an HTTP request to a \textbf{Python script}, which uses it to generate a visual diagram of the family tree.
+    \item Finally, the n8n workflow takes the generated image and uploads it to a designated folder in \textbf{Google Drive}, making it accessible for the user.
+\end{enumerate}
 
 \subsection{Technology Stack}
 The choice of technologies was driven by the project's requirements for performance, scalability, and modern user experience. Each component was selected to fill a specific role in the architecture.
@@ -247,11 +264,29 @@ The choice of technologies was driven by the project's requirements for performa
     \item \textbf{Angular \includegraphics[height=1.2em]{figures/Angular.png}:} A powerful frontend framework used to build the responsive and feature-rich single-page application (SPA) that serves as the user interface for government agents.
     \item \textbf{PostgreSQL \includegraphics[height=1.2em]{figures/postgres.png}:} A reliable and scalable open-source relational database used to store the core identity records, offering robust data integrity and performance.
     \item \textbf{Neo4j \includegraphics[height=1.2em]{figures/Neo4j.png}:} A native graph database ideal for managing and querying the complex, interconnected data of family trees. Its graph-based model allows for efficient traversal of familial relationships.
-    \item \textbf{n8n \includegraphics[height=1.2em]{figures/n8n.png}:} A workflow automation tool used to orchestrate the family tree visualization process. It acts as the glue between Neo4j and the OpenAI API, automating the generation of the family tree image without adding complexity to the core backend application.
-    family tree image without adding complexity to the core backend application.
-    \item \textbf{Gemini API [LOGO]:} Leveraged within the n8n workflow to dynamically generate a clear, hierarchical image of a family tree based on the structured JSON data provided by Neo4j.
-    \item \textbf{Docker [LOGO]:} Used for containerizing the entire application stack (backend, frontend, databases), ensuring consistent development and deployment environments.
+    \item \textbf{n8n \includegraphics[height=1.2em]{figures/n8n.png}:} A low-code workflow automation tool used to orchestrate the family tree visualization process. It acts as the glue between the backend, the AI model, the Python script, and Google Drive, allowing for complex process automation without cluttering the main backend codebase.
+    \item \textbf{Google Gemini API:} A powerful generative AI model used within the n8n workflow to intelligently parse the complex JSON output from Neo4j and transform it into a simplified, structured format suitable for the diagram generation script.
+    \item \textbf{Python:} Used for a dedicated microservice whose sole responsibility is to take the simplified JSON data and generate a family tree diagram. This separation of concerns keeps the main backend focused on its core tasks.
+    \item \textbf{Google Drive:} Serves as the storage solution for the final generated family tree images, providing easy and secure access.
+    \item \textbf{Docker:} Used for containerizing the entire application stack (backend, frontend, databases), ensuring consistent development and deployment environments.
 \end{itemize}
+
+\subsection{Deployment Strategy}
+The entire system is designed for containerized deployment using Docker, ensuring consistency across development, testing, and production environments. This approach simplifies dependency management and enhances portability.
+
+\subsubsection{Application Containerization}
+Both the Rust backend and the Angular frontend are containerized using multi-stage \textbf{Dockerfiles}. This best-practice technique involves using a first stage (the "builder") with the full SDK (Rust and Node.js, respectively) to compile the application and its dependencies. The second stage then copies only the final compiled artifact (the Rust binary and the static Angular files) into a minimal, production-ready base image (like `debian:bullseye-slim` or `nginx:alpine`). This process results in final images that are significantly smaller, have a reduced attack surface, and are free from unnecessary build tools and source code, making them more secure and efficient.
+
+\subsubsection{Service Orchestration}
+The various services are orchestrated using \textbf{Docker Compose}. The `docker-compose.yml` file defines and configures the application's services, networks, and volumes. It automates the process of starting the entire stack, including:
+\begin{itemize}
+    \item The \textbf{Angular frontend} service, built from its Dockerfile and served by Nginx.
+    \item The \textbf{Rust backend} service, built from its Dockerfile.
+    \item A \textbf{PostgreSQL} service for the relational database.
+\end{itemize}
+This setup ensures that all components can communicate with each other over a defined Docker network and that database state can be persisted across container restarts.
+
+The \textbf{n8n workflow}, while central to the family tree generation process, is managed as a separate deployment. It can be self-hosted using its official Docker image and is integrated with the main application via secure webhook calls, a common pattern in microservice architectures.
 
 \section{Development Methodology}
 The project follows a hybrid approach, combining the Scrum framework for project management with the CRISP-DM methodology for the data science lifecycle.
@@ -339,6 +374,8 @@ The Product Backlog is a dynamic, ordered list of what is needed to improve the 
 User Management & UM-1 & User Story & As an Administrator, I want to create, edit, and delete user accounts so that I can manage access to the system. \\
 \hline
 User Management & UM-2 & User Story & As a User, I want to be able to log in and log out of the system to securely access its features. \\
+\hline
+User Management & UM-3 & User Story & As an Administrator, I want an audit dashboard to review user actions and system events for security and accountability purposes. \\
 \hline
 \hline
 Core Matching Functionality & CMF-1 & User Story & As a Government Agent, I want to input a citizen's biographical details into a form to search for potential matches. \\
@@ -494,6 +531,17 @@ The backend is built using Rust, a modern systems programming language that is k
   \label{fig:data-model-2}
 \end{figure}
 
+\subsubsection{In-Memory Data Structures: Linked Lists}
+To efficiently manage and consolidate identity records in memory, the system employs custom, singly-linked list structures defined in Rust. This approach is particularly effective for handling the dataset's numerous name variations and for merging duplicate records dynamically as data is loaded. The use of `Box<T>`, Rust's smart pointer for heap allocation, is idiomatic for these recursive, pointer-like structures.
+
+Two primary structures are used:
+\begin{itemize}
+    \item \textbf{VariationNode:} A simple linked list node where each node stores a single string variation of a name (e.g., "Mohamed", "Mohammed"). The `next_variation` field is of type `Option<Box<VariationNode>>`, pointing to the next variation or `None`.
+    \item \textbf{IdentityNode:} This structure represents a unique individual and holds their complete, normalized biographical data. Each name field within an `IdentityNode` can point to the head of a `VariationNode` linked list. Furthermore, the `IdentityNode`s themselves are organized into a larger linked list via the `next_identity: Option<Box<IdentityNode>>` field.
+\end{itemize}
+
+This design allows the system to build a clean, consolidated dictionary of identities in memory. When a new record is loaded from the database, the system traverses the `IdentityNode` list to find a match. If a matching identity already exists, the new name variations are simply inserted into the corresponding `VariationNode` lists, effectively merging the records without creating duplicates. This avoids redundant data and simplifies the subsequent matching process.
+
 \subsection{Class Diagram}
 (Content to be added)
 
@@ -515,7 +563,13 @@ end function
 \end{lstlisting}
 
 \subsection{Performance Optimizations}
-The `rayon` library was used to parallelize the scoring of candidates, which significantly reduced the response time of the API.
+To ensure the system remains responsive even with a large database, several key performance optimizations were implemented.
+
+\subsubsection{Generational Searching}
+A critical optimization is the use of "generational searching." Instead of loading the entire multi-million-record database into memory for every request, the system first analyzes the date of birth from the user's input to determine a "generation key" (i.e., the decade of birth). It then queries the PostgreSQL database to load only the records belonging to that specific generation. This dramatically reduces the amount of data that needs to be processed, leading to a significant decrease in memory consumption and initial search latency.
+
+\subsubsection{Multithreaded Scoring}
+After the initial pool of candidates is loaded and pre-filtered, the most computationally intensive task is scoring each candidate against the input. To accelerate this process, the system leverages multithreading through the \textbf{Rayon} library in Rust. Rayon provides data-parallelism capabilities, allowing the system to process the list of candidates concurrently across multiple CPU cores. By simply changing a standard iterator (`.iter()`) to a parallel one (`.par_iter()`), the scoring workload is automatically distributed among available threads. This parallel execution model drastically reduces the time required to score hundreds or thousands of candidates, ensuring that the API can deliver results in real-time, even under heavy load.
 
 \section{Conclusion}
 This chapter has provided a detailed overview of the system's design.
@@ -953,6 +1007,18 @@ This will build the frontend and backend applications, create Docker images, and
 \end{appendices}
 
 \end{document}
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
