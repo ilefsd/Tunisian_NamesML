@@ -1,0 +1,280 @@
+{
+  "name": "JSON editor",
+  "nodes": [
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "6fd75794-7415-40a4-b899-14e15a8d5df3",
+              "name": "json",
+              "value": "={{ JSON.stringify($input.all().map(i => i.json), null, 2) }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        256,
+        -16
+      ],
+      "id": "8bc7da16-ab4a-4c2d-87be-9f2bd0408e26",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=You are an expert AI data processor. Your sole function is to transform an input JSON containing family tree data into a structured summary JSON.\n\nAnalyze the provided input JSON, which contains relationship paths for individuals from a graph database. Identify the three unique primary candidates (the individuals named \"مهدي\" with distinct database IDs). For each unique candidate, compile a single JSON object summarizing their family relations.\n\nExtraction Logic:\n\nIdentify Unique Individuals: Group the data by the unique identity of the \"start\" node for each candidate named \"مهدي\".\n\nExtract Relationships: For each unique person, analyze all their corresponding records to find:\n\nFather: The end node in a CHILD_OF relationship where the gender is 'ذكر'.\n\nMother: The end node in a CHILD_OF relationship where the gender is 'أنثى'.\n\nPaternal Grandfather: The father property of the Father node. If not present, use null.\n\nPaternal Grandmother: The mother property of the Father node. If not present, use null.\n\nSpouse: The end node in a MARRIED_TO relationship.\n\nSiblings: The end nodes in SIBLING_WITH relationships. Aggregate all into a single list.\n\nChildren: The start nodes in CHILD_OF relationships where the candidate is the end node. Aggregate all into a single list.\n\nOutput Format:\nYour final output MUST be a valid JSON array containing one object for each of the three unique individuals, strictly following this structure:\n\nJSON\n\n[\n  {\n    \"name\": \"مهدي\",\n    \"paternal_grandfather\": \"...\",\n    \"paternal_grandmother\": \"...\",\n    \"father\": \"...\",\n    \"mother\": \"...\",\n    \"spouse\": \"...\",\n    \"siblings\": [\"...\", \"...\"],\n    \"children\": [\"...\", \"...\"]\n  }\n]\nCrucial Instructions:\n\nDO NOT output any text, explanation, or conversation.\n\nYour response must ONLY be the final, clean JSON array.\n\nCombine all siblings and children for each person into their respective arrays.\n\nIf a value (like a grandparent or spouse) is not found in the data, use the JSON value string \"null\".\n\n{{ JSON.stringify($input.all().map(i => i.json), null, 2) }}\n",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.2,
+      "position": [
+        704,
+        -96
+      ],
+      "id": "68699b8b-9a06-4324-bffe-9afcd70cc21b",
+      "name": "AI Agent",
+      "executeOnce": true
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-2.5-pro",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        544,
+        192
+      ],
+      "id": "11d1c59d-1b42-4326-84af-96c4c3bccc8f",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "OJv5HeY2hrbvfY7U",
+          "name": "Google Gemini karim"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "a5c537ef-46f4-4af1-bc2c-40891aa5b2f8",
+              "name": "output",
+              "value": "={{ $json.output }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1056,
+        -16
+      ],
+      "id": "df3b8152-ffd8-4df3-968b-927ea7203127",
+      "name": "Edit Fields1"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Access the nested output string using the correct path\nconst jsonStringWithMarkdown = $input.first().json.output;\n\n// Clean the string to remove the markdown code fences\nconst cleanedJsonString = jsonStringWithMarkdown.replace(\"```json\\n\", \"\").replace(\"\\n```\", \"\");\n\n// Parse the cleaned string into a proper JSON object\nconst finalJson = JSON.parse(cleanedJsonString);\n\n// Return the final, clean JSON object\nreturn finalJson;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1280,
+        -16
+      ],
+      "id": "4af4a439-6d33-4eec-9931-a3e7f67ec533",
+      "name": "Code"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Access the nested output string using the correct path\nconst jsonStringWithMarkdown = $input.first().json.json;\n\n// Clean the string to remove the markdown code fences\nconst cleanedJsonString = jsonStringWithMarkdown.replace(\"```json\\n\", \"\").replace(\"\\n```\", \"\");\n\n// Parse the cleaned string into a proper JSON object\nconst finalJson = JSON.parse(cleanedJsonString);\n\n// Return the final, clean JSON object\nreturn finalJson;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        480,
+        -16
+      ],
+      "id": "d9d97dae-00a3-467c-8746-0e576f59f638",
+      "name": "Code1"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://ad63b154c97c.ngrok-free.app/generate_tree",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ $json }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1488,
+        -16
+      ],
+      "id": "1fdba9f9-d1a6-484f-900e-123dd7ad1955",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "path": "6a89732f-408f-4f27-8607-f0a028107780",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -112,
+        -16
+      ],
+      "id": "96d415e4-a132-413e-b011-fe1b02cd46d7",
+      "name": "Webhook",
+      "webhookId": "6a89732f-408f-4f27-8607-f0a028107780"
+    },
+    {
+      "parameters": {
+        "name": "={{ $json.name }} {{ $json.father }}.png",
+        "driveId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "My Drive"
+        },
+        "folderId": {
+          "__rl": true,
+          "value": "1TQ5sFZZywPjqqzA4X_gmTdMOjpcDxc5z",
+          "mode": "list",
+          "cachedResultName": "images",
+          "cachedResultUrl": "https://drive.google.com/drive/folders/1TQ5sFZZywPjqqzA4X_gmTdMOjpcDxc5z"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        1696,
+        -16
+      ],
+      "id": "2913052e-a211-4bc5-8197-864f7a24853d",
+      "name": "Upload file",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "k930A2IXosnuBOVP",
+          "name": "Aunt"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Code1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields1": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code1": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Upload file",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "635b0863-547a-4c1d-9377-59473a659625",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "e97e981b4ba241b9fd3480bf994f9f76df42e7c9d265f7e412c77a35e977d66b"
+  },
+  "id": "YZwrIPMXznu1eLW0",
+  "tags": []
+}
