@@ -73,11 +73,20 @@ async fn main() {
     db::init_db(&pool).await;
 
     let app = Router::new()
-       
-        
-        .route("/match", post(match_identity).route_layer(axum_middleware::from_fn(middleware::auth)))
-        .route("/api/usage/:user_id", axum::routing::get(handlers::get_api_usage))
-        .layer(axum_middleware::from_fn_with_state(pool.clone(), middleware::track_api_usage))
+        .route("/api/register", post(handlers::register))
+        .route("/api/login", post(handlers::login))
+        .route(
+            "/match",
+            post(match_identity).route_layer(axum_middleware::from_fn(middleware::auth)),
+        )
+        .route(
+            "/api/usage/:user_id",
+            axum::routing::get(handlers::get_api_usage),
+        )
+        .layer(axum_middleware::from_fn_with_state(
+            pool.clone(),
+            middleware::track_api_usage,
+        ))
         .with_state(pool);
 
     let addr = SocketAddr::from(([127, 0, 0, 1], 3000));

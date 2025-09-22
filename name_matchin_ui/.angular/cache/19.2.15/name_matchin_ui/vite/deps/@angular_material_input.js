@@ -14,9 +14,12 @@ import {
   MatSuffix
 } from "./chunk-AZ6I5YWH.js";
 import {
-  AutofillMonitor,
-  TextFieldModule
-} from "./chunk-F2DQ63MN.js";
+  getSupportedInputTypes
+} from "./chunk-RP3KYRPD.js";
+import "./chunk-42FJBLFI.js";
+import {
+  coerceBooleanProperty
+} from "./chunk-IBYU652R.js";
 import {
   FormGroupDirective,
   NgControl,
@@ -24,12 +27,9 @@ import {
   Validators
 } from "./chunk-A2IKBBHF.js";
 import {
-  getSupportedInputTypes
-} from "./chunk-RP3KYRPD.js";
-import "./chunk-42FJBLFI.js";
-import {
-  coerceBooleanProperty
-} from "./chunk-IBYU652R.js";
+  AutofillMonitor,
+  TextFieldModule
+} from "./chunk-F2DQ63MN.js";
 import "./chunk-2O4WY5GE.js";
 import {
   MatCommonModule,
