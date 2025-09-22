@@ -140,7 +140,6 @@ With its multi-specialist profile, Inetum provides a distinctive blend of proxim
 \begin{itemize}
     \item Banking and Financial Services
     \item Telecommunications and Technology
-    \item Energy and Chemicals
     \item Retail and Services
     \item Government and Public Sector
     \item Manufacturing and Industry
@@ -250,7 +249,7 @@ The choice of technologies was driven by the project's requirements for performa
     \item \textbf{Neo4j \includegraphics[height=1.2em]{figures/Neo4j.png}:} A native graph database ideal for managing and querying the complex, interconnected data of family trees. Its graph-based model allows for efficient traversal of familial relationships.
     \item \textbf{n8n \includegraphics[height=1.2em]{figures/n8n.png}:} A workflow automation tool used to orchestrate the family tree visualization process. It acts as the glue between Neo4j and the OpenAI API, automating the generation of the family tree image without adding complexity to the core backend application.
     family tree image without adding complexity to the core backend application.
-    \item \textbf{OpenAI API [LOGO]:} Leveraged within the n8n workflow to dynamically generate a clear, hierarchical image of a family tree based on the structured JSON data provided by Neo4j.
+    \item \textbf{Gemini API [LOGO]:} Leveraged within the n8n workflow to dynamically generate a clear, hierarchical image of a family tree based on the structured JSON data provided by Neo4j.
     \item \textbf{Docker [LOGO]:} Used for containerizing the entire application stack (backend, frontend, databases), ensuring consistent development and deployment environments.
 \end{itemize}
 
@@ -954,6 +953,10 @@ This will build the frontend and backend applications, create Docker images, and
 \end{appendices}
 
 \end{document}
+
+
+
+
 
 
 
