@@ -1,30 +1,26 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
-
-export interface FamilyTreeImageResponse {
-  imageUrl: string;
-}
 
 @Injectable({
   providedIn: 'root'
 })
 export class FamilyTreeImageService {
 
-  private webhookUrl = '/webhook/6a89732f-408f-4f27-8607-f0a028107780';
+  private webhookUrl = '/webhook-proxy/webhook/6a89732f-408f-4f27-8607-f0a028107780';
 
   constructor(private http: HttpClient) { }
 
-  getFamilyTreeImage(familyTreeData: any): Observable<string> {
-    // The response from the n8n workflow should be a JSON object that contains the image URL.
-    // Based on the user's description, the final output is a Google Drive link.
-    // The n8n workflow should be configured to return a JSON object like:
-    // { "imageUrl": "https://your-google-drive-link..." }
-    // This service assumes the response has a property named `imageUrl`.
-
-    return this.http.post<FamilyTreeImageResponse>(this.webhookUrl, familyTreeData).pipe(
-      map(response => response.imageUrl)
-    );
+  /**
+   * Sends Neo4j JSON data to the webhook to generate a family tree image.
+   * @param neo4jData The Neo4j JSON object.
+   * @returns An Observable that resolves to an image Blob.
+   */
+  generateTreeImage(neo4jData: any): Observable<Blob> {
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+    return this.http.post(this.webhookUrl, neo4jData, {
+      headers: headers,
+      responseType: 'blob'
+    });
   }
 }

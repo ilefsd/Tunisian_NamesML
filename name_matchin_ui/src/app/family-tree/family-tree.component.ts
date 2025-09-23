@@ -18,6 +18,10 @@ import {
   type Edge as VisEdge,
   Options,
 } from 'vis-network/standalone';
+// Imports for the new image generation feature
+import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
+import { FamilyTreeImageService } from '../services/family-tree-image.service';
+
 
 export interface FamilyTreeModalData {
   identity: {
@@ -36,18 +40,24 @@ export interface FamilyTreeModalData {
 export class FamilyTreeComponent implements OnInit, AfterViewInit {
   @ViewChildren('vizContainer') vizContainers!: QueryList<ElementRef<HTMLDivElement>>;
 
-  isLoading = true;
+  isLoading = true; // Re-used for both graph loading and image generation
   error: string | null = null;
   familyGraphs: FamilyGraph[] = [];
   // New property to hold the formatted JSON string for display
   rawJsonForDisplay: string | null = null;
   private networkInstances: Network[] = [];
 
+  // Properties for the new image generation feature
+  imageUrl: SafeUrl | null = null;
+
   constructor(
     public dialogRef: MatDialogRef<FamilyTreeComponent>,
     @Inject(MAT_DIALOG_DATA) public data: FamilyTreeModalData,
     private neo4jService: Neo4jService,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    // Injections for the new image generation feature
+    private familyTreeService: FamilyTreeImageService,
+    private sanitizer: DomSanitizer
   ) {}
 
   ngOnInit(): void {
@@ -64,6 +74,7 @@ export class FamilyTreeComponent implements OnInit, AfterViewInit {
     this.isLoading = true;
     this.error = null;
     this.rawJsonForDisplay = null; // Reset on new load
+    this.imageUrl = null; // Also reset the image URL
     this.cdr.detectChanges();
 
     try {
@@ -92,6 +103,37 @@ export class FamilyTreeComponent implements OnInit, AfterViewInit {
       this.cdr.detectChanges();
     }
   }
+
+  // New method for generating the family tree image
+  generateImage(): void {
+    if (this.familyGraphs.length === 0) {
+      this.error = "Cannot generate image, no family data is loaded.";
+      return;
+    }
+
+    // Use the first available graph data to send to the webhook
+    const neo4jData = this.familyGraphs[0];
+
+    this.isLoading = true;
+    this.imageUrl = null;
+
+    this.familyTreeService.generateTreeImage(neo4jData)
+      .subscribe({
+        next: (blob) => {
+          console.log('Received blob from API:', blob); // <-- Debugging log
+          const objectUrl = URL.createObjectURL(blob);
+          this.imageUrl = this.sanitizer.bypassSecurityTrustUrl(objectUrl);
+          console.log('Generated image URL:', this.imageUrl); // <-- Debugging log
+          this.isLoading = false;
+        },
+        error: (err) => {
+          console.error('Error generating image:', err);
+          this.error = 'Failed to generate family tree image.';
+          this.isLoading = false;
+        }
+      });
+  }
+
 
   private renderAllNetworks(): void {
     this.networkInstances.forEach(instance => instance.destroy());

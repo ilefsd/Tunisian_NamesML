@@ -8,7 +8,7 @@
 <mat-dialog-content class="modal-content" [class.is-scrollable]="familyGraphs.length > 1">
   <div *ngIf="isLoading" class="loading-indicator">
     <mat-spinner diameter="50"></mat-spinner>
-    <p>Loading family graphs…</p>
+    <p>{{ !imageUrl ? 'Loading family graphs…' : 'Generating image...' }}</p>
   </div>
 
   <div *ngIf="!isLoading && error" class="error-message">
@@ -17,13 +17,16 @@
   </div>
 
   <div *ngIf="!isLoading && !error" class="graphs-wrapper">
-    <!-- Loop for the family tree graphs -->
     <div *ngFor="let graph of familyGraphs; let i = index" class="graph-container">
       <h3 class="graph-title">Candidate Match: {{ graph.candidate.name }} (Family: {{ graph.candidate.family }})</h3>
       <div #vizContainer class="network-canvas"></div>
     </div>
 
-    <!-- New section to display the raw JSON output -->
+    <div *ngIf="imageUrl" class="image-container">
+      <h3 class="image-title">Generated Family Tree Image</h3>
+      <img [src]="imageUrl" alt="Generated Family Tree">
+    </div>
+
     <div *ngIf="rawJsonForDisplay" class="json-container">
       <details>
         <summary class="json-title">View Raw Neo4j JSON Data</summary>
@@ -35,5 +38,12 @@
 </mat-dialog-content>
 
 <mat-dialog-actions align="end">
+  <button
+    mat-flat-button
+    color="primary"
+    (click)="generateImage()"
+    [disabled]="isLoading || familyGraphs.length === 0">
+    Generate Image
+  </button>
   <button mat-stroked-button (click)="close()">Close</button>
 </mat-dialog-actions>
