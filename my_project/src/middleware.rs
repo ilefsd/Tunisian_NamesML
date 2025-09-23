@@ -65,8 +65,10 @@ pub async fn auth(mut request: Request, next: Next) -> Result<Response, StatusCo
     let validation = Validation::default();
 
     // Also use the unified Claims struct here
-    let token_data = decode::<Claims>(token, &decoding_key, &validation)
-        .map_err(|_| StatusCode::UNAUTHORIZED)?;
+    let token_data = decode::<Claims>(token, &decoding_key, &validation).map_err(|e| {
+        eprintln!("Auth error: {:?}", e);
+        StatusCode::UNAUTHORIZED
+    })?;
 
     // Optional: Pass claims to handlers via request extensions
     request.extensions_mut().insert(token_data.claims);
