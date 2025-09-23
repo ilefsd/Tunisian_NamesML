@@ -125,7 +125,13 @@ pub async fn get_users(
     })?;
 
     let rows = conn
-        .query("SELECT id, email FROM users", &[])
+        .query(
+            "SELECT u.id, u.email, COUNT(a.id) as api_usage_count
+             FROM users u
+             LEFT JOIN api_usage a ON u.id::text = a.user_id
+             GROUP BY u.id, u.email",
+            &[],
+        )
         .await
         .map_err(|e| {
             eprintln!("Failed to get users: {}", e);
@@ -142,6 +148,7 @@ pub async fn get_users(
             crate::models::UserResponse {
                 id: id.to_string(),
                 email: row.get(1),
+                api_usage_count: row.get(2),
             }
         })
         .collect();
@@ -189,6 +196,7 @@ pub async fn create_user(
     Ok(Json(crate::models::UserResponse {
         id: user.id.to_string(),
         email: user.email,
+        api_usage_count: 0,
     }))
 }
 

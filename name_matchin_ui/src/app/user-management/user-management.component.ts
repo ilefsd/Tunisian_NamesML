@@ -2,6 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { UserService } from '../services/user.service';
 import { UserResponse } from '../models/user.model';
+import { MatDialog } from '@angular/material/dialog';
+import { ApiUsageService } from '../services/api-usage.service';
+import { ApiUsagePopupComponent } from '../api-usage-popup/api-usage-popup.component';
 
 @Component({
   selector: 'app-user-management',
@@ -17,7 +20,9 @@ export class UserManagementComponent implements OnInit {
 
   constructor(
     private fb: FormBuilder,
-    private userService: UserService
+    private userService: UserService,
+    private dialog: MatDialog,
+    private apiUsageService: ApiUsageService
   ) {
     this.userForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
@@ -94,6 +99,15 @@ export class UserManagementComponent implements OnInit {
   deleteUser(id: string): void {
     this.userService.deleteUser(id).subscribe(() => {
       this.users = this.users.filter(u => u.id !== id);
+    });
+  }
+
+  openApiUsagePopup(userId: string): void {
+    this.apiUsageService.getApiUsage(userId).subscribe(apiUsage => {
+      this.dialog.open(ApiUsagePopupComponent, {
+        width: '600px',
+        data: { apiUsage }
+      });
     });
   }
 }
