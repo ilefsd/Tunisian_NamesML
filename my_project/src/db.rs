@@ -23,7 +23,7 @@ pub async fn init_db(pool: &ConnectionPool) {
     conn.batch_execute(
         "
         CREATE TABLE IF NOT EXISTS users (
-            id TEXT PRIMARY KEY,
+            id UUID PRIMARY KEY,
             email TEXT UNIQUE NOT NULL,
             password_hash TEXT NOT NULL
         );

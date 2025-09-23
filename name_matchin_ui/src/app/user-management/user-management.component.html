@@ -1,0 +1,162 @@
+<div class="app-container rtl-layout" dir="rtl">
+  <!-- Modern Government Header -->
+  <header class="modern-header">
+    <div class="header-content">
+      <div class="header-left">
+        <div class="logo-container">
+          <div class="tunisia-emblem">
+            <mat-icon class="emblem-icon">account_balance</mat-icon>
+          </div>
+          <div class="header-text">
+            <h1 class="republic-title">الجمهورية التونسية</h1>
+            <h2 class="ministry-title">وزارة الداخلية – مطابق الهوية</h2>
+          </div>
+        </div>
+      </div>
+
+      <div class="header-right">
+        <button mat-stroked-button routerLink="/identity-match" class="logout-btn">
+          <mat-icon>arrow_back</mat-icon>
+          <span>العودة</span>
+        </button>
+        <div class="coat-emblem">
+          <mat-icon class="emblem-icon">shield</mat-icon>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="main-content">
+    <div class="content-wrapper">
+      <div class="layout-grid">
+
+        <!-- Right Panel - Form -->
+        <div class="form-panel">
+          <mat-card class="form-card glass-effect">
+            <mat-card-header class="form-header">
+              <mat-card-title class="form-title">
+                <mat-icon class="title-icon">group</mat-icon>
+                <span>إدارة المستخدمين</span>
+              </mat-card-title>
+              <mat-card-subtitle class="form-subtitle">
+                إضافة وتعديل وحذف المستخدمين
+              </mat-card-subtitle>
+            </mat-card-header>
+
+            <mat-card-content class="form-content">
+              <form [formGroup]="userForm" (ngSubmit)="onFormSubmit()" class="user-form">
+                <mat-form-field appearance="outline" class="form-field">
+                  <mat-label>البريد الإلكتروني</mat-label>
+                  <input matInput formControlName="email" required>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" class="form-field">
+                  <mat-label>كلمة المرور</mat-label>
+                  <input matInput formControlName="password" type="password">
+                </mat-form-field>
+
+                <div class="form-actions">
+                  <button mat-raised-button type="submit" [disabled]="!userForm.valid" class="add-user-btn">
+                    {{ editMode ? 'تحديث المستخدم' : 'إضافة مستخدم' }}
+                  </button>
+                  <button mat-button type="button" (click)="cancelEdit()" *ngIf="editMode" class="cancel-btn">
+                    إلغاء
+                  </button>
+                </div>
+              </form>
+
+              <div class="table-container">
+                <table class="user-table">
+                  <thead>
+                  <tr>
+                    <th>اسم المستخدم</th>
+                    <th>البريد الإلكتروني</th>
+                    <th>الإجراءات</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  <tr *ngFor="let user of users">
+                    <td>{{ user.email.split('@')[0] }}</td>
+                    <td>{{ user.email }}</td>
+                    <td>
+                      <div class="action-buttons">
+                        <button mat-icon-button (click)="editUser(user)" class="edit-btn">
+                          <mat-icon>edit</mat-icon>
+                        </button>
+                        <button mat-icon-button (click)="deleteUser(user.id)" class="delete-btn">
+                          <mat-icon>delete</mat-icon>
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                  </tbody>
+                </table>
+              </div>
+            </mat-card-content>
+          </mat-card>
+        </div>
+
+        <!-- Left Panel - Identity Matching Panel -->
+        <div class="identity-panel">
+          <mat-card class="identity-card">
+            <mat-card-header class="identity-header">
+              <div class="identity-header-content">
+                <mat-icon class="check-icon">check_circle</mat-icon>
+                <span class="identity-title">استخراج مطابقة الهوية</span>
+              </div>
+              <p class="identity-subtitle">وفي حالة جمع البيانات الشخصية يجب</p>
+            </mat-card-header>
+
+            <mat-card-content class="identity-content">
+              <div class="identity-status">
+                <div class="status-icon-container">
+                  <mat-icon class="status-icon">verified_user</mat-icon>
+                </div>
+                <h3 class="status-title">مطابق الهوية</h3>
+                <p class="status-description">نظام التحقق من الهوية الرقمي</p>
+
+                <div class="status-items">
+                  <div class="status-item">
+                    <mat-icon class="item-icon">check_circle</mat-icon>
+                    <span>نظام آمن ومتطور</span>
+                  </div>
+                  <div class="status-item">
+                    <mat-icon class="item-icon">check_circle</mat-icon>
+                    <span>مطابقة دقيقة وموثوقة</span>
+                  </div>
+                  <div class="status-item">
+                    <mat-icon class="item-icon">check_circle</mat-icon>
+                    <span>حماية من انتهاك الخصوصية</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="info-section">
+                <div class="info-header">
+                  <div class="info-icon">
+                    <span>!</span>
+                  </div>
+                </div>
+                <p class="info-text">
+                  يرجى الأخذ في الاعتبار أن عمليات البيانات الشخصية لصحة المعلومات التعديل قد يؤدي إلى عدم صحة تنظيم المعلومات.
+                </p>
+              </div>
+            </mat-card-content>
+          </mat-card>
+        </div>
+
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="modern-footer">
+    <div class="footer-content">
+      <div class="footer-logo">
+        <mat-icon class="footer-emblem">account_balance</mat-icon>
+      </div>
+      <p class="footer-text">© 2025 الجمهورية التونسية – جميع الحقوق محفوظة</p>
+    </div>
+  </footer>
+</div>

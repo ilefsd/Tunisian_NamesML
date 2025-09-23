@@ -72,17 +72,32 @@ async fn main() {
     let pool = db::create_pool().await;
     db::init_db(&pool).await;
 
-    let app = Router::new()
+    // Public routes
+    let public_routes = Router::new()
         .route("/api/register", post(handlers::register))
-        .route("/api/login", post(handlers::login))
-        .route(
-            "/match",
-            post(match_identity).route_layer(axum_middleware::from_fn(middleware::auth)),
-        )
+        .route("/api/login", post(handlers::login));
+    
+
+    // Protected routes
+    let protected_routes = Router::new()
+        .route("/match", post(match_identity))
         .route(
             "/api/usage/:user_id",
             axum::routing::get(handlers::get_api_usage),
         )
+        .route(
+            "/api/users",
+            post(handlers::create_user).get(handlers::get_users),
+        )
+        .route(
+            "/api/users/:id",
+            axum::routing::put(handlers::update_user).delete(handlers::delete_user),
+        )
+        .route_layer(axum_middleware::from_fn(middleware::auth));
+
+    let app = Router::new()
+        .merge(public_routes)
+        .merge(protected_routes)
         .layer(axum_middleware::from_fn_with_state(
             pool.clone(),
             middleware::track_api_usage,

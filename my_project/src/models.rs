@@ -12,10 +12,25 @@ pub struct Claims {
 }
 
 // Data structure for a user in the database.
+#[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct User {
     pub id: Uuid,
     pub email: String,
     pub password_hash: String,
+}
+
+// Data structure for user data sent to the frontend.
+#[derive(Debug, Serialize, Deserialize, Clone)]
+pub struct UserResponse {
+    pub id: String,
+    pub email: String,
+}
+
+// Payload for updating a user.
+#[derive(Deserialize)]
+pub struct UpdateUser {
+    pub email: Option<String>,
+    pub password: Option<String>,
 }
 
 // Payload for the /register endpoint.

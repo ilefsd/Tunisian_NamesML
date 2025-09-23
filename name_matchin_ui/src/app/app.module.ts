@@ -24,6 +24,7 @@ import {MatCheckbox} from '@angular/material/checkbox';
 import {MatProgressBar} from '@angular/material/progress-bar';
 import {MatDivider} from '@angular/material/divider';
 import { MatCardModule } from '@angular/material/card';
+import { UserManagementComponent } from './user-management/user-management.component';
 
 @NgModule({
   declarations: [
@@ -32,7 +33,8 @@ import { MatCardModule } from '@angular/material/card';
     FamilyTreeComponent,
     LoginComponent,
     RegisterComponent,
-    ApiUsagePopupComponent
+    ApiUsagePopupComponent,
+    UserManagementComponent
 
   ],
   imports: [
