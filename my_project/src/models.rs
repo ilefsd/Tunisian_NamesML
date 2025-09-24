@@ -24,6 +24,7 @@ pub struct User {
 pub struct UserResponse {
     pub id: String,
     pub email: String,
+    pub api_usage_count: i64,
 }
 
 // Payload for updating a user.

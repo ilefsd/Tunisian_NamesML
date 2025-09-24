@@ -72,6 +72,7 @@
                   <tr>
                     <th>اسم المستخدم</th>
                     <th>البريد الإلكتروني</th>
+                    <th>استخدام API</th>
                     <th>الإجراءات</th>
                   </tr>
                   </thead>
@@ -79,6 +80,9 @@
                   <tr *ngFor="let user of users">
                     <td>{{ user.email.split('@')[0] }}</td>
                     <td>{{ user.email }}</td>
+                    <td>
+                      <button mat-button (click)="openApiUsagePopup(user.id)">{{ user.api_usage_count }}</button>
+                    </td>
                     <td>
                       <div class="action-buttons">
                         <button mat-icon-button (click)="editUser(user)" class="edit-btn">

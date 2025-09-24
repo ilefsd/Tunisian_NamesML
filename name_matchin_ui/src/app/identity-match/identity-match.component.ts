@@ -101,17 +101,6 @@ export class IdentityMatchComponent {
     });
   }
 
-  openPopup(): void {
-    const userId = this.authService.getUserId();
-    if (userId) {
-      this.apiUsageService.getApiUsage(userId).subscribe(apiUsage => {
-        this.dialog.open(ApiUsagePopupComponent, {
-          width: '600px',
-          data: { apiUsage }
-        });
-      });
-    }
-  }
 
   getScoreColor(score: number): string {
     if (score >= 90) return 'primary';

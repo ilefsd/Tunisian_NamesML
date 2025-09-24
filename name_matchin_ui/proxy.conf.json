@@ -15,6 +15,13 @@
     "changeOrigin": true,
     "ws": true,
     "logLevel": "debug"
+  },
+  "/webhook-proxy": {
+    "target": "https://karim.n8nkk.tech",
+    "secure": true,
+    "changeOrigin": true,
+    "pathRewrite": {
+      "^/webhook-proxy": ""
+    }
   }
 }
-

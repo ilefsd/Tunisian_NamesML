@@ -18,8 +18,7 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        256,
-        -16
+
       ],
       "id": "8bc7da16-ab4a-4c2d-87be-9f2bd0408e26",
       "name": "Edit Fields"
@@ -33,8 +32,7 @@
       "type": "@n8n/n8n-nodes-langchain.agent",
       "typeVersion": 2.2,
       "position": [
-        704,
-        -96
+
       ],
       "id": "68699b8b-9a06-4324-bffe-9afcd70cc21b",
       "name": "AI Agent",
@@ -48,8 +46,7 @@
       "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
       "typeVersion": 1,
       "position": [
-        544,
-        192
+
       ],
       "id": "11d1c59d-1b42-4326-84af-96c4c3bccc8f",
       "name": "Google Gemini Chat Model",
@@ -77,8 +74,7 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        1056,
-        -16
+
       ],
       "id": "df3b8152-ffd8-4df3-968b-927ea7203127",
       "name": "Edit Fields1"
@@ -90,8 +86,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        1280,
-        -16
+
       ],
       "id": "4af4a439-6d33-4eec-9931-a3e7f67ec533",
       "name": "Code"
@@ -103,8 +98,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        480,
-        -16
+
       ],
       "id": "d9d97dae-00a3-467c-8746-0e576f59f638",
       "name": "Code1"
@@ -112,7 +106,7 @@
     {
       "parameters": {
         "method": "POST",
-        "url": "https://ad63b154c97c.ngrok-free.app/generate_tree",
+        "url": "https://32e5b3631401.ngrok-free.app/generate_tree",
         "sendBody": true,
         "specifyBody": "json",
         "jsonBody": "={{ $json }}",
@@ -121,15 +115,16 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        1488,
-        -16
       ],
       "id": "1fdba9f9-d1a6-484f-900e-123dd7ad1955",
       "name": "HTTP Request"
     },
     {
       "parameters": {
+        "httpMethod": "POST",
         "path": "6a89732f-408f-4f27-8607-f0a028107780",
+        "responseMode": "responseNode",
+
         "options": {}
       },
       "type": "n8n-nodes-base.webhook",
@@ -144,35 +139,19 @@
     },
     {
       "parameters": {
-        "name": "={{ $json.name }} {{ $json.father }}.png",
-        "driveId": {
-          "__rl": true,
-          "mode": "list",
-          "value": "My Drive"
-        },
-        "folderId": {
-          "__rl": true,
-          "value": "1TQ5sFZZywPjqqzA4X_gmTdMOjpcDxc5z",
-          "mode": "list",
-          "cachedResultName": "images",
-          "cachedResultUrl": "https://drive.google.com/drive/folders/1TQ5sFZZywPjqqzA4X_gmTdMOjpcDxc5z"
-        },
+        "respondWith": "binary",
+        "responseDataSource": "set",
         "options": {}
       },
-      "type": "n8n-nodes-base.googleDrive",
-      "typeVersion": 3,
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.4,
       "position": [
-        1696,
-        -16
+        2032,
+        -112
       ],
-      "id": "2913052e-a211-4bc5-8197-864f7a24853d",
-      "name": "Upload file",
-      "credentials": {
-        "googleDriveOAuth2Api": {
-          "id": "k930A2IXosnuBOVP",
-          "name": "Aunt"
-        }
-      }
+      "id": "2c25e1a4-fa7f-4ba5-be06-8968c091fce5",
+      "name": "Respond to Webhook"
+
     }
   ],
   "pinData": {},
@@ -247,7 +226,7 @@
       "main": [
         [
           {
-            "node": "Upload file",
+            "node": "Respond to Webhook",
             "type": "main",
             "index": 0
           }
@@ -266,11 +245,12 @@
       ]
     }
   },
-  "active": false,
+  "active": true,
   "settings": {
     "executionOrder": "v1"
   },
-  "versionId": "635b0863-547a-4c1d-9377-59473a659625",
+  "versionId": "1af18e1a-1e84-4210-9564-81c9df403b7e",
+
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "e97e981b4ba241b9fd3480bf994f9f76df42e7c9d265f7e412c77a35e977d66b"
