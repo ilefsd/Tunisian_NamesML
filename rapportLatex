@@ -222,6 +222,16 @@ The main stakeholders of the project are the users who need to match identities 
 \end{figure}
 
 \section{Proposed Solution}
+
+\subsection{Proposed Solution --- Tunisian\_NamesML}
+The proposed solution is a modern, hybrid system that addresses the core challenges of Arabic name matching.
+Hybrid identity matching combines text normalization to unify orthographic variants, a custom phonetic algorithm (Aramix Soundex), and fuzzy matching using Levenshtein and Jaro-Winkler.
+Visualization and automation are achieved through n8n for process orchestration, Gemini AI for data parsing and simplification, and Python for automated diagram generation.
+
+The technology stack includes Angular for the frontend, Rust with Axum for a high-performance backend, PostgreSQL for structured identity records, and Neo4j for managing family tree relationships.
+
+For deployment, the entire system is containerized.
+
 \subsection{General Overview}
 This project focuses on the development of an identity matching system specifically
 adapted to the Arabic language. Unlike Latin-based systems, Arabic introduces unique challenges such as orthographic variability, phonetic ambiguity, and transliteration issues.
@@ -247,14 +257,20 @@ The system is designed with a microservices-oriented approach, separating the co
     \item \textbf{n8n Automation Workflow:} A dedicated workflow that orchestrates the entire family tree visualization process, acting as a middleware that connects multiple services.
 \end{itemize}
 
-The family tree generation follows a specific, automated sequence:
-\begin{enumerate}
-    \item When a user requests a family tree, the Rust backend queries the Neo4j database to retrieve all known relationships for that individual.
-    \item The backend then sends this raw, complex JSON data to a secure n8n webhook.
-    \item The n8n workflow receives the data and passes it to the \textbf{Google Gemini API} with a specific prompt, asking it to process the graph data and return a simplified, structured JSON object that clearly outlines the family hierarchy (e.g., parents, siblings, children).
-    \item This simplified JSON is then sent via an HTTP request to a \textbf{Python script}, which uses it to generate a visual diagram of the family tree.
-    \item Finally, the n8n workflow takes the generated image and uploads it to a designated folder in \textbf{Google Drive}, making it accessible for the user.
-\end{enumerate}
+The family tree generation follows a specific, automated sequence, as summarized in the following speaker notes.
+
+\subsubsection*{Family Tree Diagram Speaker Notes (short):}
+\begin{quote}
+“The family tree feature starts when an agent requests to generate a person’s family tree. The request goes through the Family Tree API, which checks credentials, fetches raw family data, and sends it to the n8n workflow service. AI processing transforms the raw data into structured JSON, which is returned as a tree visualization. Finally, the interface renders the complete family tree for the agent to explore.”
+\end{quote}
+
+\subsubsection*{n8n Workflow (Concise Script):}
+\begin{quote}
+“Webhook receives Neo4j JSON (raw relations). The payload is sent to Gemini with a prompt to parse and normalize entities/links. The structured output flows to a Python script that renders diagrams, then returns visuals to the frontend via the webhook response.”
+\end{quote}
+
+\paragraph{LLM Choice}
+Currently, Gemini serves as the AI model within the n8n workflow. For future iterations, a self-hosted LLM (such as Ollama or another open-source alternative) could be dedicated to this function to provide a more secure and faster response.
 
 \subsection{Technology Stack}
 The choice of technologies was driven by the project's requirements for performance, scalability, and modern user experience. Each component was selected to fill a specific role in the architecture.
@@ -292,32 +308,15 @@ The \textbf{n8n workflow}, while central to the family tree generation process, 
 The project follows a hybrid approach, combining the Scrum framework for project management with the CRISP-DM methodology for the data science lifecycle.
 
 \subsection{Scrum Framework}
-Scrum is an agile framework designed for developing, delivering, and sustaining complex products. It is built on the principles of transparency, inspection, and adaptation. The framework is structured around a series of events, artifacts, and roles that work in concert to manage product development.
+The project was managed using the Scrum methodology, an agile framework based on short cycles called sprints, lasting 2 to 4 weeks.
+The Product Owner was the Ministry of Interior. The Scrum Master, Mouaïa Ben Hamed, supported the process, and the development work was carried out by the author.
+Work was planned through sprint backlogs, guided by a clear definition of done, with daily and review meetings.
 
-\begin{itemize}
-    \item \textbf{Roles:}
-    \begin{itemize}
-        \item \textbf{Product Owner:} Responsible for maximizing the value of the product resulting from the work of the Development Team. This includes managing the Product Backlog.
-        \item \textbf{Scrum Master:} A servant-leader for the Scrum Team, helping everyone understand Scrum theory, practices, rules, and values.
-        \item \textbf{Development Team:} A self-organizing, cross-functional team of professionals who do the work of delivering a potentially releasable Increment of "Done" product at the end of each Sprint.
-    \end{itemize}
-    \item \textbf{Events (Ceremonies):}
-    \begin{itemize}
-        \item \textbf{The Sprint:} A time-box of one month or less during which a "Done," usable, and potentially releasable product Increment is created. Our project used two-week sprints.
-        \item \textbf{Sprint Planning:} A meeting where the work to be performed in the Sprint is planned.
-        \item \textbf{Daily Scrum:} A 15-minute daily meeting for the Development Team to synchronize activities and create a plan for the next 24 hours.
-        \item \textbf{Sprint Review:} Held at the end of the Sprint to inspect the Increment and adapt the Product Backlog if needed.
-        \item \textbf{Sprint Retrospective:} An opportunity for the Scrum Team to inspect itself and create a plan for improvements to be enacted during the next Sprint.
-    \end{itemize}
-    \item \textbf{Artifacts:}
-    \begin{itemize}
-        \item \textbf{Product Backlog:} An ordered list of everything that is known to be needed in the product. It is the single source of requirements for any changes to be made to the product.
-        \item \textbf{Sprint Backlog:} The set of Product Backlog items selected for the Sprint, plus a plan for delivering the product Increment and realizing the Sprint Goal.
-        \item \textbf{Increment:} The sum of all the Product Backlog items completed during a Sprint and the value of the increments of all previous Sprints.
-    \end{itemize}
-\end{itemize}
-
-This structured, iterative approach was essential for navigating the project's complexity, allowing for regular feedback and continuous improvement.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\linewidth]{figures/Scrum schema.png}
+    \caption{scrum}
+\end{figure}
 
 \subsection{CRISP-DM Methodology}
 The data science component of the project followed the \textbf{Cross-Industry Standard Process for Data Mining (CRISP-DM)}. This methodology provides a structured approach to planning a data mining project. It is a robust and well-proven methodology. The phases were applied as follows:
@@ -426,6 +425,15 @@ This chapter has provided a comprehensive presentation of the project, from its 
 This chapter details the functional and non-functional requirements of the system, based on an analysis of the use cases.
 
 \section{Use–Case Model}
+The system has two main actors: government agents and administrators.
+Agents can search for matches and visualize family trees. Administrators manage users and view audit logs.
+All actions are tied to credential checks, ensuring only authorized users can access the system.
+\begin{figure}
+    \centering
+    \includegraphics[width=\linewidth]{figures/use case diagram.png }
+    \caption{Use case Diagram}
+\end{figure}
+
 \subsection{Main Use Cases}
 The main use cases of the system are:
 \begin{itemize}
@@ -434,32 +442,38 @@ The main use cases of the system are:
     \item \textbf{UC-03: Visualize Family Tree:} An agent visualizes a citizen's family tree to understand familial relationships.
 \end{itemize}
 
-\subsection{Use‐Case Flow (UC-01 Search for Matches)}
-\begin{enumerate}
-    \item The user enters the identity information in the search form.
-    \item The user clicks the "Search" button.
-    \item The system sends a request to the backend API with the identity information.
-    \item The backend searches the database for matching records.
-    \item The backend returns a list of matching records to the frontend.
-    \item The frontend displays the matching records to the user.
-\end{enumerate}
-
-\section{Functional Requirements}
-The system must provide the following functional requirements:
+\subsection{Actors}
+Two main actors interact with the system:
 \begin{itemize}
-    \item User-friendly interface for entering identity information.
-    \item Real-time matching of identity information against a database of records.
-    \item Display of matching results with a detailed breakdown of the score.
-    \item Ability to handle a large volume of data and users.
+    \item \textbf{Government agent:} verifies identities and explores family trees.
+    \item \textbf{Administrator:} manages the system and oversees operations.
 \end{itemize}
 
-\section{Non-Functional Requirements}
-The system must meet the following non-functional requirements:
+\subsection{Use Case Flow (UC-01 Search for Matches)}
+In this flow, the Government Agent starts by entering the individual information through the user interface form and submitting the request, which forwards the authentication token to the Authentication Service. Once the credentials are validated and confirmed, the Matching Service is called to perform the search. The Matching Service queries the database to fetch all identities that match the individual's info, retrieves the data, and processes it using the matching algorithm.
+
+After processing, the Matching Service returns a list of potential matches, which are then sent to the User Interface. Finally, the Government Agent sees the matches displayed on their screen.
+
+\section{Requirements}
+The system requirements are divided into two categories: functional and non-functional.
+
+\subsection{Functional Requirements}
+On the functional side, the system must support:
 \begin{itemize}
-    \item \textbf{Performance:} The matching process must be completed within a few seconds.
-    \item \textbf{Scalability:} The system must be able to handle a growing number of users and records.
-    \item \textbf{Security:} The system must protect the confidentiality and integrity of user data.
-    \item \textbf{Reliability:} The system must be available 24/7 and be resilient to failures.
+    \item User authentication and authorization.
+    \item The management of identities.
+    \item A matching algorithm capable of delivering reliable accuracy scores.
+    \item Family tree visualization.
+    \item Audit logs of user actions for accountability.
+\end{itemize}
+
+\subsection{Non-Functional Requirements}
+On the non-functional side, the solution is required to achieve:
+\begin{itemize}
+    \item High accuracy and precision (using a multi-stage matching algorithm).
+    \item Scalability to handle millions of records.
+    \item Strong security (using JWT Token for authentication and authorization).
+    \item A reliable and usable user experience (with a user friendly UI that is easy to use).
 \end{itemize}
 
 \section{Validation Rules (selected)}
@@ -516,6 +530,21 @@ This chapter outlines the design of the system, including the architecture, data
   \label{fig:high-level-architecture}
 \end{figure}
 
+\subsubsection{Logical Architecture}
+\begin{quote}
+“This diagram shows the logical architecture in detail.
+The frontend Angular app communicates with the Axum backend, which manages authentication with JWT and logs usage.
+The backend runs the matching engine with scoring logic, retrieving identity data from PostgreSQL.
+When a match is confirmed, the frontend also requests related data from Neo4j, which returns the family tree for visualization.”
+\end{quote}
+
+\subsubsection{Deployment Diagram}
+\begin{quote}
+“The agent uses a web browser to access the system over HTTPS.
+Requests go to a Docker-based environment running the Rust backend, which connects to PostgreSQL for data and to the n8n service for workflows.
+n8n can also call external APIs like Google Gemini for advanced processing.”
+\end{quote}
+
 \subsection{Component Interaction \& Data Flow}
 The frontend sends a request to the backend API with the identity information. The backend then queries the database for candidate records and scores them using the matching algorithm. The results are then returned to the frontend and displayed to the user.
 
@@ -548,7 +577,44 @@ This design allows the system to build a clean, consolidated dictionary of ident
 \subsection{Sequence Diagram}
 (Content to be added)
 
+\section{Physical Architecture}
+Physically, the system is fully containerized with Docker and orchestrated via Docker Compose.
+ The main services are:
+\begin{itemize}
+    \item Angular frontend (served by Nginx).
+    \item Rust backend service.
+    \item PostgreSQL database.
+    \item Neo4j as an external graph service.
+\end{itemize}
+
 \section{Matching Algorithm Flow}
+
+\subsection{Name Matching Process}
+Our multi-stage matching algorithm ensures both performance and accuracy.
+\begin{itemize}
+    \item \textbf{Stage 1: Normalization} (clean diacritics, unify Arabic characters, remove prefixes).
+    \item \textbf{Stage 2: Filtering} (by generation: decade of birth).
+    \item \textbf{Stage 3: Parallel Scoring} using Rust’s Rayon library for multi-core speed.
+    \item \textbf{Stage 4: Advanced Scoring} blending Jaro-Winkler, Levenshtein, and Aramix Soundex with weighted scoring.
+\end{itemize}
+
+\subsubsection*{Speaker notes (concise):}
+\begin{quote}
+1- “The process begins with normalization — cleaning names, removing diacritics, and standardizing prefixes. \\
+2 - then we divide the individual by generations according to the year of birth \\
+3 -Then candidates are pre-filtered by gender, DOB , and last-name phonetics. \\
+4- Next, each candidate is scored using Jaro-Winkler(), Levenshtein, and Soundex, with weighted fields and bonuses for strong matches. \\
+5 -Finally, results are sorted, filtered by a threshold of 75, and the top three matches are returned.”
+This hybrid approach is the core innovation of Tunisian\_Name
+\end{quote}
+
+\subsubsection*{Algorithm Definitions}
+\begin{description}
+    \item[Jaro-Winkler:] Measures similarity between two strings.
+    \item[Levenshtein (Edit Distance):] Measures differences between two strings.
+    \item[Soundex:] Converts words into a phonetic code so names that sound alike but are spelled differently map to the same code.
+\end{description}
+
 \subsection{Overview \& Mapping to FRs}
 The matching algorithm is designed to meet the functional requirement of real-time matching. It uses a combination of pre-filtering and parallel scoring to achieve high performance.
 
@@ -737,6 +803,26 @@ A record is classified as a match if its score is greater than or equal to the t
 
 \section{Summary}
 This chapter has detailed the mathematical approach and scoring model used in the system.
+
+% ================================
+% Chapter 9
+% ================================
+\chapter{sML}
+
+% ================================
+% Chapter 10
+% ================================
+\chapter{Demonstration}
+
+In the demo, the following would be shown:
+\begin{itemize}
+    \item Identity matching in real time.
+    \item Family tree visualization from matched identities.
+    \item High-speed performance, even across large datasets.
+\end{itemize}
+
+\paragraph{Note on the Database}
+The author was not provided with a realistic database for this project. Therefore, a synthetic dataset was generated, mirroring the structure of the government's database. A best effort was made to include realistic family relationships to ensure meaningful family tree visualizations.
 
 \begin{appendices}
 \chapter{Use Case Diagrams}
@@ -1007,3 +1093,4 @@ This will build the frontend and backend applications, create Docker images, and
 \end{appendices}
 
 \end{document}
+
