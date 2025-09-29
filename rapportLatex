@@ -521,16 +521,11 @@ This chapter has provided a comprehensive overview of the state of the art in Ar
 \section{Introduction}
 This chapter outlines the design of the system, including the architecture, data model, and matching algorithm flow.
 
-\section{Architecture Overview}
-\subsection{High-Level Architecture}
-\begin{figure}[htbp]
-  \centering
-  \includegraphics[width=0.8\textwidth]{name_matchin_ui/src/assets/bg-tunisia}
-  \caption{High-Level Architecture.}
-  \label{fig:high-level-architecture}
-\end{figure}
+
 
 \subsubsection{Logical Architecture}
+
+
 \begin{quote}
 “This diagram shows the logical architecture in detail.
 The frontend Angular app communicates with the Axum backend, which manages authentication with JWT and logs usage.
@@ -1093,4 +1088,3 @@ This will build the frontend and backend applications, create Docker images, and
 \end{appendices}
 
 \end{document}
-
